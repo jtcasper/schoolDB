@@ -12,6 +12,29 @@ public class SchoolDB {
 		//setup Connection instance to database
 		Connection connection = ConnectionManager.getConnectionInstance();
 		
+		SQLHandler handler = SQLHandler.getInstance();
+		
+		try {
+			handler.executeSQLFile("sql/dropTables.sql");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			handler.executeSQLFile("sql/createTables.sql");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			handler.executeSQLFile("sql/testData.sql");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+
+		
 		Scanner inScan = new Scanner(System.in);
 		
 		System.out.print("Enter your id: ");
@@ -41,12 +64,9 @@ public class SchoolDB {
 		String dbRetVal = "";
 		
 		try {
-			System.out.println("made it this far");
-			PreparedStatement ps = conn.prepareStatement("SELECT pw FROM ADMINS WHERE ADMINID = ?");
+			PreparedStatement ps = conn.prepareStatement("SELECT pw FROM ADMINS WHERE eid = ?");
 			ps.setInt(1, userID);
-			System.out.println("ps made");
 			ResultSet rs = ps.executeQuery();
-			System.out.println("ps exec");
 			while( rs.next() ) {
 				System.out.println(rs.getString("pw"));
 				dbRetVal = rs.getString("pw");

@@ -70,13 +70,35 @@ public class SQLHandler {
 			reader = new BufferedReader(fileReader);
 			String line = "";
 			String currentQuery = "";
+			int numEnds = 0;
+			boolean procedure = false;
 			while ((line = reader.readLine()) != null) {
 				for (int i = 0; i < line.length(); i++) {
-					if (line.charAt(i) == ';') {
+					if (line.charAt(i) == ';' && !procedure) {
 						queries.add(currentQuery);
 						currentQuery = "";
 					} else
 						currentQuery += line.charAt(i);
+					//see if line is a comment
+					if(currentQuery.equals("--") || currentQuery.equals("REM")){
+						currentQuery = "";
+						break;
+					}
+				}
+				if(currentQuery.startsWith("BEGIN") && !procedure){
+					numEnds++;
+					procedure = true;
+				}
+				if(line.trim().startsWith("IF") && procedure){
+					numEnds++;
+				}
+				if(line.trim().startsWith("END") && procedure && numEnds > 0 ){
+					numEnds--;
+				}
+				if(line.trim().startsWith("END") && procedure && numEnds == 0){
+					procedure = false;
+					queries.add(currentQuery);
+					currentQuery = "";
 				}
 			}
 		}

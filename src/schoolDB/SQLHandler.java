@@ -80,8 +80,13 @@ public class SQLHandler {
 					} else
 						currentQuery += line.charAt(i);
 					//see if line is a comment
-					if(currentQuery.equals("--") || currentQuery.equals("REM")){
+					if(currentQuery.equals("--")){
 						currentQuery = "";
+						break;
+					}
+					else if(currentQuery.startsWith("REM")){
+						currentQuery = "";
+						reader.readLine();
 						break;
 					}
 				}

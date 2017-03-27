@@ -13,7 +13,7 @@ public class interactiveShell {
 		
 		try {
 			handler.executeSQLFile("scripts/setupdb.sql");
-			handler.executeSQLFile("sql/testData.sql");
+			handler.executeSQLFile("scripts/createData.sql");
 		} catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -139,6 +139,7 @@ public class interactiveShell {
 			}
 			else{
 				//Student code
+				return;
 			}
 		}
 		
@@ -202,7 +203,7 @@ public class interactiveShell {
 		String eid = "";
 		String fname = "";
 		String lname = "";
-		String ssn = "";
+		String dob = "";
 		
 		try {
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM ADMIN WHERE eid = ?");
@@ -212,16 +213,16 @@ public class interactiveShell {
 				eid = rs.getString("EID");
 				fname = rs.getString("FNAME");
 				lname = rs.getString("LNAME");
-				ssn = rs.getString("SSN");
+				dob = rs.getString("DOB");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
 //		System.out.println("EID                 |FNAME               |LNAME               |SSN                 ");
-		System.out.println(padRight("EID", 20) + "|" + padRight("FNAME", 20) + "|" + padRight("LNAME", 20) + "|" + padRight("SSN", 20) + "|");
+		System.out.println(padRight("EID", 20) + "|" + padRight("FNAME", 20) + "|" + padRight("LNAME", 20) + "|" + padRight("DOB", 20) + "|");
 		System.out.println("-----------------------------------------------------------------------------------");
-		System.out.println(padRight(eid, 20)+ "|" + padRight(fname, 20) + "|" + padRight(lname, 20) + "|" + padRight(ssn, 20) + "|");
+		System.out.println(padRight(eid, 20)+ "|" + padRight(fname, 20) + "|" + padRight(lname, 20) + "|" + padRight(dob, 20) + "|");
 		
 //		System.out.println("EID: " + eid);
 //		System.out.println("FNAME: " + fname);

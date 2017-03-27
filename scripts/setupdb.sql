@@ -1,17 +1,104 @@
 --------------------------------------------------------
 --  File created - Monday-March-27-2017   
 --------------------------------------------------------
-DROP TABLE "ADMIN" cascade constraints;
-DROP TABLE "COURSE" cascade constraints;
-DROP TABLE "OFFERS" cascade constraints;
-DROP TABLE "PENDING" cascade constraints;
-DROP TABLE "PRECONDITION" cascade constraints;
-DROP TABLE "REQUIRES" cascade constraints;
-DROP TABLE "SEMESTER" cascade constraints;
-DROP TABLE "STUDENT" cascade constraints;
-DROP TABLE "TAKES" cascade constraints;
-DROP TABLE "WAITLIST" cascade constraints;
-DROP TABLE "WAITLISTING" cascade constraints;
+BEGIN
+   EXECUTE IMMEDIATE 'DROP TABLE ADMIN cascade constraints';
+EXCEPTION
+   WHEN OTHERS THEN
+      IF SQLCODE != -942 THEN
+         RAISE;
+      END IF;
+END;
+
+BEGIN
+   EXECUTE IMMEDIATE 'DROP TABLE COURSE cascade constraints';
+EXCEPTION
+   WHEN OTHERS THEN
+      IF SQLCODE != -942 THEN
+         RAISE;
+      END IF;
+END;
+
+BEGIN
+   EXECUTE IMMEDIATE 'DROP TABLE OFFERS cascade constraints';
+EXCEPTION
+   WHEN OTHERS THEN
+      IF SQLCODE != -942 THEN
+         RAISE;
+      END IF;
+END;
+
+BEGIN
+   EXECUTE IMMEDIATE 'DROP TABLE PENDING cascade constraints';
+EXCEPTION
+   WHEN OTHERS THEN
+      IF SQLCODE != -942 THEN
+         RAISE;
+      END IF;
+END;
+
+BEGIN
+   EXECUTE IMMEDIATE 'DROP TABLE PRECONDITION cascade constraints';
+EXCEPTION
+   WHEN OTHERS THEN
+      IF SQLCODE != -942 THEN
+         RAISE;
+      END IF;
+END;
+
+BEGIN
+   EXECUTE IMMEDIATE 'DROP TABLE REQUIRES cascade constraints';
+EXCEPTION
+   WHEN OTHERS THEN
+      IF SQLCODE != -942 THEN
+         RAISE;
+      END IF;
+END;
+
+BEGIN
+   EXECUTE IMMEDIATE 'DROP TABLE SEMESTER cascade constraints';
+EXCEPTION
+   WHEN OTHERS THEN
+      IF SQLCODE != -942 THEN
+         RAISE;
+      END IF;
+END;
+
+BEGIN
+   EXECUTE IMMEDIATE 'DROP TABLE STUDENT cascade constraints';
+EXCEPTION
+   WHEN OTHERS THEN
+      IF SQLCODE != -942 THEN
+         RAISE;
+      END IF;
+END;
+
+BEGIN
+   EXECUTE IMMEDIATE 'DROP TABLE TAKES cascade constraints';
+EXCEPTION
+   WHEN OTHERS THEN
+      IF SQLCODE != -942 THEN
+         RAISE;
+      END IF;
+END;
+
+BEGIN
+   EXECUTE IMMEDIATE 'DROP TABLE WAITLIST cascade constraints';
+EXCEPTION
+   WHEN OTHERS THEN
+      IF SQLCODE != -942 THEN
+         RAISE;
+      END IF;
+END;
+
+BEGIN
+   EXECUTE IMMEDIATE 'DROP TABLE WAITLISTING cascade constraints';
+EXCEPTION
+   WHEN OTHERS THEN
+      IF SQLCODE != -942 THEN
+         RAISE;
+      END IF;
+END;
 --------------------------------------------------------
 --  DDL for Table ADMIN
 --------------------------------------------------------

@@ -130,6 +130,10 @@ public class interactiveShell {
 				else if(command.equals("help")){
 					System.out.println("cmdlist");
 				}
+				else if(command.equals("view student"))
+				{
+					viewstudent(inScan);
+				}
 				else if(command.equals("logout")){
 					return;
 				}
@@ -231,7 +235,50 @@ public class interactiveShell {
 		
 		
 	}
-
+	private static void viewstudent(Scanner inscan)
+	{
+		Connection conn = ConnectionManager.getConnectionInstance();
+		String sid = "";
+		String fname = "";
+		String lname = "";
+		String dob = "";
+		String pwd = "";
+		String gpa = "";
+		String slevel = "";
+		String bill = "";
+		String did = "";
+		String residency = "";
+		String uname = "";
+		int credits = 0;
+		System.out.println("Please enter the student id: ");
+		sid = inscan.nextLine();
+		try {
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM STUDENT WHERE sid = ?");
+			ps.setString(1, sid);
+			ResultSet rs = ps.executeQuery();
+			if( rs.next() ){
+				
+				fname = rs.getString("FNAME");
+				lname = rs.getString("LNAME");
+				dob = rs.getString("DOB");
+				pwd = rs.getString("PWD");
+				gpa = rs.getString("GPA");
+				slevel = rs.getString("SLEVEL");
+				bill = rs.getString("BILL");
+				did = rs.getString("DID");
+				residency = rs.getString("RESIDENCY");
+				uname = rs.getString("UNAME");
+				credits = rs.getInt("CREDITS");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		///not finished
+		System.out.println(padRight("StudentID", 20) + "|" + padRight("Firstname", 20) + "|" + padRight("Lastname", 20) + "|" + padRight("DOB", 20) + "|");
+		System.out.println("-----------------------------------------------------------------------------------");
+		System.out.println(padRight(sid, 20)+ "|" + padRight(fname, 20) + "|" + padRight(lname, 20) + "|" + padRight(dob, 20) + "|");
+		
+	}
 	private static String padRight(String s, int n) {
 		return String.format("%1$-" + n + "s", s);  
 	}

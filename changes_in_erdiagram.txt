@@ -1,0 +1,17 @@
+in admin
++Username,+DOB,-ssn
+
+in student(handle variable credits)
++Credits,-Balance,+DOB,-MinCredits,-MaxCredits,+Username
+
+in course
++Wsize,
+
+in +CREDITCOST
++level,+residency,+cost(cost per credit)
+
+in +creditlimit
++level,+residency,+mincredits,+maxcredits
+
+in +grading
++grade,+gradepoints

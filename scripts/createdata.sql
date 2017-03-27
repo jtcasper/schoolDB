@@ -3,7 +3,7 @@
 --------------------------------------------------------
 REM INSERTING into SCHOOLDB.ADMIN
 SET DEFINE OFF;
-Insert into SCHOOLDB.ADMIN (EID,USERNAME,FNAME,LNAME,PASSWORD,DOB) values ('1111','alby','Albus','Dumbledore','hogwarts',to_date('26-MAY-84','DD-MON-RR'));
+Insert into SCHOOLDB.ADMIN (EID,USERNAME,FNAME,LNAME,PASSWORD,DOB) values ('1111','alby','Albus','Dumbledore','hogwarts',to_date('05/26/1984','MM/DD/YYYY'));
 REM INSERTING into SCHOOLDB.COURSE
 SET DEFINE OFF;
 Insert into SCHOOLDB.COURSE (CID,TITLE,CREDITS,CLEVEL,DID,MAXSIZE,WSIZE) values ('CS401','Introduction To Computer Science','3','UG','CS','2','2');
@@ -29,10 +29,10 @@ REM INSERTING into SCHOOLDB.SEMESTER
 SET DEFINE OFF;
 REM INSERTING into SCHOOLDB.STUDENT
 SET DEFINE OFF;
-Insert into SCHOOLDB.STUDENT (SID,LNAME,FNAME,EMAIL,PWD,GPA,SLEVEL,BILL,DID,RESIDENCY,UNAME,DOB,CREDITS) values ('101','Potter','Harry',null,'password',null,'UG','1200','ECE','In-State','username',to_date('12-JAN-90','DD-MON-RR'),3);
-Insert into SCHOOLDB.STUDENT (SID,LNAME,FNAME,EMAIL,PWD,GPA,SLEVEL,BILL,DID,RESIDENCY,UNAME,DOB,CREDITS) values ('102','Granger','Hermione',null,'password',null,'PG','0',null,'In-State','username',to_date('16-APR-89','DD-MON-RR'),6);
-Insert into SCHOOLDB.STUDENT (SID,LNAME,FNAME,EMAIL,PWD,GPA,SLEVEL,BILL,DID,RESIDENCY,UNAME,DOB,CREDITS) values ('103','Weasley','Ron',null,'password',null,'PG','0',null,'Out of State','username',to_date('19-DEC-91','DD-MON-RR'),9);
-Insert into SCHOOLDB.STUDENT (SID,LNAME,FNAME,EMAIL,PWD,GPA,SLEVEL,BILL,DID,RESIDENCY,UNAME,DOB,CREDITS) values ('104','Malfoy','Draco',null,'password',null,'PG','0',null,'International','username',to_date('21-MAR-92','DD-MON-RR'),9);
+Insert into SCHOOLDB.STUDENT (SID,LNAME,FNAME,EMAIL,PWD,GPA,SLEVEL,BILL,DID,RESIDENCY,UNAME,DOB,CREDITS) values ('101','Potter','Harry',null,'password',null,'UG','1200','ECE','In-State','username',to_date('01/12/1990','MM/DD/YYYY'),3);
+Insert into SCHOOLDB.STUDENT (SID,LNAME,FNAME,EMAIL,PWD,GPA,SLEVEL,BILL,DID,RESIDENCY,UNAME,DOB,CREDITS) values ('102','Granger','Hermione',null,'password',null,'PG','0',null,'In-State','username',to_date('04/16/1989','MM/DD/YYYY'),6);
+Insert into SCHOOLDB.STUDENT (SID,LNAME,FNAME,EMAIL,PWD,GPA,SLEVEL,BILL,DID,RESIDENCY,UNAME,DOB,CREDITS) values ('103','Weasley','Ron',null,'password',null,'PG','0',null,'Out of State','username',to_date('12/19/1991','MM/DD/YYYY'),9);
+Insert into SCHOOLDB.STUDENT (SID,LNAME,FNAME,EMAIL,PWD,GPA,SLEVEL,BILL,DID,RESIDENCY,UNAME,DOB,CREDITS) values ('104','Malfoy','Draco',null,'password',null,'PG','0',null,'International','username',to_date('03/21/1992','MM/DD/YYYY'),9);
 REM INSERTING into SCHOOLDB.TAKES
 SET DEFINE OFF;
 REM INSERTING into SCHOOLDB.WAITLIST

@@ -241,6 +241,7 @@ public class interactiveShell {
 		String sid = "";
 		String fname = "";
 		String lname = "";
+		String email ="";
 		String dob = "";
 		String pwd = "";
 		String gpa = "";
@@ -260,6 +261,7 @@ public class interactiveShell {
 				
 				fname = rs.getString("FNAME");
 				lname = rs.getString("LNAME");
+				email = rs.getString("EMAIL");
 				dob = rs.getString("DOB");
 				pwd = rs.getString("PWD");
 				gpa = rs.getString("GPA");
@@ -273,10 +275,10 @@ public class interactiveShell {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		///not finished
-		System.out.println(padRight("StudentID", 20) + "|" + padRight("Firstname", 20) + "|" + padRight("Lastname", 20) + "|" + padRight("DOB", 20) + "|");
+		
+		System.out.println(padRight("StudentID", 20) + "|" + padRight("Firstname", 20) + "|" + padRight("Lastname", 20) + "|" + padRight("DOB", 20) + "|" + padRight("eMAIL", 20) + "|" + padRight("GPA", 20));
 		System.out.println("-----------------------------------------------------------------------------------");
-		System.out.println(padRight(sid, 20)+ "|" + padRight(fname, 20) + "|" + padRight(lname, 20) + "|" + padRight(dob, 20) + "|");
+		System.out.println(padRight(sid, 20)+ "|" + padRight(fname, 20) + "|" + padRight(lname, 20) + "|" + padRight(dob, 20) + "|"+ padRight(email, 20) + "|"+ padRight(gpa, 20) + "|");
 		
 	}
 	private static String padRight(String s, int n) {

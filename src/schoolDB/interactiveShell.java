@@ -76,11 +76,11 @@ public class interactiveShell {
 				//See if it is a student
 				else {
 					try {
-						PreparedStatement stmt = conn.prepareStatement("SELECT PASSWORD FROM STUDENT WHERE SID = ?");
+						PreparedStatement stmt = conn.prepareStatement("SELECT PWD FROM STUDENT WHERE SID = ?");
 						stmt.setString(1, username);
 						ResultSet results = stmt.executeQuery();
 						if( results.next() ){
-							dbPW = results.getString("password");
+							dbPW = results.getString("PWD");
 						}
 						if( !(dbPW.equals("")) && dbPW.toString().equals(password)){
 							retString = "> Successfully logged in as " + username;

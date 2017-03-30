@@ -229,7 +229,7 @@ public class interactiveShell {
 						}
 					else if(coursecmd.equals("2"))
 					{
-						//edit profile ddd
+						//edit profile 
 					}
 				}
 				else if(command.equals("view GPA"))

@@ -20,6 +20,26 @@ EXCEPTION
 END;
 
 BEGIN
+   EXECUTE IMMEDIATE 'DROP TABLE CREDITCOSTLIMITS cascade constraints';
+EXCEPTION
+   WHEN OTHERS THEN
+      IF SQLCODE != -942 THEN
+         RAISE;
+      END IF;
+END;
+
+BEGIN
+   EXECUTE IMMEDIATE 'DROP TABLE GRADING cascade constraints';
+EXCEPTION
+   WHEN OTHERS THEN
+      IF SQLCODE != -942 THEN
+         RAISE;
+      END IF;
+END;
+
+
+
+BEGIN
    EXECUTE IMMEDIATE 'DROP TABLE OFFERS cascade constraints';
 EXCEPTION
    WHEN OTHERS THEN
@@ -99,6 +119,8 @@ EXCEPTION
          RAISE;
       END IF;
 END;
+
+
 
 --------------------------------------------------------
 --  DDL for Table ADMIN

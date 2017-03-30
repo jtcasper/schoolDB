@@ -211,11 +211,12 @@ public class interactiveShell {
 					System.out.println("> That command isn't recognized, enter 'help' for a list of commands.");
 				}
 			}
-			else{
+/////////////////Student user part			
+			else{//Student code
 				System.out.print("> Please enter a command:  ");
 				System.out.print("\n  1.View/Edit Profile \n  2.View Courses/Enroll/Drop Courses  ");
 				System.out.print("\n  3.View Pending Courses \n  4.View Grades  ");
-				System.out.print("\n  5.View/Pay Bill \n>");
+				System.out.print("\n  5.View/Pay Bill 6.Logout\n>");
 			String command = inScan.nextLine();
 				if(command.equals("1"))//View/edit profile
 				{
@@ -231,17 +232,70 @@ public class interactiveShell {
 					{
 						//edit profile 
 					}
+					else if(coursecmd.equals("0"))
+					{
+						//back
+					}
 				}
-				else if(command.equals("view GPA"))
+				else if(command.equals("2"))//View Courses/Enroll/Drop Courses
 				{
-					viewstudent(inScan,22);
+					newPage();
+					System.out.print("# View Courses/Enroll/Drop Courses\n>Please enter a command:  ");
+					System.out.print("\n  1.View Courses\n  2.Enroll a course \n  3.Drop a course\n  0.Back  \n>");
+					String coursecmd = inScan.nextLine();
+					if(coursecmd.equals("1"))
+					{
+						//view course
+						}
+					else if(coursecmd.equals("2"))
+					{
+						//add a course
+					}
+					else if(coursecmd.equals("3"))
+					{
+						//drop a course 
+					}
+					else if(coursecmd.equals("0"))
+					{
+						//back 
+					}
 				}
-				else if(command.equals("view bill"))
+				else if(command.equals("3"))//View Pending Courses
 				{
-					viewstudent(inScan,23);
+					newPage();
+					System.out.print("# View Pending Courses \n");
+					//view pending courses
+				}
+				else if(command.equals("4"))//View Grades
+				{
+					newPage();
+					System.out.print("# View Grades \n");
+					viewstudent(inScan, 22);//view GPA, implement student with course grades later
+				}
+				else if(command.equals("5"))//View/Pay Bills
+				{
+					newPage();
+					System.out.print("# View/Pay Bill\n>Please enter a command:  ");
+					System.out.print("\n  1.View Bill\n  2.Pay Bill \n   0.Back  \n>");
+					String coursecmd = inScan.nextLine();
+					if(coursecmd.equals("1"))
+					{
+						viewstudent(inScan, 23);//view Bill
+						}
+					else if(coursecmd.equals("2"))
+					{
+						//Pay Bill
+					}
+
+					else if(coursecmd.equals("0"))
+					{
+						//back 
+					}
+				}
+				else if(command.equals("6"))//Logout
+				{
 					
 				}
-				//Student code
 				return;
 			}
 		}
@@ -265,10 +319,6 @@ public class interactiveShell {
 		String gpa = inScan.nextLine();
 		System.out.print("> Student Level: ");
 		String sLevel = inScan.nextLine();
-		System.out.print("> Minimum Credits: ");
-		String minCred = inScan.nextLine();
-		System.out.print("> Maximum Credits: ");
-		String maxCred = inScan.nextLine();
 		System.out.print("> Department: ");
 		String did = inScan.nextLine();
 		System.out.print("> Residency: ");
@@ -325,12 +375,6 @@ public class interactiveShell {
 		System.out.println("-----------------------------------------------------------------------------------");
 		System.out.println(padRight(eid, 20)+ "|" + padRight(fname, 20) + "|" + padRight(lname, 20) + "|" + padRight(dob, 20) + "|");
 		
-//		System.out.println("EID: " + eid);
-//		System.out.println("FNAME: " + fname);
-//		System.out.println("LNAME: " + lname);
-//		System.out.println("SSN: " + ssn);
-		
-		
 	}
 	private static void viewstudent(Scanner inscan, int a)
 	{
@@ -373,12 +417,13 @@ public class interactiveShell {
 			e.printStackTrace();
 		}
 		if(a == 11){//admin view the basic profile of student
+			newPage();
 		System.out.println(padRight("StudentID", 10) + "|" + padRight("Firstname", 15) + "|" + padRight("Lastname", 15) + "|" + padRight("DOB", 30) + "|" + padRight("eMAIL", 20) + "|" + padRight("GPA", 10) + "|" + padRight("Level", 10) + "|" + padRight("Residency", 10)+ "|");
 		System.out.println("-----------------------------------------------------------------------------------");
 		System.out.println(padRight(sid, 10)+ "|" + padRight(fname, 15) + "|" + padRight(lname, 15) + "|" + padRight(dob, 30) + "|"+ padRight(email, 20) + "|"+ padRight(gpa, 10) + "|"+ padRight(slevel, 10) + "|"+ padRight(residency, 10) + "|");
 		}
 		else if(a ==21)//student view the basic profile of student
-		{
+		{	newPage();
 			//System.out.println(padRight("StudentID", 10) + "|" + padRight("Firstname", 15) + "|" + padRight("Lastname", 15) + "|" + padRight("DOB", 30) + "|" + padRight("eMAIL", 20) + "|" + padRight("GPA", 10));
 			//System.out.println("-----------------------------------------------------------------------------------");
 			//System.out.println(padRight(sid, 10)+ "|" + padRight(fname, 15) + "|" + padRight(lname, 15) + "|" + padRight(dob, 30) + "|"+ padRight(email, 20) + "|"+ padRight(gpa, 10) + "|");
@@ -387,17 +432,17 @@ public class interactiveShell {
 			System.out.println(padRight(sid, 10)+ "|" + padRight(fname, 15) + "|" + padRight(lname, 15) + "|" + padRight(dob, 30) + "|"+ padRight(email, 20) + "|"+ padRight(gpa, 10) + "|"+ padRight(slevel, 10) + "|"+ padRight(residency, 10) + "|");
 		}
 		else if(a==22)//student view gpa and **grades
-		{
-			System.out.println(padRight("StudentID", 10) + "|" + padRight("GPA", 10));
+		{	newPage();
+			System.out.println(padRight("StudentID", 20) + "|" + padRight("Firstname", 20) + "|" + padRight("Lastname", 20) + "|" + padRight("GPA", 10));
 			System.out.println("-----------------------------------------------------------------------------------");
-			System.out.println(padRight(sid, 10) + "|" + padRight(gpa, 10));
+			System.out.println(padRight(sid, 20)+ "|" + padRight(fname, 20) + "|" + padRight(lname, 20) + "|" + padRight(gpa, 10));
 			
 		}
 		else if(a==23)
-		{
-			System.out.println(padRight("StudentID", 10) + "|" + padRight("Bill", 10));
+		{	newPage();
+			System.out.println(padRight("StudentID", 20) + "|" + padRight("Firstname", 20) + "|" + padRight("Lastname", 20) + "|" + padRight("Bill", 10));
 			System.out.println("-----------------------------------------------------------------------------------");
-			System.out.println(padRight(sid, 10) + "|" + padRight(bill, 10));
+			System.out.println(padRight(sid, 20)+ "|" + padRight(fname, 20) + "|" + padRight(lname, 20) + "|" + padRight(bill, 10));
 			
 		}
 		

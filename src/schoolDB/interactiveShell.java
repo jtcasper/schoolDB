@@ -118,27 +118,93 @@ public class interactiveShell {
 	private static void shell(User user, Scanner inScan) {
 		
 		while(true){
+			newPage();
 			if(user.isAdmin()){
-				System.out.print("> Enter a command: ");
+				System.out.print("> Please enter a command:  ");
+				System.out.print("\n  1.View Profile \n  2.Enroll A New Student  ");
+				System.out.print("\n  3.View Student's Details \n  4.View/Add Courses  ");
+				System.out.print("\n  5.View/Add Courses Offering \n  6.View/Approve Special Requests  ");
+				System.out.print("\n  7.Enforce Add/Drop Deadline \n  8.Logout  \n  9.Help\n>");
 				String command = inScan.nextLine();
-				if(command.equalsIgnoreCase("view profile")){
+				if(command.equalsIgnoreCase("1")){//View profile
+					newPage();
+					System.out.print("# View Profile\n  ");
 					viewProfileAdmin(user.getUsername());
 				}
-				else if(command.equals("enroll student")){
+				else if(command.equals("2")){//Enroll A New Student
+					newPage();
+					System.out.print("# Enroll A New Student\n  ");
 					enrollStudent(inScan);
 				}
-				else if(command.equals("help")){
+				else if(command.equals("9")){
 					System.out.println("cmdlist");
 				}
-				else if(command.equals("view student"))
-				{
+				else if(command.equals("3"))//View Student's Details
+				{	newPage();
+				System.out.print("# View Student's Details\n  ");
 					viewstudent(inScan, 11);
+					
 				}
-				else if(command.equals("view course"))
-				{
-					viewcourse(inScan);
+				else if(command.equals("4"))//View/Add Courses
+				{	newPage();
+					System.out.print("# View/Add Course \n>Please enter a command:  ");
+					System.out.print("\n  1.View Course \n  2.Adding A New Course  \n  0.Back  \n>");
+					String coursecmd = inScan.nextLine();
+					if(coursecmd.equals("1"))
+						readcourse(inScan);
+					else if(coursecmd.equals("2"))
+					{}
 				}
-				else if(command.equals("logout")){
+				else if(command.equals("5")){//View/Add Courses Offering
+					newPage();
+					System.out.print("# View/Add Course Offerings \n>Please enter a command:  ");
+					System.out.print("\n  1.View Course Offering \n  2.Adding New Course Offering \n  0.Back  \n>");
+					String coursecmd = inScan.nextLine();
+					if(coursecmd.equals("1"))
+					{
+						//View Courses Offering
+					}
+					else if(coursecmd.equals("2"))
+					{
+						//Add Courses Offering
+					}
+					
+				}	
+				else if(command.equals("6")){//View/Approve Special Requests
+					newPage();
+					System.out.print("# View/Approve Special Requests \n>Please enter a command:  ");
+					System.out.print("\n  1.View Special Requests\n  2.Approve Special Requests \n  0.Back  \n>");
+					String coursecmd = inScan.nextLine();
+					while(coursecmd.equals("0"))
+					if(coursecmd.equals("1"))
+					{
+						// view special requests
+						
+						System.out.print("# View/Approve Special Requests \n>Please enter a command:  ");
+						System.out.print("\n  1.View Special Requests\n  2.Approve Special Requests \n  0.Back  \n>");
+						coursecmd = inScan.nextLine();
+					}
+					else if(coursecmd.equals("2"))
+					{
+						// approve/deny special requests
+					}
+					
+				}
+				else if(command.equals("7")){//Enforce Add/Drop Deadline
+					newPage();
+					System.out.print("# Enforce Add/Drop Deadline\n>Please enter a command:  ");
+					System.out.print("\n  1.Add Deadline\n  2.Drop Deadline \n  0.Back  \n>");
+					String coursecmd = inScan.nextLine();
+					if(coursecmd.equals("1"))
+					{
+						//Add Deadline
+					}
+					else if(coursecmd.equals("2"))
+					{
+						//Drop Deadline
+					}
+				}
+				else if(command.equals("8")){//Logout
 					return;
 				}
 				else{
@@ -146,11 +212,25 @@ public class interactiveShell {
 				}
 			}
 			else{
-				System.out.print("> Enter a command: ");
+				System.out.print("> Please enter a command:  ");
+				System.out.print("\n  1.View/Edit Profile \n  2.View Courses/Enroll/Drop Courses  ");
+				System.out.print("\n  3.View Pending Courses \n  4.View Grades  ");
+				System.out.print("\n  5.View/Pay Bill \n>");
 			String command = inScan.nextLine();
-				if(command.equals("view student"))
+				if(command.equals("1"))//View/edit profile
 				{
-					viewstudent(inScan, 21);
+					newPage();
+					System.out.print("# View Profile\n>Please enter a command:  ");
+					System.out.print("\n  1.View Profile\n  2.Edit Profile \n  0.Back  \n>");
+					String coursecmd = inScan.nextLine();
+					if(coursecmd.equals("1"))
+					{
+						viewstudent(inScan, 21);//student profile
+						}
+					else if(coursecmd.equals("2"))
+					{
+						//edit profile
+					}
 				}
 				else if(command.equals("view GPA"))
 				{
@@ -197,8 +277,8 @@ public class interactiveShell {
 		Connection conn = ConnectionManager.getConnectionInstance();
 		
 		try {
-			PreparedStatement ps = conn.prepareStatement("INSERT INTO STUDENT (SID, LNAME, FNAME, EMAIL, PASSWORD, GPA, SLEVEL, MINCREDITS, MAXCREDITS, DID, RESIDENCY) "
-					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ");
+			PreparedStatement ps = conn.prepareStatement("INSERT INTO STUDENT (SID, LNAME, FNAME, EMAIL, PASSWORD, GPA, SLEVEL, DID, RESIDENCY) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ");
 			ps.setString(1, sid);
 			ps.setString(2, lname);
 			ps.setString(3, fname);
@@ -206,10 +286,8 @@ public class interactiveShell {
 			ps.setString(5, password);
 			ps.setString(6, gpa);
 			ps.setString(7, sLevel);
-			ps.setString(8, minCred);
-			ps.setString(9, maxCred);
-			ps.setString(10, did);
-			ps.setString(11, resLevel);
+			ps.setString(8, did);
+			ps.setString(9, resLevel);
 			ps.execute();
 			System.out.println("Enrolled student.");
 		} catch (SQLException e) {
@@ -324,7 +402,7 @@ public class interactiveShell {
 		}
 		
 	}
-	private static void viewcourse(Scanner inscan)
+	private static void readcourse(Scanner inscan)
 	{
 		Connection conn = ConnectionManager.getConnectionInstance();
 		String cid = "";
@@ -361,5 +439,8 @@ public class interactiveShell {
 	private static String padRight(String s, int n) {
 		return String.format("%1$-" + n + "s", s);  
 	}
-
+	private static void newPage()
+	{
+		System.out.println("---------------------------------------\n");
+	}
 }

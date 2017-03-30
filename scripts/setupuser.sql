@@ -7,4 +7,6 @@ temporary tablespace temp;
 ALTER USER schooldb QUOTA 100M on schooldb;
 GRANT CREATE SESSION TO schooldb WITH ADMIN OPTION;
 GRANT CREATE TABLE TO schooldb;
+GRANT CREATE ANY PROCEDURE TO schooldb;
+GRANT ALTER ANY PROCEDURE TO schooldb;
 exit

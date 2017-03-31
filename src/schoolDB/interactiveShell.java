@@ -284,7 +284,8 @@ public class interactiveShell {
 					String coursecmd = inScan.nextLine();
 					if(coursecmd.equals("1"))
 					{
-						viewstudent(inScan, 23);//view Bill
+						//viewstudent(inScan, 23);
+						viewBill(inScan, user.getUsername());//view Bill
 						}
 					else if(coursecmd.equals("2"))
 					{
@@ -391,6 +392,34 @@ public class interactiveShell {
 		
 	}
 
+	private static void viewBill(Scanner inScan, String username) {
+		
+		String fname = "";
+		String lname = "";
+		String bill = "";
+		
+		Connection conn = ConnectionManager.getConnectionInstance();
+		
+		try{
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM STUDENT WHERE SID = ?");
+			ps.setString(1, username);
+			ResultSet rs = ps.executeQuery();
+			if( rs.next() ){
+				fname = rs.getString("fname");
+				lname = rs.getString("lname");
+				bill = rs.getString("BILL");
+			}
+		} catch (SQLException e){
+			System.out.println("Error retrieving GPA.");
+			return;
+		}
+		
+		newPage();
+		System.out.println(padRight("StudentID", 20) + "|" + padRight("Firstname", 20) + "|" + padRight("Lastname", 20) + "|" + padRight("BILL", 10));
+		System.out.println("-----------------------------------------------------------------------------------");
+		System.out.println(padRight(username, 20)+ "|" + padRight(fname, 20) + "|" + padRight(lname, 20) + "|" + padRight(bill, 10));
+			
+	}
 	private static void viewGPA(Scanner inScan, String username) {
 		
 		String fname = "";
@@ -605,13 +634,13 @@ public class interactiveShell {
 			System.out.println("-----------------------------------------------------------------------------------");
 			System.out.println(padRight(sid, 10)+ "|" + padRight(fname, 15) + "|" + padRight(lname, 15) + "|" + padRight(dob, 30) + "|"+ padRight(email, 20) + "|"+ padRight(gpa, 10) + "|"+ padRight(slevel, 10) + "|"+ padRight(residency, 10) + "|");
 		}
-		else if(a==23)
-		{	newPage();
-			System.out.println(padRight("StudentID", 20) + "|" + padRight("Firstname", 20) + "|" + padRight("Lastname", 20) + "|" + padRight("Bill", 10));
-			System.out.println("-----------------------------------------------------------------------------------");
-			System.out.println(padRight(sid, 20)+ "|" + padRight(fname, 20) + "|" + padRight(lname, 20) + "|" + padRight(bill, 10));
-			
-		}
+		//else if(a==23)
+		//{	newPage();
+		//	System.out.println(padRight("StudentID", 20) + "|" + padRight("Firstname", 20) + "|" + padRight("Lastname", 20) + "|" + padRight("Bill", 10));
+		//	System.out.println("-----------------------------------------------------------------------------------");
+		//	System.out.println(padRight(sid, 20)+ "|" + padRight(fname, 20) + "|" + padRight(lname, 20) + "|" + padRight(bill, 10));
+		//	
+		//}
 		
 	}
 	private static void readcourse(Scanner inscan)

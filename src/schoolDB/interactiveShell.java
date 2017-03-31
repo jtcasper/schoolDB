@@ -500,14 +500,14 @@ public class interactiveShell {
 		
 		String fname = "";
 		String lname = "";
-		String email ="";
+		//String email ="";
 		String dob = "";
-		String gpa = "";
+		//String gpa = "";
 		String slevel = "";
 		String did = "";
 		String residency = "";
 		String bill = "";
-		int credits = 0;
+		//int credits = 0;
 		
 		Connection conn = ConnectionManager.getConnectionInstance();
 		
@@ -521,7 +521,7 @@ public class interactiveShell {
 				dob = rs.getString("DOB");
 				slevel = rs.getString("SLEVEL");
 				did = rs.getString("DID");
-				gpa = rs.getString("GPA");
+		//		gpa = rs.getString("GPA");
 				residency = rs.getString("RESIDENCY");
 				bill = rs.getString("BILL");
 			}

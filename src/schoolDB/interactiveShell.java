@@ -161,15 +161,15 @@ public class interactiveShell {
 				else if(command.equals("5")){//View/Add Courses Offering
 					newPage();
 					System.out.print("# View/Add Course Offerings \n>Please enter a command:  ");
-					System.out.print("\n  1.View Course Offering \n  2.Adding New Course Offering \n  0.Back  \n>");
+					System.out.print("\n  1.View Course Offering \n  2.Adding New Course Offering \n  0.Back  \n> ");
 					String coursecmd = inScan.nextLine();
 					if(coursecmd.equals("1"))
 					{
-						//View Courses Offering
+						viewOfferings(inScan);
 					}
 					else if(coursecmd.equals("2"))
 					{
-						//Add Courses Offering
+						addOfferings(inScan);
 					}
 					
 				}	
@@ -178,18 +178,19 @@ public class interactiveShell {
 					System.out.print("# View/Approve Special Requests \n>Please enter a command:  ");
 					System.out.print("\n  1.View Special Requests\n  2.Approve Special Requests \n  0.Back  \n>");
 					String coursecmd = inScan.nextLine();
-					while(coursecmd.equals("0"))
-					if(coursecmd.equals("1"))
-					{
-						// view special requests
-						
-						System.out.print("# View/Approve Special Requests \n>Please enter a command:  ");
-						System.out.print("\n  1.View Special Requests\n  2.Approve Special Requests \n  0.Back  \n>");
-						coursecmd = inScan.nextLine();
-					}
-					else if(coursecmd.equals("2"))
-					{
-						// approve/deny special requests
+					while(!(coursecmd.equals("0"))){
+						if(coursecmd.equals("1"))
+						{
+							// view special requests
+
+							System.out.print("# View/Approve Special Requests \n>Please enter a command:  ");
+							System.out.print("\n  1.View Special Requests\n  2.Approve Special Requests \n  0.Back  \n>");
+							coursecmd = inScan.nextLine();
+						}
+						else if(coursecmd.equals("2"))
+						{
+							// approve/deny special requests
+						}
 					}
 					
 				}
@@ -301,6 +302,92 @@ public class interactiveShell {
 				}
 			}
 		}
+		
+	}
+
+	private static void addOfferings(Scanner inScan) {
+		
+		System.out.println("> Please enter data to create a course offering.");
+		System.out.print("> Offering ID: ");
+		String offerID = inScan.nextLine();
+		System.out.print("> Semester ID: ");
+		String semID = inScan.nextLine();
+		System.out.print("> Course ID: ");
+		String cid = inScan.nextLine();
+		System.out.print("> Schedule: ");
+		String schedule = inScan.nextLine();
+		System.out.print("> Location: ");
+		String location = inScan.nextLine();
+		System.out.print("> Faculty ID: ");
+		String facultyID = inScan.nextLine();
+		System.out.print("> Class Size: ");
+		String classSize = inScan.nextLine();
+		System.out.print("> Waitlist Size: ");
+		String waitSize = inScan.nextLine();
+		
+		Connection conn = ConnectionManager.getConnectionInstance();
+		
+		try{
+			PreparedStatement ps = conn.prepareStatement("INSERT INTO OFFERS (OFFERID, SCHEDULE, LOCATION, CID, SEMID, FID, CLASSSIZE, WAITSIZE) "
+					+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
+			ps.setString(1, offerID);
+			ps.setString(2, schedule);
+			ps.setString(3, location);
+			ps.setString(4, cid);
+			ps.setString(5, semID);
+			ps.setString(6, facultyID);
+			ps.setString(7, classSize);
+			ps.setString(8, waitSize);
+			ps.execute();
+			System.out.println("Successfully added course offering " + offerID);
+		} catch(SQLException e){
+			System.out.println("Could not create course offering.");
+			e.printStackTrace();
+		}
+
+		
+	}
+
+	private static void viewOfferings(Scanner inScan) {
+		
+		System.out.println("> Please enter the semester ID to view offerings for: ");
+		String semID = inScan.nextLine();
+		
+		String offerID = "";
+		String schedule = "";
+		String location = "";
+		String cid = "";
+		String facultyID = "";
+		String classSize = "";
+		String waitSize = "";
+		
+		Connection conn = ConnectionManager.getConnectionInstance();
+		
+		try{
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM OFFERS WHERE SEMID = ?");
+			ps.setString(1, semID);
+			ResultSet rs = ps.executeQuery();
+			if( rs.next() ) {
+				offerID = rs.getString("OFFERID");
+				schedule = rs.getString("SCHEDULE");
+				location = rs.getString("LOCATION");
+				cid = rs.getString("CID");
+				facultyID = rs.getString("FID");
+				classSize = rs.getString("CLASSSIZE");
+				waitSize = rs.getString("WAITSIZE");
+			}
+			System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+			System.out.println(padRight("Offering ID", 20) + "|" + padRight("Course ID", 20) + "|" + padRight("Schedule", 20) + "|" + padRight("Location", 20) + "|" + padRight("Faculty ID", 20) + "|" + padRight("Class Size", 20) + "|" + padRight("Waitlist Size", 20));
+			System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+			System.out.println(padRight(offerID, 20) + "|" + padRight(cid, 20) + "|" + padRight(schedule, 20) + "|" + padRight(location, 20) + "|" + padRight(facultyID, 20) + "|" + padRight(classSize, 20) + "|" + padRight(waitSize, 20));
+			System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+			System.out.println();
+			
+			
+		} catch(SQLException e) {
+			System.out.println("Error retrieving semester course offerings for semester " + semID);
+		}
+		
 		
 	}
 

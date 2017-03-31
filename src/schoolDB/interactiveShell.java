@@ -124,7 +124,7 @@ public class interactiveShell {
 				System.out.print("\n  1.View Profile \n  2.Enroll A New Student  ");
 				System.out.print("\n  3.View Student's Details \n  4.View/Add Courses  ");
 				System.out.print("\n  5.View/Add Courses Offering \n  6.View/Approve Special Requests  ");
-				System.out.print("\n  7.Enforce Add/Drop Deadline \n  8.Logout  \n  9.Help\n>");
+				System.out.print("\n  7.Enforce Add/Drop Deadline \n  8.Logout  \n  9.Help\n> ");
 				String command = inScan.nextLine();
 				if(command.equalsIgnoreCase("1")){//View profile
 					newPage();
@@ -140,20 +140,23 @@ public class interactiveShell {
 					System.out.println("cmdlist");
 				}
 				else if(command.equals("3"))//View Student's Details
-				{	newPage();
-				System.out.print("# View Student's Details\n  ");
+				{	
+					newPage();
+					System.out.print("# View Student's Details\n  ");
 					viewstudent(inScan, 11);
 					
 				}
 				else if(command.equals("4"))//View/Add Courses
 				{	newPage();
 					System.out.print("# View/Add Course \n>Please enter a command:  ");
-					System.out.print("\n  1.View Course \n  2.Adding A New Course  \n  0.Back  \n>");
+					System.out.print("\n  1.View Course \n  2.Adding A New Course  \n  0.Back  \n> ");
 					String coursecmd = inScan.nextLine();
 					if(coursecmd.equals("1"))
 						readcourse(inScan);
 					else if(coursecmd.equals("2"))
-					{}
+					{
+						addCourse(inScan);
+					}
 				}
 				else if(command.equals("5")){//View/Add Courses Offering
 					newPage();
@@ -208,7 +211,7 @@ public class interactiveShell {
 					return;
 				}
 				else{
-					System.out.println("> That command isn't recognized, enter 'help' for a list of commands.");
+					System.out.println("> That command isn't recognized, enter '9' for a list of commands.");
 				}
 			}
 /////////////////Student user part			
@@ -216,21 +219,21 @@ public class interactiveShell {
 				System.out.print("> Please enter a command:  ");
 				System.out.print("\n  1.View/Edit Profile \n  2.View Courses/Enroll/Drop Courses  ");
 				System.out.print("\n  3.View Pending Courses \n  4.View Grades  ");
-				System.out.print("\n  5.View/Pay Bill 6.Logout\n>");
+				System.out.print("\n  5.View/Pay Bill\n  6.Logout\n> ");
 			String command = inScan.nextLine();
 				if(command.equals("1"))//View/edit profile
 				{
 					newPage();
 					System.out.print("# View Profile\n>Please enter a command:  ");
-					System.out.print("\n  1.View Profile\n  2.Edit Profile \n  0.Back  \n>");
+					System.out.print("\n  1.View Profile\n  2.Edit Profile \n  0.Back  \n> ");
 					String coursecmd = inScan.nextLine();
 					if(coursecmd.equals("1"))
 					{
 						viewstudent(inScan, 21);//student profile
-						}
+					}
 					else if(coursecmd.equals("2"))
 					{
-						//edit profile 
+						editStudent(inScan, user.getUsername());
 					}
 					else if(coursecmd.equals("0"))
 					{
@@ -241,12 +244,12 @@ public class interactiveShell {
 				{
 					newPage();
 					System.out.print("# View Courses/Enroll/Drop Courses\n>Please enter a command:  ");
-					System.out.print("\n  1.View Courses\n  2.Enroll a course \n  3.Drop a course\n  0.Back  \n>");
+					System.out.print("\n  1.View Courses\n  2.Enroll a course \n  3.Drop a course\n  0.Back  \n> ");
 					String coursecmd = inScan.nextLine();
 					if(coursecmd.equals("1"))
 					{
 						//view course
-						}
+					}
 					else if(coursecmd.equals("2"))
 					{
 						//add a course
@@ -270,13 +273,13 @@ public class interactiveShell {
 				{
 					newPage();
 					System.out.print("# View Grades \n");
-					viewstudent(inScan, 22);//view GPA, implement student with course grades later
+					viewGPA(inScan, user.getUsername());//view GPA, implement student with course grades later
 				}
 				else if(command.equals("5"))//View/Pay Bills
 				{
 					newPage();
 					System.out.print("# View/Pay Bill\n>Please enter a command:  ");
-					System.out.print("\n  1.View Bill\n  2.Pay Bill \n   0.Back  \n>");
+					System.out.print("\n  1.View Bill\n  2.Pay Bill \n   0.Back  \n> ");
 					String coursecmd = inScan.nextLine();
 					if(coursecmd.equals("1"))
 					{
@@ -294,12 +297,96 @@ public class interactiveShell {
 				}
 				else if(command.equals("6"))//Logout
 				{
-					
+					return;
 				}
-				return;
 			}
 		}
 		
+	}
+
+	private static void viewGPA(Scanner inScan, String username) {
+		
+		String fname = "";
+		String lname = "";
+		String gpa = "";
+		
+		Connection conn = ConnectionManager.getConnectionInstance();
+		
+		try{
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM STUDENT WHERE SID = ?");
+			ps.setString(1, username);
+			ResultSet rs = ps.executeQuery();
+			if( rs.next() ){
+				fname = rs.getString("fname");
+				lname = rs.getString("lname");
+				gpa = rs.getString("GPA");
+			}
+		} catch (SQLException e){
+			System.out.println("Error retrieving GPA.");
+			return;
+		}
+		
+		newPage();
+		System.out.println(padRight("StudentID", 20) + "|" + padRight("Firstname", 20) + "|" + padRight("Lastname", 20) + "|" + padRight("GPA", 10));
+		System.out.println("-----------------------------------------------------------------------------------");
+		System.out.println(padRight(username, 20)+ "|" + padRight(fname, 20) + "|" + padRight(lname, 20) + "|" + padRight(gpa, 10));
+			
+	}
+
+	private static void editStudent(Scanner inScan, String username) {
+		
+		System.out.println("> Please enter data to update your student profile.");
+		System.out.print("> New E-mail: ");
+		String email = inScan.nextLine();
+		System.out.print("> Password: ");
+		String pwd = inScan.nextLine();
+		
+		Connection conn = ConnectionManager.getConnectionInstance();
+		
+		try {
+			PreparedStatement ps = conn.prepareStatement("UPDATE STUDENT SET email = ?, PWD = ? WHERE SID = ?");
+			ps.setString(1, email);
+			ps.setString(2, pwd);
+			ps.setString(3, username);
+			ps.executeUpdate();
+			System.out.println("Student profile updated.");
+		} catch(SQLException e) {
+			System.out.println("Student profile could not be updated.");
+			e.printStackTrace();
+		}
+	}
+
+	private static void addCourse(Scanner inScan) {
+		
+		System.out.println("> Please enter data to create a new course.");
+		System.out.print("> Course ID: ");
+		String cid = inScan.nextLine();
+		System.out.print("> Course Title: ");
+		String title = inScan.nextLine();
+		System.out.print("> Credits: ");
+		String credits = inScan.nextLine();
+		System.out.print("> Course Level: ");
+		String cLevel = inScan.nextLine();
+		System.out.print("> Department ID: ");
+		String did = inScan.nextLine();
+		
+		Connection conn = ConnectionManager.getConnectionInstance();
+		
+		try{
+			PreparedStatement ps = conn.prepareStatement("INSERT INTO COURSE (CID, TITLE, CREDITS, CLEVEL, DID) "
+					+ "VALUES (?, ?, ?, ?, ?) " );
+			ps.setString(1, cid);
+			ps.setString(2, title);
+			ps.setString(3, credits);
+			ps.setString(4, cLevel);
+			ps.setString(5, did);
+			ps.execute();
+			System.out.println("Course " + cid + " was created.");
+		} catch(SQLException e) {
+			System.out.println("Course could not be created.");
+			e.printStackTrace();
+		}
+
 	}
 
 	private static void enrollStudent(Scanner inScan) {
@@ -431,13 +518,6 @@ public class interactiveShell {
 			System.out.println("-----------------------------------------------------------------------------------");
 			System.out.println(padRight(sid, 10)+ "|" + padRight(fname, 15) + "|" + padRight(lname, 15) + "|" + padRight(dob, 30) + "|"+ padRight(email, 20) + "|"+ padRight(gpa, 10) + "|"+ padRight(slevel, 10) + "|"+ padRight(residency, 10) + "|");
 		}
-		else if(a==22)//student view gpa and **grades
-		{	newPage();
-			System.out.println(padRight("StudentID", 20) + "|" + padRight("Firstname", 20) + "|" + padRight("Lastname", 20) + "|" + padRight("GPA", 10));
-			System.out.println("-----------------------------------------------------------------------------------");
-			System.out.println(padRight(sid, 20)+ "|" + padRight(fname, 20) + "|" + padRight(lname, 20) + "|" + padRight(gpa, 10));
-			
-		}
 		else if(a==23)
 		{	newPage();
 			System.out.println(padRight("StudentID", 20) + "|" + padRight("Firstname", 20) + "|" + padRight("Lastname", 20) + "|" + padRight("Bill", 10));
@@ -457,7 +537,7 @@ public class interactiveShell {
 		String did = "";
 		String maxsize = "";
 		String wsize = "";
-		System.out.println("Please enter the course id: ");
+		System.out.print("Please enter the course id: ");
 		cid = inscan.nextLine();
 		try {
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM COURSE WHERE cid = ?");
@@ -469,8 +549,8 @@ public class interactiveShell {
 				credits = rs.getString("CREDITS");
 				clevel = rs.getString("CLEVEL");
 				did = rs.getString("DID");
-				maxsize = rs.getString("MAXSIZE");
-				wsize = rs.getString("WSIZE");
+//				maxsize = rs.getString("MAXSIZE");
+//				wsize = rs.getString("WSIZE");
 				
 			}
 		} catch (SQLException e) {

@@ -143,7 +143,7 @@ public class interactiveShell {
 				{	
 					newPage();
 					System.out.print("# View Student's Details\n  ");
-					viewstudent(inScan, 11);
+					viewstudent(inScan);
 					
 				}
 				else if(command.equals("4"))//View/Add Courses
@@ -230,7 +230,7 @@ public class interactiveShell {
 					String coursecmd = inScan.nextLine();
 					if(coursecmd.equals("1"))
 					{
-						viewstudent(inScan, 21);//student profile
+						studentProfile(inScan, user.getUsername());//student profile
 					}
 					else if(coursecmd.equals("2"))
 					{
@@ -405,12 +405,12 @@ public class interactiveShell {
 			ps.setString(1, username);
 			ResultSet rs = ps.executeQuery();
 			if( rs.next() ){
-				fname = rs.getString("fname");
-				lname = rs.getString("lname");
+				fname = rs.getString("FNAME");
+				lname = rs.getString("LNAME");
 				bill = rs.getString("BILL");
 			}
 		} catch (SQLException e){
-			System.out.println("Error retrieving GPA.");
+			System.out.println("Error retrieving BILL.");
 			return;
 		}
 		
@@ -433,8 +433,8 @@ public class interactiveShell {
 			ps.setString(1, username);
 			ResultSet rs = ps.executeQuery();
 			if( rs.next() ){
-				fname = rs.getString("fname");
-				lname = rs.getString("lname");
+				fname = rs.getString("FNAME");
+				lname = rs.getString("LNAME");
 				gpa = rs.getString("GPA");
 			}
 		} catch (SQLException e){
@@ -448,7 +448,46 @@ public class interactiveShell {
 		System.out.println(padRight(username, 20)+ "|" + padRight(fname, 20) + "|" + padRight(lname, 20) + "|" + padRight(gpa, 10));
 			
 	}
-
+	private static void studentProfile(Scanner inScan, String username) {
+		
+		String fname = "";
+		String lname = "";
+		String email ="";
+		String dob = "";
+		String gpa = "";
+		String slevel = "";
+		String did = "";
+		String residency = "";
+		String bill = "";
+		int credits = 0;
+		
+		Connection conn = ConnectionManager.getConnectionInstance();
+		
+		try{
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM STUDENT WHERE SID = ?");
+			ps.setString(1, username);
+			ResultSet rs = ps.executeQuery();
+			if( rs.next() ){
+				fname = rs.getString("fname");
+				lname = rs.getString("lname");
+				dob = rs.getString("DOB");
+				slevel = rs.getString("SLEVEL");
+				did = rs.getString("DID");
+				gpa = rs.getString("GPA");
+				residency = rs.getString("RESIDENCY");
+				bill = rs.getString("BILL");
+			}
+		} catch (SQLException e){
+			System.out.println("Error retrieving profile details.");
+			return;
+		}
+		
+		newPage();
+		System.out.println(padRight("StudentID", 10) + "|" + padRight("Firstname", 15) + "|" + padRight("Lastname", 15) + "|" + padRight("DOB", 20) + "|" + padRight("status", 10) + "|" + padRight("Level", 12) + "|" + padRight("Department", 10) + "|" + padRight("Bill Amount", 12)+ "|"+ padRight("Fall CoursesRegistered For and Grades Received", 40)+ "|");
+		System.out.println("-----------------------------------------------------------------------------------");
+		System.out.println(padRight(username, 10)+ "|" + padRight(fname, 15) + "|" + padRight(lname, 15) + "|" + padRight(dob, 20) + "|"+ padRight(residency, 10) + "|"+ padRight(slevel, 12) + "|"+ padRight(did, 10) + "|"+ padRight(bill, 12) + "|"+ padRight(null, 10) + "|");
+		
+	}
 	private static void editStudent(Scanner inScan, String username) {
 		
 		System.out.println("> Please enter data to update your student profile.");
@@ -579,7 +618,7 @@ public class interactiveShell {
 		System.out.println(padRight(eid, 20)+ "|" + padRight(fname, 20) + "|" + padRight(lname, 20) + "|" + padRight(dob, 20) + "|");
 		
 	}
-	private static void viewstudent(Scanner inscan, int a)
+	private static void viewstudent(Scanner inscan)
 	{
 		Connection conn = ConnectionManager.getConnectionInstance();
 		String sid = "";
@@ -619,21 +658,21 @@ public class interactiveShell {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		if(a == 11){//admin view the basic profile of student
+		//admin view the basic profile of student
 			newPage();
 		System.out.println(padRight("StudentID", 10) + "|" + padRight("Firstname", 15) + "|" + padRight("Lastname", 15) + "|" + padRight("DOB", 30) + "|" + padRight("eMAIL", 20) + "|" + padRight("GPA", 10) + "|" + padRight("Level", 10) + "|" + padRight("Residency", 10)+ "|");
 		System.out.println("-----------------------------------------------------------------------------------");
 		System.out.println(padRight(sid, 10)+ "|" + padRight(fname, 15) + "|" + padRight(lname, 15) + "|" + padRight(dob, 30) + "|"+ padRight(email, 20) + "|"+ padRight(gpa, 10) + "|"+ padRight(slevel, 10) + "|"+ padRight(residency, 10) + "|");
-		}
-		else if(a ==21)//student view the basic profile of student
-		{	newPage();
+		
+	
+		//{	newPage();
 			//System.out.println(padRight("StudentID", 10) + "|" + padRight("Firstname", 15) + "|" + padRight("Lastname", 15) + "|" + padRight("DOB", 30) + "|" + padRight("eMAIL", 20) + "|" + padRight("GPA", 10));
 			//System.out.println("-----------------------------------------------------------------------------------");
 			//System.out.println(padRight(sid, 10)+ "|" + padRight(fname, 15) + "|" + padRight(lname, 15) + "|" + padRight(dob, 30) + "|"+ padRight(email, 20) + "|"+ padRight(gpa, 10) + "|");
-			System.out.println(padRight("StudentID", 10) + "|" + padRight("Firstname", 15) + "|" + padRight("Lastname", 15) + "|" + padRight("DOB", 30) + "|" + padRight("eMAIL", 20) + "|" + padRight("GPA", 10) + "|" + padRight("Level", 10) + "|"+ padRight("Residency", 10)+ "|");
-			System.out.println("-----------------------------------------------------------------------------------");
-			System.out.println(padRight(sid, 10)+ "|" + padRight(fname, 15) + "|" + padRight(lname, 15) + "|" + padRight(dob, 30) + "|"+ padRight(email, 20) + "|"+ padRight(gpa, 10) + "|"+ padRight(slevel, 10) + "|"+ padRight(residency, 10) + "|");
-		}
+			//System.out.println(padRight("StudentID", 10) + "|" + padRight("Firstname", 15) + "|" + padRight("Lastname", 15) + "|" + padRight("DOB", 30) + "|" + padRight("eMAIL", 20) + "|" + padRight("GPA", 10) + "|" + padRight("Level", 10) + "|"+ padRight("Residency", 10)+ "|");
+			//System.out.println("-----------------------------------------------------------------------------------");
+			//System.out.println(padRight(sid, 10)+ "|" + padRight(fname, 15) + "|" + padRight(lname, 15) + "|" + padRight(dob, 30) + "|"+ padRight(email, 20) + "|"+ padRight(gpa, 10) + "|"+ padRight(slevel, 10) + "|"+ padRight(residency, 10) + "|");
+		//}
 		//else if(a==23)
 		//{	newPage();
 		//	System.out.println(padRight("StudentID", 20) + "|" + padRight("Firstname", 20) + "|" + padRight("Lastname", 20) + "|" + padRight("Bill", 10));

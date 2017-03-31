@@ -289,7 +289,7 @@ public class interactiveShell {
 						}
 					else if(coursecmd.equals("2"))
 					{
-						//Pay Bill
+						payBill(inScan, user.getUsername());
 					}
 
 					else if(coursecmd.equals("0"))
@@ -305,6 +305,54 @@ public class interactiveShell {
 		}
 		
 	}
+
+	private static void payBill(Scanner inScan, String username) {
+		
+		Connection conn = ConnectionManager.getConnectionInstance();
+		
+		String billAmt = "";
+		int intBillAmt = 0;
+		String payAmt = "";
+		int intPayAmt = 0;
+		
+		try{
+			PreparedStatement ps = conn.prepareStatement("SELECT BILL FROM STUDENT WHERE SID = ?");
+			ps.setString(1, username);
+			ResultSet rs = ps.executeQuery();
+			if( rs.next() ){
+				billAmt = rs.getString("BILL");
+				intBillAmt = Integer.parseInt(billAmt);
+			}
+			if(intBillAmt == 0){
+				System.out.println("> Current bill is $0, no need to pay.");
+				return;
+			} else {
+				System.out.println("> Current bill amount is $" + intBillAmt + ".");
+				System.out.print("> Enter amount to be paid: ");
+				payAmt = inScan.nextLine();
+				intPayAmt = Integer.parseInt(payAmt);
+				if(intBillAmt - intPayAmt < 0){
+					System.out.println("Overpaid by $" + -(intBillAmt - intPayAmt) + " the difference will be refunded.");
+				}
+				try{
+					PreparedStatement payStmt = conn.prepareStatement("UPDATE STUDENT SET BILL = ? WHERE SID = ?");
+					int diff = intBillAmt - intPayAmt;
+					if(diff < 0){
+						diff = 0;
+					}
+					String diffString = Integer.toString(diff);
+					payStmt.setString(1, diffString);
+					payStmt.setString(2, username);
+					payStmt.executeUpdate();
+				} catch(SQLException e) {
+					System.out.println("Could not pay bill for user " + username + " at this time.");
+				}
+			}
+		} catch(SQLException e){
+			System.out.println("Could not retrieve bill for user " + username);
+		}
+	}
+		
 
 	private static void addOfferings(Scanner inScan) {
 		

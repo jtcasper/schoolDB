@@ -1,0 +1,603 @@
+--------------------------------------------------------
+--  File created - Saturday-April-01-2017   
+--------------------------------------------------------
+--------------------------------------------------------
+--  DDL for Table ADMIN
+--------------------------------------------------------
+
+  CREATE TABLE "SCHOOLDB"."ADMIN" 
+   (	"EID" VARCHAR2(20 BYTE), 
+	"USERNAME" VARCHAR2(20 BYTE), 
+	"FNAME" VARCHAR2(20 BYTE), 
+	"LNAME" VARCHAR2(30 BYTE), 
+	"PASSWORD" VARCHAR2(20 BYTE) DEFAULT 123456, 
+	"DOB" DATE
+   ) SEGMENT CREATION IMMEDIATE 
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "SCHOOLDB" ;
+--------------------------------------------------------
+--  DDL for Table COURSE
+--------------------------------------------------------
+
+  CREATE TABLE "SCHOOLDB"."COURSE" 
+   (	"CID" VARCHAR2(20 BYTE), 
+	"TITLE" VARCHAR2(50 BYTE), 
+	"CREDITS" VARCHAR2(20 BYTE), 
+	"CLEVEL" VARCHAR2(20 BYTE), 
+	"DID" VARCHAR2(20 BYTE)
+   ) SEGMENT CREATION IMMEDIATE 
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "SCHOOLDB" ;
+
+   COMMENT ON COLUMN "SCHOOLDB"."COURSE"."CLEVEL" IS 'Course Level
+';
+--------------------------------------------------------
+--  DDL for Table CREDITCOSTLIMITS
+--------------------------------------------------------
+
+  CREATE TABLE "SCHOOLDB"."CREDITCOSTLIMITS" 
+   (	"CLEVEL" VARCHAR2(20 BYTE), 
+	"RESIDENCY" VARCHAR2(20 BYTE), 
+	"COST_PER_CREDIT" NUMBER, 
+	"MINCREDITS" NUMBER, 
+	"MAXCREDITS" NUMBER
+   ) SEGMENT CREATION IMMEDIATE 
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "SCHOOLDB" ;
+--------------------------------------------------------
+--  DDL for Table GRADING
+--------------------------------------------------------
+
+  CREATE TABLE "SCHOOLDB"."GRADING" 
+   (	"GRADE" VARCHAR2(20 BYTE), 
+	"GRADE_POINT" FLOAT(126)
+   ) SEGMENT CREATION IMMEDIATE 
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "SCHOOLDB" ;
+--------------------------------------------------------
+--  DDL for Table OFFERS
+--------------------------------------------------------
+
+  CREATE TABLE "SCHOOLDB"."OFFERS" 
+   (	"OFFERID" VARCHAR2(20 BYTE), 
+	"SCHEDULE" VARCHAR2(20 BYTE), 
+	"LOCATION" VARCHAR2(20 BYTE), 
+	"CID" VARCHAR2(20 BYTE), 
+	"SEMID" VARCHAR2(20 BYTE), 
+	"FID" VARCHAR2(20 BYTE), 
+	"CLASSSIZE" NUMBER DEFAULT 0, 
+	"WAITSIZE" NUMBER DEFAULT 0
+   ) SEGMENT CREATION IMMEDIATE 
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "SCHOOLDB" ;
+
+   COMMENT ON COLUMN "SCHOOLDB"."OFFERS"."FID" IS 'Faculty Id';
+--------------------------------------------------------
+--  DDL for Table PRECONDITION
+--------------------------------------------------------
+
+  CREATE TABLE "SCHOOLDB"."PRECONDITION" 
+   (	"PREREQID" VARCHAR2(20 BYTE), 
+	"PRE_CID" VARCHAR2(20 BYTE), 
+	"GPA" VARCHAR2(20 BYTE), 
+	"SPPERM" VARCHAR2(20 BYTE)
+   ) SEGMENT CREATION IMMEDIATE 
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "SCHOOLDB" ;
+
+   COMMENT ON COLUMN "SCHOOLDB"."PRECONDITION"."SPPERM" IS 'Special Permissions';
+--------------------------------------------------------
+--  DDL for Table REQUIRES
+--------------------------------------------------------
+
+  CREATE TABLE "SCHOOLDB"."REQUIRES" 
+   (	"CID" VARCHAR2(20 BYTE), 
+	"REQUIRES" VARCHAR2(20 BYTE), 
+	"PREREQID" VARCHAR2(20 BYTE)
+   ) SEGMENT CREATION IMMEDIATE 
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "SCHOOLDB" ;
+--------------------------------------------------------
+--  DDL for Table SEMESTER
+--------------------------------------------------------
+
+  CREATE TABLE "SCHOOLDB"."SEMESTER" 
+   (	"SEMID" VARCHAR2(20 BYTE), 
+	"YEAR" NUMBER, 
+	"DEADLINE" VARCHAR2(20 BYTE), 
+	"SEMESTER" VARCHAR2(20 BYTE), 
+	"IS_DEADLINE_ENFORCED" NUMBER DEFAULT 0
+   ) SEGMENT CREATION IMMEDIATE 
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "SCHOOLDB" ;
+
+   COMMENT ON COLUMN "SCHOOLDB"."SEMESTER"."SEMESTER" IS 'F = Fall, S = Spring, Su = Summer';
+   COMMENT ON COLUMN "SCHOOLDB"."SEMESTER"."IS_DEADLINE_ENFORCED" IS '0 = No, 1 = Yes';
+--------------------------------------------------------
+--  DDL for Table STUDENT
+--------------------------------------------------------
+
+  CREATE TABLE "SCHOOLDB"."STUDENT" 
+   (	"SID" VARCHAR2(20 BYTE), 
+	"LNAME" VARCHAR2(20 BYTE), 
+	"FNAME" VARCHAR2(20 BYTE), 
+	"EMAIL" VARCHAR2(20 BYTE), 
+	"PWD" VARCHAR2(20 BYTE) DEFAULT NULL, 
+	"SLEVEL" VARCHAR2(20 BYTE), 
+	"BILL" VARCHAR2(20 BYTE) DEFAULT 0, 
+	"DID" VARCHAR2(20 BYTE), 
+	"RESIDENCY" VARCHAR2(20 BYTE), 
+	"UNAME" VARCHAR2(20 BYTE), 
+	"DOB" DATE, 
+	"CREDITS" NUMBER DEFAULT 0, 
+	"GPA" FLOAT(126)
+   ) SEGMENT CREATION IMMEDIATE 
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "SCHOOLDB" ;
+
+   COMMENT ON COLUMN "SCHOOLDB"."STUDENT"."CREDITS" IS 'Credits already taken';
+--------------------------------------------------------
+--  DDL for Table TAKES
+--------------------------------------------------------
+
+  CREATE TABLE "SCHOOLDB"."TAKES" 
+   (	"SID" VARCHAR2(20 BYTE), 
+	"OFFERID" VARCHAR2(20 BYTE), 
+	"GRADE" VARCHAR2(2 BYTE), 
+	"CREDITS" NUMBER(1,0) DEFAULT 0, 
+	"STATUS" VARCHAR2(20 BYTE)
+   ) SEGMENT CREATION IMMEDIATE 
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "SCHOOLDB" ;
+
+   COMMENT ON COLUMN "SCHOOLDB"."TAKES"."CREDITS" IS 'The credits of the course which counted';
+   COMMENT ON COLUMN "SCHOOLDB"."TAKES"."STATUS" IS '''Confirmed'' or ''Pending'' or ''Waitlist''';
+--------------------------------------------------------
+--  DDL for Table WAITLIST
+--------------------------------------------------------
+
+  CREATE TABLE "SCHOOLDB"."WAITLIST" 
+   (	"WSIZE" VARCHAR2(20 BYTE), 
+	"PCID" VARCHAR2(20 BYTE), 
+	"CID" VARCHAR2(20 BYTE)
+   ) SEGMENT CREATION IMMEDIATE 
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "SCHOOLDB" ;
+--------------------------------------------------------
+--  DDL for Index ADMIN_PK
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "SCHOOLDB"."ADMIN_PK" ON "SCHOOLDB"."ADMIN" ("EID") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "SCHOOLDB" ;
+--------------------------------------------------------
+--  DDL for Index COURSE_PK
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "SCHOOLDB"."COURSE_PK" ON "SCHOOLDB"."COURSE" ("CID") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "SCHOOLDB" ;
+--------------------------------------------------------
+--  DDL for Index CREDITCOSTLIMITS_UK1
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "SCHOOLDB"."CREDITCOSTLIMITS_UK1" ON "SCHOOLDB"."CREDITCOSTLIMITS" ("CLEVEL", "RESIDENCY") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "SCHOOLDB" ;
+--------------------------------------------------------
+--  DDL for Index GRADING_PK
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "SCHOOLDB"."GRADING_PK" ON "SCHOOLDB"."GRADING" ("GRADE") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "SCHOOLDB" ;
+--------------------------------------------------------
+--  DDL for Index OFFERS_PK
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "SCHOOLDB"."OFFERS_PK" ON "SCHOOLDB"."OFFERS" ("OFFERID") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "SCHOOLDB" ;
+--------------------------------------------------------
+--  DDL for Index OFFERS_UK1
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "SCHOOLDB"."OFFERS_UK1" ON "SCHOOLDB"."OFFERS" ("SCHEDULE", "LOCATION", "CID", "SEMID", "FID") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "SCHOOLDB" ;
+--------------------------------------------------------
+--  DDL for Index PRECONDITION_PK
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "SCHOOLDB"."PRECONDITION_PK" ON "SCHOOLDB"."PRECONDITION" ("PREREQID") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "SCHOOLDB" ;
+--------------------------------------------------------
+--  DDL for Index SEMESTER_PK
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "SCHOOLDB"."SEMESTER_PK" ON "SCHOOLDB"."SEMESTER" ("SEMID") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "SCHOOLDB" ;
+--------------------------------------------------------
+--  DDL for Index STUDENT_PK
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "SCHOOLDB"."STUDENT_PK" ON "SCHOOLDB"."STUDENT" ("SID") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "SCHOOLDB" ;
+--------------------------------------------------------
+--  DDL for Procedure ADD_COURSE
+--------------------------------------------------------
+set define off;
+
+  CREATE OR REPLACE PROCEDURE "SCHOOLDB"."ADD_COURSE" 
+(
+  CID_INPUT IN VARCHAR2 
+, TITLE_INPUT IN VARCHAR2 
+, CREDITS_INPUT IN VARCHAR2 
+, CLEVEL_INPUT IN VARCHAR2 
+, DID_INPUT IN VARCHAR2 
+, STATUS OUT VARCHAR2 
+) AS 
+cnt number;
+BEGIN
+  select count(*) into cnt from course where cid = CID_INPUT;
+  if (cnt <>0) THEN
+    STATUS := 'Not Done';
+  else
+    Insert into course (cid, title, credits, clevel, did) values (cid_input, title_input, credits_input, clevel_input, did_input);
+    STATUS := 'Done';
+  end if;
+END ADD_COURSE;
+
+/
+--------------------------------------------------------
+--  DDL for Procedure ADD_COURSE_OFFERING
+--------------------------------------------------------
+set define off;
+
+  CREATE OR REPLACE PROCEDURE "SCHOOLDB"."ADD_COURSE_OFFERING" 
+(
+  STATUS OUT VARCHAR2 
+, CID_INPUT IN VARCHAR2 
+, SEMID_INPUT IN VARCHAR2 
+, SCHEDULE_INPUT IN VARCHAR2 
+, LOCATION_INPUT IN VARCHAR2 
+, CLASSSIZE_INPUT IN VARCHAR2 
+, WAITSIZE_INPUT IN VARCHAR2 
+, FID_INPUT IN VARCHAR2 
+) AS 
+offering_cnt number;
+sem_cnt number;
+BEGIN
+  select count(*) into offering_cnt from offers where cid = CID_INPUT and semid = semid_input and fid = fid_input and schedule = schedule_input;
+  if (offering_cnt <>0) THEN
+    STATUS := 'Course Offering already exists.';
+  else
+    select count(*) into sem_cnt from semester where semid = semid_input;
+    if (sem_cnt = 0) then
+      STATUS := 'Semester Does Not Exist.';
+    else
+      Insert into offers (cid, semid, schedule, location, fid, classsize, waitsize) values (cid_input, semid_input, schedule_input, location_input, fid_input, classsize_input, waitsize_input);
+      STATUS := 'Done';
+    end if;
+  end if;
+END ADD_COURSE_OFFERING;
+
+/
+--------------------------------------------------------
+--  DDL for Procedure CALCULATE_GPA
+--------------------------------------------------------
+set define off;
+
+  CREATE OR REPLACE PROCEDURE "SCHOOLDB"."CALCULATE_GPA" 
+AS 
+cgpa NUMBER;
+BEGIN
+  FOR s IN (SELECT * from student) 
+  loop
+    select ROUND((sum(grading.GRADE_POINT*takes.CREDITS)/sum(takes.credits)),2) into cgpa from takes inner join grading on grading.GRADE = takes.GRADE and takes.SID = s.SID;
+    if (cgpa > 4) then
+      cgpa := 4;
+    end if;
+    update student set gpa = cgpa where sid = s.SID;
+    --dbms_output.put_line(cgpa);
+    cgpa := 0;
+  end loop;
+END CALCULATE_GPA;
+
+/
+--------------------------------------------------------
+--  DDL for Procedure ENFORCE_DEADLINE
+--------------------------------------------------------
+set define off;
+
+  CREATE OR REPLACE PROCEDURE "SCHOOLDB"."ENFORCE_DEADLINE" 
+(
+SEMID_INPUT IN VARCHAR2
+, status out varchar2
+) AS
+is_enforced number;
+BEGIN
+  select IS_DEADLINE_ENFORCED into is_enforced from semester where semid = semid_input;
+  if (is_enforced = 0) then
+    Delete from takes where offerid in (select offerid from offers where semid = semid_input) and STATUS = 'Waitlist';
+    Delete from takes where sid in (select sid from student where bill > 0) and offerid in (select offerid from offers where semid = semid_input);
+    status := 'Done';
+  else
+    status := 'Already Enforced Once in this semester';
+  end if;
+END ENFORCE_DEADLINE;
+
+/
+--------------------------------------------------------
+--  DDL for Procedure ENROLL_STUDENT
+--------------------------------------------------------
+set define off;
+
+  CREATE OR REPLACE PROCEDURE "SCHOOLDB"."ENROLL_STUDENT" 
+(
+  SID_INPUT IN VARCHAR2 
+, LNAME_INPUT IN VARCHAR2
+, FNAME_INPUT IN VARCHAR2
+, EMAIL_INPUT IN VARCHAR2
+, PWD_INPUT IN VARCHAR2
+, SLEVEL_INPUT IN VARCHAR2
+, RESIDENCY_INPUT IN VARCHAR2
+, UNAME_INPUT IN VARCHAR2
+, STATUS OUT VARCHAR2
+) AS 
+cnt number;
+BEGIN
+select count(*) into cnt from student where sid = SID_INPUT;
+  if (cnt <>0) THEN
+    STATUS := 'Not Done';
+  else
+    Insert into student (sid, lname, fname, email, pwd, slevel, residency, uname) values (sid_input, lname_input, fname_input, email_input, pwd_input, slevel_input, residency_input, uname_input);
+    STATUS := 'Done';
+  end if;
+END ENROLL_STUDENT;
+
+/
+--------------------------------------------------------
+--  DDL for Procedure SAMPLE_PROC
+--------------------------------------------------------
+set define off;
+
+  CREATE OR REPLACE PROCEDURE "SCHOOLDB"."SAMPLE_PROC" 
+is
+v_no number(4);
+begin
+select eid into v_no from admin where eid = '1111';
+dbms_output.put_line(v_no);
+end;
+
+/
+--------------------------------------------------------
+--  DDL for Procedure SAMPLE_QUERY_1
+--------------------------------------------------------
+set define off;
+
+  CREATE OR REPLACE PROCEDURE "SCHOOLDB"."SAMPLE_QUERY_1" 
+(
+nme out sys_refcursor
+) as
+reqd_gpa number;
+reqd_cid varchar2(242);
+BEGIN
+  select gpa , pre_cid into reqd_gpa, reqd_cid from PRECONDITION where prereqid in (select prereqid from requires where cid = 'CS521');
+  open nme for select concat(concat(fname, ' '),lname) from student inner join takes on student.sid = takes.sid where student.gpa >= reqd_gpa and takes.offerid in (select offerid from offers where cid = reqd_cid) and takes.status = 'Confirmed';
+END SAMPLE_QUERY_1;
+
+/
+--------------------------------------------------------
+--  DDL for Procedure SAMPLE_QUERY_2
+--------------------------------------------------------
+set define off;
+
+  CREATE OR REPLACE PROCEDURE "SCHOOLDB"."SAMPLE_QUERY_2" AS 
+prev_gpa NUMBER;
+BEGIN
+  select * from student S1 where 
+  exists (
+  select ROUND((sum(grading.GRADE_POINT*takes.CREDITS)/sum(takes.credits)),2) into prev_gpa 
+  from takes 
+  inner join grading on grading.GRADE = takes.GRADE 
+  inner join offers O on O.offerid = takes.offerid 
+  where O.semid = 'F2016' and takes.SID = S1.SID and S1.gpa < prev_gpa
+  );
+END SAMPLE_QUERY_2;
+
+/
+--------------------------------------------------------
+--  DDL for Procedure VIEW_PROFILE_ADMIN
+--------------------------------------------------------
+set define off;
+
+  CREATE OR REPLACE PROCEDURE "SCHOOLDB"."VIEW_PROFILE_ADMIN" 
+(
+  EID_INPUT IN VARCHAR2
+, EID_OUTPUT OUT VARCHAR2
+, USERNAME_OUTPUT OUT VARCHAR2 
+, FNAME_OUTPUT OUT VARCHAR2 
+, LNAME_OUTPUT OUT VARCHAR2 
+, DOB_OUTPUT OUT VARCHAR2 
+) AS 
+BEGIN
+  SELECT A.EID, A.USERNAME, A.FNAME, A.LNAME, A.DOB INTO EID_OUTPUT, USERNAME_OUTPUT, FNAME_OUTPUT, LNAME_OUTPUT, DOB_OUTPUT FROM ADMIN A WHERE A.EID = EID_INPUT;
+END VIEW_PROFILE_ADMIN;
+
+/
+--------------------------------------------------------
+--  DDL for Synonymn DBMS_OUTPUT
+--------------------------------------------------------
+
+  CREATE OR REPLACE PUBLIC SYNONYM "DBMS_OUTPUT" FOR "SYS"."DBMS_OUTPUT";
+--------------------------------------------------------
+--  Constraints for Table ADMIN
+--------------------------------------------------------
+
+  ALTER TABLE "SCHOOLDB"."ADMIN" ADD CONSTRAINT "ADMIN_PK" PRIMARY KEY ("EID")
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "SCHOOLDB"  ENABLE;
+  ALTER TABLE "SCHOOLDB"."ADMIN" MODIFY ("EID" NOT NULL ENABLE);
+--------------------------------------------------------
+--  Constraints for Table COURSE
+--------------------------------------------------------
+
+  ALTER TABLE "SCHOOLDB"."COURSE" ADD CONSTRAINT "COURSE_PK" PRIMARY KEY ("CID")
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "SCHOOLDB"  ENABLE;
+  ALTER TABLE "SCHOOLDB"."COURSE" MODIFY ("CID" NOT NULL ENABLE);
+  ALTER TABLE "SCHOOLDB"."COURSE" MODIFY ("DID" NOT NULL ENABLE);
+  ALTER TABLE "SCHOOLDB"."COURSE" MODIFY ("TITLE" NOT NULL ENABLE);
+--------------------------------------------------------
+--  Constraints for Table CREDITCOSTLIMITS
+--------------------------------------------------------
+
+  ALTER TABLE "SCHOOLDB"."CREDITCOSTLIMITS" ADD CONSTRAINT "CREDITCOSTLIMITS_UK1" UNIQUE ("CLEVEL", "RESIDENCY")
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "SCHOOLDB"  ENABLE;
+  ALTER TABLE "SCHOOLDB"."CREDITCOSTLIMITS" MODIFY ("COST_PER_CREDIT" NOT NULL ENABLE);
+  ALTER TABLE "SCHOOLDB"."CREDITCOSTLIMITS" MODIFY ("RESIDENCY" NOT NULL ENABLE);
+  ALTER TABLE "SCHOOLDB"."CREDITCOSTLIMITS" MODIFY ("CLEVEL" NOT NULL ENABLE);
+--------------------------------------------------------
+--  Constraints for Table GRADING
+--------------------------------------------------------
+
+  ALTER TABLE "SCHOOLDB"."GRADING" ADD CONSTRAINT "GRADING_PK" PRIMARY KEY ("GRADE")
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "SCHOOLDB"  ENABLE;
+  ALTER TABLE "SCHOOLDB"."GRADING" MODIFY ("GRADE_POINT" NOT NULL ENABLE);
+  ALTER TABLE "SCHOOLDB"."GRADING" MODIFY ("GRADE" NOT NULL ENABLE);
+--------------------------------------------------------
+--  Constraints for Table OFFERS
+--------------------------------------------------------
+
+  ALTER TABLE "SCHOOLDB"."OFFERS" ADD CONSTRAINT "OFFERS_PK" PRIMARY KEY ("OFFERID")
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "SCHOOLDB"  ENABLE;
+  ALTER TABLE "SCHOOLDB"."OFFERS" MODIFY ("OFFERID" NOT NULL ENABLE);
+  ALTER TABLE "SCHOOLDB"."OFFERS" ADD CONSTRAINT "OFFERS_UK1" UNIQUE ("SCHEDULE", "LOCATION", "CID", "SEMID", "FID")
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "SCHOOLDB"  ENABLE;
+--------------------------------------------------------
+--  Constraints for Table PRECONDITION
+--------------------------------------------------------
+
+  ALTER TABLE "SCHOOLDB"."PRECONDITION" ADD CONSTRAINT "PRECONDITION_PK" PRIMARY KEY ("PREREQID")
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "SCHOOLDB"  ENABLE;
+  ALTER TABLE "SCHOOLDB"."PRECONDITION" MODIFY ("PREREQID" NOT NULL ENABLE);
+--------------------------------------------------------
+--  Constraints for Table SEMESTER
+--------------------------------------------------------
+
+  ALTER TABLE "SCHOOLDB"."SEMESTER" MODIFY ("IS_DEADLINE_ENFORCED" NOT NULL ENABLE);
+  ALTER TABLE "SCHOOLDB"."SEMESTER" ADD CONSTRAINT "SEMESTER_PK" PRIMARY KEY ("SEMID")
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "SCHOOLDB"  ENABLE;
+  ALTER TABLE "SCHOOLDB"."SEMESTER" MODIFY ("SEMID" NOT NULL ENABLE);
+--------------------------------------------------------
+--  Constraints for Table STUDENT
+--------------------------------------------------------
+
+  ALTER TABLE "SCHOOLDB"."STUDENT" ADD CONSTRAINT "STUDENT_PK" PRIMARY KEY ("SID")
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "SCHOOLDB"  ENABLE;
+  ALTER TABLE "SCHOOLDB"."STUDENT" MODIFY ("SID" NOT NULL ENABLE);
+--------------------------------------------------------
+--  Constraints for Table TAKES
+--------------------------------------------------------
+
+  ALTER TABLE "SCHOOLDB"."TAKES" MODIFY ("SID" NOT NULL ENABLE);
+  ALTER TABLE "SCHOOLDB"."TAKES" MODIFY ("OFFERID" NOT NULL ENABLE);
+--------------------------------------------------------
+--  Ref Constraints for Table OFFERS
+--------------------------------------------------------
+
+  ALTER TABLE "SCHOOLDB"."OFFERS" ADD CONSTRAINT "OFFERS_FK2" FOREIGN KEY ("SEMID")
+	  REFERENCES "SCHOOLDB"."SEMESTER" ("SEMID") ENABLE;
+--------------------------------------------------------
+--  Ref Constraints for Table PRECONDITION
+--------------------------------------------------------
+
+  ALTER TABLE "SCHOOLDB"."PRECONDITION" ADD CONSTRAINT "PRECONDITION_FK1" FOREIGN KEY ("PRE_CID")
+	  REFERENCES "SCHOOLDB"."COURSE" ("CID") ON DELETE CASCADE ENABLE;
+--------------------------------------------------------
+--  Ref Constraints for Table REQUIRES
+--------------------------------------------------------
+
+  ALTER TABLE "SCHOOLDB"."REQUIRES" ADD CONSTRAINT "REQUIRES_FK1" FOREIGN KEY ("CID")
+	  REFERENCES "SCHOOLDB"."COURSE" ("CID") ON DELETE CASCADE ENABLE;
+  ALTER TABLE "SCHOOLDB"."REQUIRES" ADD CONSTRAINT "REQUIRES_FK2" FOREIGN KEY ("PREREQID")
+	  REFERENCES "SCHOOLDB"."PRECONDITION" ("PREREQID") ON DELETE CASCADE ENABLE;
+--------------------------------------------------------
+--  Ref Constraints for Table TAKES
+--------------------------------------------------------
+
+  ALTER TABLE "SCHOOLDB"."TAKES" ADD CONSTRAINT "TAKES_FK1" FOREIGN KEY ("OFFERID")
+	  REFERENCES "SCHOOLDB"."OFFERS" ("OFFERID") ENABLE;
+  ALTER TABLE "SCHOOLDB"."TAKES" ADD CONSTRAINT "TAKES_FK2" FOREIGN KEY ("SID")
+	  REFERENCES "SCHOOLDB"."STUDENT" ("SID") ON DELETE CASCADE ENABLE;
+  ALTER TABLE "SCHOOLDB"."TAKES" ADD CONSTRAINT "TAKES_FK3" FOREIGN KEY ("GRADE")
+	  REFERENCES "SCHOOLDB"."GRADING" ("GRADE") ON DELETE CASCADE ENABLE;

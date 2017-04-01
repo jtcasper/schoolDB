@@ -1,6 +1,3 @@
---------------------------------------------------------
---  File created - Wednesday-March-29-2017   
---------------------------------------------------------
 
 --------------------------------------------------------
 --  DDL for Table ADMIN
@@ -84,19 +81,6 @@
 
    COMMENT ON COLUMN "OFFERS"."FID" IS 'Faculty Id';
 --------------------------------------------------------
---  DDL for Table PENDING
---------------------------------------------------------
-
-  CREATE TABLE "PENDING" 
-   (	"PSID" VARCHAR2(20 BYTE), 
-	"PCID" VARCHAR2(20 BYTE), 
-	"STATUS" VARCHAR2(20 BYTE)
-   ) SEGMENT CREATION IMMEDIATE 
-  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING
-  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
-  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
-  TABLESPACE "SCHOOLDB" ;
---------------------------------------------------------
 --  DDL for Table PRECONDITION
 --------------------------------------------------------
 
@@ -133,12 +117,16 @@
    (	"SEMID" VARCHAR2(20 BYTE), 
 	"YEAR" NUMBER, 
 	"DEADLINE" VARCHAR2(20 BYTE), 
-	"SEMESTER" VARCHAR2(20 BYTE)
+	"SEMESTER" VARCHAR2(20 BYTE), 
+	"IS_DEADLINE_ENFORCED" NUMBER DEFAULT 0
    ) SEGMENT CREATION IMMEDIATE 
   PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING
   STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
   PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
   TABLESPACE "SCHOOLDB" ;
+
+   COMMENT ON COLUMN "SEMESTER"."SEMESTER" IS 'F = Fall, S = Spring, Su = Summer';
+   COMMENT ON COLUMN "SEMESTER"."IS_DEADLINE_ENFORCED" IS '0 = No, 1 = Yes';
 --------------------------------------------------------
 --  DDL for Table STUDENT
 --------------------------------------------------------
@@ -149,14 +137,14 @@
 	"FNAME" VARCHAR2(20 BYTE), 
 	"EMAIL" VARCHAR2(20 BYTE), 
 	"PWD" VARCHAR2(20 BYTE) DEFAULT NULL, 
-	"GPA" VARCHAR2(20 BYTE), 
 	"SLEVEL" VARCHAR2(20 BYTE), 
 	"BILL" VARCHAR2(20 BYTE) DEFAULT 0, 
 	"DID" VARCHAR2(20 BYTE), 
 	"RESIDENCY" VARCHAR2(20 BYTE), 
 	"UNAME" VARCHAR2(20 BYTE), 
 	"DOB" DATE, 
-	"CREDITS" NUMBER DEFAULT 0
+	"CREDITS" NUMBER DEFAULT 0, 
+	"GPA" FLOAT(126)
    ) SEGMENT CREATION IMMEDIATE 
   PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING
   STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
@@ -170,9 +158,10 @@
 
   CREATE TABLE "TAKES" 
    (	"SID" VARCHAR2(20 BYTE), 
-	"CID" VARCHAR2(20 BYTE), 
+	"OFFERID" VARCHAR2(20 BYTE), 
 	"GRADE" VARCHAR2(2 BYTE), 
-	"CREDITS" NUMBER(1,0) DEFAULT 0
+	"CREDITS" NUMBER(1,0) DEFAULT 0, 
+	"STATUS" VARCHAR2(20 BYTE)
    ) SEGMENT CREATION IMMEDIATE 
   PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING
   STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
@@ -180,6 +169,7 @@
   TABLESPACE "SCHOOLDB" ;
 
    COMMENT ON COLUMN "TAKES"."CREDITS" IS 'The credits of the course which counted';
+   COMMENT ON COLUMN "TAKES"."STATUS" IS '''Confirmed'' or ''Pending'' or ''Waitlist''';
 --------------------------------------------------------
 --  DDL for Table WAITLIST
 --------------------------------------------------------
@@ -188,18 +178,6 @@
    (	"WSIZE" VARCHAR2(20 BYTE), 
 	"PCID" VARCHAR2(20 BYTE), 
 	"CID" VARCHAR2(20 BYTE)
-   ) SEGMENT CREATION IMMEDIATE 
-  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING
-  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
-  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
-  TABLESPACE "SCHOOLDB" ;
---------------------------------------------------------
---  DDL for Table WAITLISTING
---------------------------------------------------------
-
-  CREATE TABLE "WAITLISTING" 
-   (	"PSID" VARCHAR2(20 BYTE), 
-	"SID" VARCHAR2(20 BYTE)
    ) SEGMENT CREATION IMMEDIATE 
   PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING
   STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
@@ -287,6 +265,177 @@
   PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
   TABLESPACE "SCHOOLDB" ;
 --------------------------------------------------------
+--  DDL for Procedure ADD_COURSE
+--------------------------------------------------------
+set define off;
+
+  CREATE OR REPLACE PROCEDURE "ADD_COURSE" 
+(
+  CID_INPUT IN VARCHAR2 
+, TITLE_INPUT IN VARCHAR2 
+, CREDITS_INPUT IN VARCHAR2 
+, CLEVEL_INPUT IN VARCHAR2 
+, DID_INPUT IN VARCHAR2 
+, STATUS OUT VARCHAR2 
+) AS 
+cnt number;
+BEGIN
+  select count(*) into cnt from course where cid = CID_INPUT;
+  if (cnt <>0) THEN
+    STATUS := 'Not Done';
+  else
+    Insert into course (cid, title, credits, clevel, did) values (cid_input, title_input, credits_input, clevel_input, did_input);
+    STATUS := 'Done';
+  end if;
+END ADD_COURSE;
+
+/
+--------------------------------------------------------
+--  DDL for Procedure ADD_COURSE_OFFERING
+--------------------------------------------------------
+set define off;
+
+  CREATE OR REPLACE PROCEDURE "ADD_COURSE_OFFERING" 
+(
+  STATUS OUT VARCHAR2 
+, CID_INPUT IN VARCHAR2 
+, SEMID_INPUT IN VARCHAR2 
+, SCHEDULE_INPUT IN VARCHAR2 
+, LOCATION_INPUT IN VARCHAR2 
+, CLASSSIZE_INPUT IN VARCHAR2 
+, WAITSIZE_INPUT IN VARCHAR2 
+, FID_INPUT IN VARCHAR2 
+) AS 
+offering_cnt number;
+sem_cnt number;
+BEGIN
+  select count(*) into offering_cnt from offers where cid = CID_INPUT and semid = semid_input and fid = fid_input and schedule = schedule_input;
+  if (offering_cnt <>0) THEN
+    STATUS := 'Course Offering already exists.';
+  else
+    select count(*) into sem_cnt from semester where semid = semid_input;
+    if (sem_cnt = 0) then
+      STATUS := 'Semester Does Not Exist.';
+    else
+      Insert into offers (cid, semid, schedule, location, fid, classsize, waitsize) values (cid_input, semid_input, schedule_input, location_input, fid_input, classsize_input, waitsize_input);
+      STATUS := 'Done';
+    end if;
+  end if;
+END ADD_COURSE_OFFERING;
+
+/
+--------------------------------------------------------
+--  DDL for Procedure CALCULATE_GPA
+--------------------------------------------------------
+set define off;
+
+  CREATE OR REPLACE PROCEDURE "CALCULATE_GPA" 
+AS 
+cgpa NUMBER;
+BEGIN
+  FOR s IN (SELECT * from student) 
+  loop
+    select ROUND((sum(grading.GRADE_POINT*takes.CREDITS)/sum(takes.credits)),2) into cgpa from takes inner join grading on grading.GRADE = takes.GRADE and takes.SID = s.SID;
+    if (cgpa > 4) then
+      cgpa := 4;
+    end if;
+    update student set gpa = cgpa where sid = s.SID;
+    --dbms_output.put_line(cgpa);
+    cgpa := 0;
+  end loop;
+END CALCULATE_GPA;
+
+/
+--------------------------------------------------------
+--  DDL for Procedure ENFORCE_DEADLINE
+--------------------------------------------------------
+set define off;
+
+  CREATE OR REPLACE PROCEDURE "ENFORCE_DEADLINE" 
+(
+SEMID_INPUT IN VARCHAR2
+, status out varchar2
+) AS
+is_enforced number;
+BEGIN
+  select IS_DEADLINE_ENFORCED into is_enforced from semester where semid = semid_input;
+  if (is_enforced = 0) then
+    Delete from takes where offerid in (select offerid from offers where semid = semid_input);
+    status := 'Done';
+  else
+    status := 'Already Enforced Once in this semester';
+  end if;
+END ENFORCE_DEADLINE;
+
+/
+--------------------------------------------------------
+--  DDL for Procedure ENROLL_STUDENT
+--------------------------------------------------------
+set define off;
+
+  CREATE OR REPLACE PROCEDURE "ENROLL_STUDENT" 
+(
+  SID_INPUT IN VARCHAR2 
+, LNAME_INPUT IN VARCHAR2
+, FNAME_INPUT IN VARCHAR2
+, EMAIL_INPUT IN VARCHAR2
+, PWD_INPUT IN VARCHAR2
+, SLEVEL_INPUT IN VARCHAR2
+, RESIDENCY_INPUT IN VARCHAR2
+, UNAME_INPUT IN VARCHAR2
+, STATUS OUT VARCHAR2
+) AS 
+cnt number;
+BEGIN
+select count(*) into cnt from student where sid = SID_INPUT;
+  if (cnt <>0) THEN
+    STATUS := 'Not Done';
+  else
+    Insert into student (sid, lname, fname, email, pwd, slevel, residency, uname) values (sid_input, lname_input, fname_input, email_input, pwd_input, slevel_input, residency_input, uname_input);
+    STATUS := 'Done';
+  end if;
+END ENROLL_STUDENT;
+
+/
+--------------------------------------------------------
+--  DDL for Procedure SAMPLE_PROC
+--------------------------------------------------------
+set define off;
+
+  CREATE OR REPLACE PROCEDURE "SAMPLE_PROC" 
+is
+v_no number(4);
+begin
+select eid into v_no from admin where eid = '1111';
+dbms_output.put_line(v_no);
+end;
+
+/
+--------------------------------------------------------
+--  DDL for Procedure VIEW_PROFILE_ADMIN
+--------------------------------------------------------
+set define off;
+
+  CREATE OR REPLACE PROCEDURE "VIEW_PROFILE_ADMIN" 
+(
+  EID_INPUT IN VARCHAR2
+, EID_OUTPUT OUT VARCHAR2
+, USERNAME_OUTPUT OUT VARCHAR2 
+, FNAME_OUTPUT OUT VARCHAR2 
+, LNAME_OUTPUT OUT VARCHAR2 
+, DOB_OUTPUT OUT VARCHAR2 
+) AS 
+BEGIN
+  SELECT A.EID, A.USERNAME, A.FNAME, A.LNAME, A.DOB INTO EID_OUTPUT, USERNAME_OUTPUT, FNAME_OUTPUT, LNAME_OUTPUT, DOB_OUTPUT FROM ADMIN A WHERE A.EID = EID_INPUT;
+END VIEW_PROFILE_ADMIN;
+
+/
+--------------------------------------------------------
+--  DDL for Synonymn DBMS_OUTPUT
+--------------------------------------------------------
+
+  CREATE OR REPLACE PUBLIC SYNONYM "DBMS_OUTPUT" FOR "DBMS_OUTPUT";
+--------------------------------------------------------
 --  Constraints for Table ADMIN
 --------------------------------------------------------
 
@@ -360,6 +509,7 @@
 --  Constraints for Table SEMESTER
 --------------------------------------------------------
 
+  ALTER TABLE "SEMESTER" MODIFY ("IS_DEADLINE_ENFORCED" NOT NULL ENABLE);
   ALTER TABLE "SEMESTER" ADD CONSTRAINT "SEMESTER_PK" PRIMARY KEY ("SEMID")
   USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
   STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
@@ -381,13 +531,11 @@
 --------------------------------------------------------
 
   ALTER TABLE "TAKES" MODIFY ("SID" NOT NULL ENABLE);
-  ALTER TABLE "TAKES" MODIFY ("CID" NOT NULL ENABLE);
+  ALTER TABLE "TAKES" MODIFY ("OFFERID" NOT NULL ENABLE);
 --------------------------------------------------------
 --  Ref Constraints for Table OFFERS
 --------------------------------------------------------
 
-  ALTER TABLE "OFFERS" ADD CONSTRAINT "OFFERS_FK1" FOREIGN KEY ("CID")
-	  REFERENCES "COURSE" ("CID") ON DELETE CASCADE ENABLE;
   ALTER TABLE "OFFERS" ADD CONSTRAINT "OFFERS_FK2" FOREIGN KEY ("SEMID")
 	  REFERENCES "SEMESTER" ("SEMID") ENABLE;
 --------------------------------------------------------
@@ -408,8 +556,8 @@
 --  Ref Constraints for Table TAKES
 --------------------------------------------------------
 
-  ALTER TABLE "TAKES" ADD CONSTRAINT "TAKES_FK1" FOREIGN KEY ("CID")
-	  REFERENCES "COURSE" ("CID") ON DELETE CASCADE ENABLE;
+  ALTER TABLE "TAKES" ADD CONSTRAINT "TAKES_FK1" FOREIGN KEY ("OFFERID")
+	  REFERENCES "OFFERS" ("OFFERID") ENABLE;
   ALTER TABLE "TAKES" ADD CONSTRAINT "TAKES_FK2" FOREIGN KEY ("SID")
 	  REFERENCES "STUDENT" ("SID") ON DELETE CASCADE ENABLE;
   ALTER TABLE "TAKES" ADD CONSTRAINT "TAKES_FK3" FOREIGN KEY ("GRADE")

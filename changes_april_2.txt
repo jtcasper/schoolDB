@@ -1,3 +1,5 @@
+--Interface changes
+
 1. Input and enter into precondition table
 2. Show course offerings by course Id
 3. Change Add Course Offering
@@ -8,3 +10,10 @@
 8. Edit student courses option
 9. No option to view pending courses
 10.Show grades of all courses in view grade option
+
+
+--Backend changes
+1. Enforce billing on addition of courses and approval of special courses
+2. Enforce waitlist check on enrolling in a course
+3. When a student drops a course, the next in waitlist should get enrolled
+4. 

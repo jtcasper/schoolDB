@@ -12,6 +12,7 @@ public class interactiveShell {
 		Scanner inScan = new Scanner(System.in);
 		
 		try {
+			handler.executeSQLFile("scripts/dropTableProcedures.sql");
 			handler.executeSQLFile("scripts/setupdb.sql");
 			handler.executeSQLFile("scripts/createData.sql");
 		} catch(SQLException e){

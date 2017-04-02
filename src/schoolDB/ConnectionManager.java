@@ -10,7 +10,7 @@ public class ConnectionManager {
 		if (dbConnection == null) {
 			try {
 				dbConnection = DriverManager.getConnection(
-						"jdbc:oracle:thin:@localhost:1521:xe", "schooldb", "root");
+						"jdbc:oracle:thin:@//orca.csc.ncsu.edu:1521/orcl.csc.ncsu.edu", "jtcasper", "200053087");
 			} catch (SQLException e) {
 				System.out.println();
 		    	e.printStackTrace();

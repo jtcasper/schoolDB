@@ -89,6 +89,10 @@ public class SQLHandler {
 						reader.readLine();
 						break;
 					}
+					else if(currentQuery.trim().startsWith("set")){
+						currentQuery = "";
+						break;
+					}
 				}
 				if(currentQuery.startsWith("BEGIN") && !procedure){
 					numEnds++;

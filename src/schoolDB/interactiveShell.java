@@ -665,9 +665,10 @@ public class interactiveShell {
 		String grade = "";
 		try {
 			
-			PreparedStatement ps = conn.prepareStatement("SELECT * FROM TAKES WHERE STATUS = ? AND SID = ?");
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM TAKES WHERE STATUS = ? AND SID = ? OR STATUS = ?");
 			ps.setString(1, "Confirmed");
 			ps.setString(2, sid);
+			ps.setString(3, "Graded");
 			ResultSet rs = ps.executeQuery();
 			System.out.println("-----------------------------------------------------------------------------------");
 			System.out.println(padRight("sid", 10) + "|" +padRight("Grade", 10)+ "|" +padRight("courseID", 10) + "|" + padRight("Title", 40) + "|" + padRight("Credits", 10) + "|" + padRight("CourseLevel", 13) + "|" + padRight("Department", 10) + "|"  +padRight("semID", 10));
@@ -848,7 +849,7 @@ public class interactiveShell {
 		{
 			sLevel = "UG";
 		}
-		else if(sLevel2.equalsIgnoreCase("2")){
+		else if(sLevel2.equals("2")){
 			sLevel ="PG";
 		}
 		System.out.print("> Department: ");

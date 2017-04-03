@@ -26,6 +26,7 @@ student:
 			--true--check the size of the course--check the size of waitlist--change the status to either confirmed or waitlist, updated waitlistnum
 			----false--- change the status to pending.
 drop a course
+
 --Backend changes
 1. Enforce billing on addition of courses and approval of special courses
 2. Enforce waitlist check on enrolling in a course

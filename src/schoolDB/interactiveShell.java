@@ -280,23 +280,20 @@ public class interactiveShell {
 					if(coursecmd.equals("1"))
 					{
 						studentProfile(inScan, user.getUsername());//student profile
-						System.out.print("# View Profile\n>Please enter a command:  ");
-						System.out.print("\n  1.View Profile\n  2.Edit Profile \n  0.Back  \n> ");
-						coursecmd = inScan.nextLine();
+						
 					}
 					else if(coursecmd.equals("2"))
 					{
 						editStudent(inScan, user.getUsername());////edit student profile
-						System.out.print("# View Profile\n>Please enter a command:  ");
-						System.out.print("\n  1.View Profile\n  2.Edit Profile \n  0.Back  \n> ");
-						coursecmd = inScan.nextLine();
+						
 					}
 					else{
 						invalidCommand();
-						System.out.print("# View Profile\n>Please enter a command:  ");
-						System.out.print("\n  1.View Profile\n  2.Edit Profile \n  0.Back  \n> ");
-						coursecmd = inScan.nextLine();
+						
 					}
+					System.out.print("# View Profile\n>Please enter a command:  ");
+					System.out.print("\n  1.View Profile\n  2.Edit Profile \n  0.Back  \n> ");
+					coursecmd = inScan.nextLine();
 					}
 				}
 				else if(command.equals("2"))//View Courses/Enroll/Drop Courses

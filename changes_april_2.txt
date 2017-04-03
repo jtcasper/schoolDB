@@ -10,10 +10,12 @@
 8. Edit student courses option
 9. No option to view pending courses
 10.Show grades of all courses in view grade option
-
+11.Show warning on student login if he is not fulfilling MinCredits criteria
+12.Admin can edit student GPA, level, residency and other details, not able to view or edit student's password
 
 --Backend changes
 1. Enforce billing on addition of courses and approval of special courses
 2. Enforce waitlist check on enrolling in a course
 3. When a student drops a course, the next in waitlist should get enrolled
-4. 
+4. (Not sure what exact thing to do on) Enforcing MinCredits criteria for international students
+5. Minimum grade requirement for specific course pre-requisite

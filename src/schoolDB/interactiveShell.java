@@ -88,7 +88,7 @@ public class interactiveShell {
 						if( results.next() ){
 							dbPW = results.getString("PWD");
 						}
-						if( !(dbPW.equals("")) && dbPW.toString().equals(password)){
+						if( !(dbPW.equals("")) && dbPW.equals(password)){
 							retString = "> Successfully logged in as " + username;
 							success = true;
 							admin = false;
@@ -232,10 +232,11 @@ public class interactiveShell {
 					System.out.print("\n  Type Y to confirm to enforce semester's deadline. Or return to main menu \n>");
 					String coursecmd = inScan.nextLine();
 					if(coursecmd.equals("Y"))
-					{	System.out.print("# Please enter the semester id:\n>  ");
+					{
+						System.out.print("# Please enter the semester id:\n>  ");
 						String semid=inScan.nextLine();
 						//enforce a deadline
-					enforcedeadline(semid);
+						enforcedeadline(semid);
 					}
 					
 				}
@@ -303,7 +304,8 @@ public class interactiveShell {
 						//drop a course 
 					}
 					else if(coursecmd.equals("4"))
-					{	showmycourses(user.getUsername());
+					{	
+						showmycourses(user.getUsername());
 						//show all my courses
 					}
 					else{
@@ -809,9 +811,19 @@ public class interactiveShell {
 		String fname = inScan.nextLine();
 		System.out.print("> Last Name: ");
 		String lname = inScan.nextLine();
-		System.out.print("> DOB: **Please keep the format as dd/mm/yyyy:\n>");
+		System.out.print("> DOB: **Please keep the format as dd/mm/yyyy:\n> ");
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/mm/yyyy");
 		String dob = inScan.nextLine();
+		Date dobDate = null;
+		try {
+			dobDate = formatter.parse(dob);
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
+		java.sql.Date sqlDobDate = null;
+		if(dobDate != null) {
+			sqlDobDate = new java.sql.Date(dobDate.getTime());
+		}
 		/*Date dob2=null;
 		try{dob2=formatter.parse(dob);}
 		catch (ParseException e){
@@ -823,7 +835,7 @@ public class interactiveShell {
 		String password = "password";
 		//System.out.print("> GPA: ");
 		//String gpa = inScan.nextLine();
-		System.out.print("> Student Level: Please select the option: \n1.Undergraduate\n 2. Graduate\n>");
+		System.out.print("> Student Level: Please select the option: \n 1. Undergraduate\n 2. Graduate\n> ");
 		String sLevel2 = inScan.nextLine();
 		String sLevel="";
 		while(!(sLevel2.equals("1")||sLevel2.equals("2")))
@@ -841,11 +853,11 @@ public class interactiveShell {
 		}
 		System.out.print("> Department: ");
 		String did = inScan.nextLine();
-		System.out.print("> Residency: Please select the option: \n1.In-State  \n2.Out of State\n3.International\n>");
+		System.out.print("> Residency: Please select the option: \n1.In-State  \n2.Out of State\n3.International\n> ");
 		String resLevel = "";
 		String resLevel2 = inScan.nextLine();
 		while(!(resLevel2.equals("1")||resLevel2.equals("2")||resLevel2.equals("3"))){
-			System.out.print("###Error input.\n> Residency: Please select the option: \n1.In-State  \n2.Out of State\n3.International\n>");
+			System.out.print("###Error input.\n> Residency: Please select the option: \n 1.In-State  \n 2.Out of State\n 3.International\n> ");
 			resLevel2 = inScan.nextLine();
 		}
 		if(resLevel2.equals("1"))
@@ -863,7 +875,7 @@ public class interactiveShell {
 		
 		try {
 			PreparedStatement ps = conn.prepareStatement("INSERT INTO STUDENT (SID, FNAME, LNAME,DOB, EMAIL,PWD, SLEVEL, DID, RESIDENCY) "
-					+ "VALUES (?, ?, ?, ? ?, ?, ?, ?, ?) ");
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ");
 			//PreparedStatement ps = conn.prepareStatement("INSERT INTO STUDENT (SID, FNAME, LNAME,DOB, EMAIL,PWD, SLEVEL, DID, RESIDENCY) "
 			//		+ "VALUES ('444','123','45','12/23/1666','321321','password','UG','CSC','In-State') ");
 			 //CallableStatement ps = conn.prepareCall("{call ENROLL_STUDENT(?, ?,?,?,?,?,?,?)}");
@@ -872,7 +884,7 @@ public class interactiveShell {
 			ps.setString(1, sid);
 			ps.setString(2, fname);
 			ps.setString(3, lname);
-			ps.setDate(4, java.sql.Date.valueOf(dob));//TODO change the dob
+			ps.setDate(4, sqlDobDate);//TODO change the dob
 			ps.setString(5, email);
 			ps.setString(6, password);
 			ps.setString(7, sLevel);
@@ -911,8 +923,7 @@ public class interactiveShell {
 			e.printStackTrace();
 		}
 		newPage();
-//		System.out.println("EID                 |FNAME               |LNAME               |SSN                 ");
-		System.out.println(padRight("StudentID", 20) + "|" + padRight("Firstname", 20) + "|" + padRight("Lastname", 20) + "|" + padRight("DOB", 20) + "|");
+		System.out.println(padRight("EID", 20) + "|" + padRight("Firstname", 20) + "|" + padRight("Lastname", 20) + "|" + padRight("DOB", 20) + "|");
 		System.out.println("-----------------------------------------------------------------------------------");
 		System.out.println(padRight(eid, 20)+ "|" + padRight(fname, 20) + "|" + padRight(lname, 20) + "|" + padRight(dob, 20) + "|");
 		

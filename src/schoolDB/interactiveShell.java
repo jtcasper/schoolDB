@@ -401,14 +401,19 @@ public class interactiveShell {
 			return;
 		}
 		
+		System.out.println(username);
+		System.out.println(offerCID);
+		System.out.println(offerSemID);
+		System.out.println(offerCreds);
+		
 		try{
 			CallableStatement cs = conn.prepareCall("{call ENROLL_COURSE(?, ?, ?, ?, ?)}");
 			cs.setString(1, username);
 			cs.setString(2, offerCID);
 			cs.setString(3, offerSemID);
 			cs.registerOutParameter(4, java.sql.Types.VARCHAR);
-			cs.setString(5, offerCreds);
-			cs.execute();
+			cs.setInt(5, Integer.parseInt(offerCreds));
+			cs.executeUpdate();
 			statusOut = cs.getString(4);
 		} catch(SQLException e){
 			System.out.println("Error in database call.");
@@ -807,9 +812,9 @@ public class interactiveShell {
 		String grade = "";
 		try {
 			
-			PreparedStatement ps = conn.prepareStatement("SELECT * FROM TAKES WHERE STATUS = ? AND SID = ? OR STATUS = ?");
-			ps.setString(1, "Confirmed");
-			ps.setString(2, sid);
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM TAKES WHERE SID = ? AND (STATUS = ? OR STATUS = ?)");
+			ps.setString(1, sid);
+			ps.setString(2, "Confirmed");
 			ps.setString(3, "Graded");
 			ResultSet rs = ps.executeQuery();
 			System.out.println("-----------------------------------------------------------------------------------");

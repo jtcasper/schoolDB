@@ -476,6 +476,7 @@ public class interactiveShell {
 			System.out.println("Successfully dropped course " + cid + " in semester " + semid);
 		} catch(SQLException e) {
 			System.out.println("Could not drop course " + cid + " in semester " + semid);
+			e.printStackTrace();
 		}
 		
 	}
@@ -511,25 +512,23 @@ public class interactiveShell {
 		System.out.print("***Invalid Command\n");
 
 	}
-	private static boolean enforcedeadline(String semid){//not finished
+	private static void enforcedeadline(String semid){//not finished
 		Connection conn = ConnectionManager.getConnectionInstance();
 		try{
 			CallableStatement cStmt = conn.prepareCall("{call ENFORCE_DEADLINE(?,?)}");
 			 cStmt.setString(1,semid);
-			 cStmt.registerOutParameter(2, Types.BOOLEAN);
+			 cStmt.registerOutParameter(2, Types.VARCHAR);
 			
 			 boolean hadResults = cStmt.execute();
 			 while(hadResults){
 				 ResultSet rs = cStmt.getResultSet();
 				 hadResults = cStmt.getMoreResults();
 			}
-			boolean status = cStmt.getBoolean(2);
+			String status = cStmt.getString(2);
 			System.out.println("Successfully enforce the deadline in " + semid);
-			return status;
 		} catch(SQLException e){
 			System.out.println("Could not enforce deadline.");
 			e.printStackTrace();
-			return false;
 		}
 
 		

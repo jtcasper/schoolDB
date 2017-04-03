@@ -311,6 +311,7 @@ public class interactiveShell {
 					else if(coursecmd.equals("2"))
 					{
 						//add a course
+						enrollCourseStudent(inScan, user.getUsername());
 					}
 					else if(coursecmd.equals("3"))
 					{
@@ -374,6 +375,51 @@ public class interactiveShell {
 		}
 		
 	}
+	private static void enrollCourseStudent(Scanner inScan, String username) {
+		
+		System.out.println("> Entering data for course registration.");
+		System.out.print("> Please enter the Course ID of the course offering: ");
+		String offerCID = inScan.nextLine();
+		System.out.print("> Please enter the Semester ID of the course offering: ");
+		String offerSemID = inScan.nextLine();
+		
+		String offerCreds = "";
+		String statusOut = "";
+		
+		Connection conn = ConnectionManager.getConnectionInstance();
+		
+		try{
+			PreparedStatement ps = conn.prepareStatement("SELECT CREDITS FROM COURSE WHERE CID = ?");
+			ps.setString(1, offerCID);
+			ResultSet rs = ps.executeQuery();
+			if( rs.next() ){
+				offerCreds = rs.getString("CREDITS");
+			}
+		} catch(SQLException e) {
+			System.out.println("Course offering not found.");
+			e.printStackTrace();
+			return;
+		}
+		
+		try{
+			CallableStatement cs = conn.prepareCall("{call ENROLL_COURSE(?, ?, ?, ?, ?)}");
+			cs.setString(1, username);
+			cs.setString(2, offerCID);
+			cs.setString(3, offerSemID);
+			cs.registerOutParameter(4, java.sql.Types.VARCHAR);
+			cs.setString(5, offerCreds);
+			cs.execute();
+			statusOut = cs.getString(4);
+		} catch(SQLException e){
+			System.out.println("Error in database call.");
+			e.printStackTrace();
+		}
+		
+		System.out.println("> Enrollment Status: " + statusOut);
+
+		
+	}
+
 	private static void dropCourseStudent(Scanner inScan, String username) {
 		
 		System.out.println("> Current courses.");
@@ -563,7 +609,7 @@ public class interactiveShell {
 
 	private static void viewOfferings(Scanner inScan) {
 		
-		System.out.println("> Please enter the course ID to view offerings for: ");
+		System.out.print("> Please enter the course ID to view offerings for: ");
 		String semID = "";
 		
 		

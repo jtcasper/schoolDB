@@ -3,13 +3,13 @@
 ------1. Input and enter into precondition table !!!checked.
 ------2. Show course offerings by course Id ///!!
 3. Change Add Course Offering //not finished
-------4. View Special Requests completed
+------4. View Special Requests 
 5. Approve special requests
 --6. Correct 'Enforce Add/Deadline' to 'enforcing' instead of adding 'add' and 'drop' deadline NOT FINISHED
 ------7. Edit student profile option
-8. Edit student courses option
-9. No option to view pending courses
-10.Show grades of all courses in view grade option
+------8. Edit student courses option
+------9. No option to view pending courses(student)
+------10.Show grades of all courses in view grade option
 11.Show warning on student login if he is not fulfilling MinCredits criteria
 12.Admin can edit student GPA, level, residency and other details, not able to view or edit student's password
 

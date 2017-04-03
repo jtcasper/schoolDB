@@ -318,7 +318,7 @@ public class interactiveShell {
 				{
 					newPage();
 					System.out.print("# View Pending Courses \n");
-					//view pending courses
+					viewmypending(user.getUsername());//view pending courses
 				}
 				else if(command.equals("4"))//View Grades
 				{
@@ -335,25 +335,19 @@ public class interactiveShell {
 					while(!coursecmd.equals("0")){
 					if(coursecmd.equals("1"))
 					{
-						//viewstudent(inScan, 23);
 						viewBill(inScan, user.getUsername());//view Bill
-						System.out.print("# View/Pay Bill\n>Please enter a command:  ");
-						System.out.print("\n  1.View Bill\n  2.Pay Bill \n   0.Back  \n> ");
-						coursecmd = inScan.nextLine();
+						
 						}
 					else if(coursecmd.equals("2"))
 					{
 						payBill(inScan, user.getUsername());
-						System.out.print("# View/Pay Bill\n>Please enter a command:  ");
-						System.out.print("\n  1.View Bill\n  2.Pay Bill \n   0.Back  \n> ");
-						coursecmd = inScan.nextLine();
 					}
 					else{
 						invalidCommand();
-						System.out.print("# View/Pay Bill\n>Please enter a command:  ");
-						System.out.print("\n  1.View Bill\n  2.Pay Bill \n   0.Back  \n> ");
-						coursecmd = inScan.nextLine();
 					}
+					System.out.print("# View/Pay Bill\n>Please enter a command:  ");
+					System.out.print("\n  1.View Bill\n  2.Pay Bill \n   0.Back  \n> ");
+					coursecmd = inScan.nextLine();
 					}
 				}
 				else if(command.equals("6"))//Logout
@@ -985,7 +979,43 @@ public class interactiveShell {
 		//}
 		
 	}
-
+	private static void viewmypending(String sid)
+	{
+		Connection conn = ConnectionManager.getConnectionInstance();
+		String cid = "";
+		String title = "";
+		String credits = "";
+		String clevel = "";
+		String semid = "";
+		String did = "";
+		try {
+			
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM TAKES WHERE STATUS = ? AND SID = ?");
+			ps.setString(1, "Pending");
+			ps.setString(2, sid);
+			ResultSet rs = ps.executeQuery();
+			while( rs.next() ){
+				cid = rs.getString("CID");
+				semid = rs.getString("SEMID");
+				credits = rs.getString("CREDITS");
+				PreparedStatement ps1 = conn.prepareStatement("SELECT * FROM COURSE WHERE cid = ?");
+				ps1.setString(1, cid);
+				ResultSet rs1 = ps1.executeQuery();
+				if(rs1.next())
+				{title = rs1.getString("TITLE");
+				clevel = rs1.getString("CLEVEL");
+				did = rs1.getString("DID");
+				}
+				System.out.println("-----------------------------------------------------------------------------------");
+				System.out.println(padRight("sid", 10) + "|" +padRight("courseID", 10) + "|" + padRight("Title", 40) + "|" + padRight("Credits", 10) + "|" + padRight("CourseLevel", 13) + "|" + padRight("Department", 10) + "|" +padRight("semID", 10));
+				System.out.println("-----------------------------------------------------------------------------------");
+				System.out.println(padRight(sid, 10)+  "|"+padRight(cid, 10)+ "|" + padRight(title, 40) + "|" + padRight(credits, 10) + "|" + padRight(clevel, 13) + "|"+ padRight(did, 10) + "|"+ padRight(semid, 10) + "|");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
 	private static void viewpending2()
 	{
 		Connection conn = ConnectionManager.getConnectionInstance();

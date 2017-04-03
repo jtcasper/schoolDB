@@ -2,7 +2,7 @@
 
 1. Input and enter into precondition table !!!checked.
 2. Show course offerings by course Id ///!!
-3. Change Add Course Offering
+3. Change Add Course Offering //not finished
 4. View Special Requests not complete
 5. Approve special requests
 6. Correct 'Enforce Add/Deadline' to 'enforcing' instead of adding 'add' and 'drop' deadline NOT FINISHED

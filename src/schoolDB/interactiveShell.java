@@ -208,7 +208,7 @@ public class interactiveShell {
 					while(!(coursecmd.equals("0"))){
 						if(coursecmd.equals("1"))
 						{
-							// view special requests
+							viewpending2();// view special requests
 
 							
 						}
@@ -947,6 +947,52 @@ public class interactiveShell {
 		//}
 		
 	}
+
+	private static void viewpending2()
+	{
+		Connection conn = ConnectionManager.getConnectionInstance();
+		String cid = "";
+		String title = "";
+		String credits = "";
+		String clevel = "";
+		String semid = "";
+		String did = "";
+		String sid = "";
+		String gpa = "";
+		try {
+			
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM TAKES WHERE STATUS = ?");
+			ps.setString(1, "Pending");
+			ResultSet rs = ps.executeQuery();
+			while( rs.next() ){
+				cid = rs.getString("CID");
+				sid = rs.getString("SID");
+				semid = rs.getString("SEMID");
+				credits = rs.getString("CREDITS");
+				PreparedStatement ps1 = conn.prepareStatement("SELECT * FROM COURSE WHERE cid = ?");
+				ps1.setString(1, cid);
+				ResultSet rs1 = ps1.executeQuery();
+				if(rs1.next())
+				{title = rs1.getString("TITLE");
+				clevel = rs1.getString("CLEVEL");
+				did = rs1.getString("DID");
+				}
+				PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM STUDENT WHERE SID = ?");
+				ps2.setString(1, sid);
+				ResultSet rs2 = ps2.executeQuery();
+				if( rs2.next() ){
+					gpa= rs2.getString("GPA");
+				}
+				System.out.println("-----------------------------------------------------------------------------------");
+				System.out.println(padRight("sid", 10) + "|" +padRight("GPA", 10)+ "|" +padRight("courseID", 10) + "|" + padRight("Title", 40) + "|" + padRight("Credits", 10) + "|" + padRight("CourseLevel", 13) + "|" + padRight("Department", 10) + "|" + "|" +padRight("semID", 10));
+				System.out.println("-----------------------------------------------------------------------------------");
+				System.out.println(padRight(sid, 10)+ "|"+padRight(gpa, 10)+ "|"+padRight(cid, 10)+ "|" + padRight(title, 40) + "|" + padRight(credits, 10) + "|" + padRight(clevel, 13) + "|"+ padRight(did, 10) + "|"+ padRight(semid, 10) + "|");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
 	private static void readcourse(Scanner inscan)
 	{
 		Connection conn = ConnectionManager.getConnectionInstance();
@@ -976,7 +1022,7 @@ public class interactiveShell {
 		System.out.println(padRight("courseID", 10) + "|" + padRight("Title", 40) + "|" + padRight("Credits", 10) + "|" + padRight("CourseLevel", 13) + "|" + padRight("Department", 10) + "|" );
 		System.out.println("-----------------------------------------------------------------------------------");
 		System.out.println(padRight(cid, 10)+ "|" + padRight(title, 40) + "|" + padRight(credits, 10) + "|" + padRight(clevel, 13) + "|"+ padRight(did, 10) + "|");
-		//System.out.println(padRight(cid, 20)+ "|" + padRight(title, 20) + "|" + padRight(credits, 20) + "|" + padRight(clevel, 20) + "|");
+		
 	}
 	private static void readallcourse(Scanner inscan)
 	{

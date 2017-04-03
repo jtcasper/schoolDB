@@ -3,7 +3,7 @@
 ------1. Input and enter into precondition table !!!checked.
 ------2. Show course offerings by course Id ///!!
 3. Change Add Course Offering //not finished
-------4. View Special Requests 
+------4. View Special Requests
 5. Approve/deny special requests
 --6. Correct 'Enforce Add/Deadline' to 'enforcing' instead of adding 'add' and 'drop' deadline NOT FINISHED
 ------7. Edit student profile option
@@ -36,9 +36,9 @@ drop a course
 
 
 =========================================================>
-1. There is an invalid command print coming on screen in view course(admin)
-2. Adding a course(admin) is not accepting input '2' for PG
-3. Approve special requests not working
+1. There is an invalid command print coming on screen in view course(admin) // Fixed JC
+2. Adding a course(admin) is not accepting input '2' for PG  //Fixed JC
+3. Approve special requests not working // Implemented JC
 4. Some issue with enforcing deadline, not working properly
 5. Invalid column specification in student edit profile
 6. Enroll a course not working in student

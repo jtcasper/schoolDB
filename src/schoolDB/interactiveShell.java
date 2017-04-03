@@ -671,11 +671,79 @@ public class interactiveShell {
 		String title = inScan.nextLine();
 		System.out.print("> Credits: ");
 		String credits = inScan.nextLine();
-		System.out.print("> Course Level: ");
-		String cLevel = inScan.nextLine();
+		System.out.print("> Course Level:\n1.UG\n2.PG\n> ");
+		String cLevel = "";
+		String cLevel2 = inScan.nextLine();
+		while(!(cLevel2.equals("1")||cLevel2.equals("1")))
+		{System.out.println("###error input\n");
+			System.out.print("> Course Level:\n1.UG\n2.PG\n> ");
+			cLevel2 = inScan.nextLine();	
+		}
+		if(cLevel2.equals("1"))
+		{
+			cLevel="UG";
+		}
+		else if(cLevel2.equals("2"))
+		{	
+			cLevel="PG";
+		}
 		System.out.print("> Department ID: ");
 		String did = inScan.nextLine();
-		
+		System.out.print("> Precondition: Please select the option:\n1.Adding Prerequisite course.\n2.Adding required gpa.\n3.Adding special permision requirement.\n0.Exit\n>");
+		String precondition = inScan.nextLine();
+		String precid="";
+		String pregpa="";
+		String prespe="N";
+		while(!precondition.equals("0"))
+		{
+			if(precondition.equals("1"))
+				{
+				System.out.println(">Please enter the prerequisite course id:");
+				precid=inScan.nextLine();
+				}
+			else if(precondition.equals("2"))
+			{
+				System.out.println(">Please enter the required GPA:");
+				pregpa=inScan.nextLine();
+				float pgpa = Float.valueOf(pregpa);
+				while(pgpa>4.33||pgpa<0)
+				{
+					errorin();
+					System.out.println(">Please enter the required GPA:");
+					pregpa=inScan.nextLine();
+					pgpa = Float.valueOf(pregpa);
+				}
+			}
+			else if(precondition.equals("3"))
+			{	System.out.println(">Please select from the options: 1.adding special permission requirement.2.cancel the special permission requirement\n>");
+				String prespe2=inScan.nextLine();
+				while(!(prespe2.equals("1")||prespe2.equals("2")))
+				{
+					System.out.println(">Please select from the options: 1.adding special permission requirement.2.cancel the special permission requirement\n>");
+					 prespe2=inScan.nextLine();
+					if(prespe2.equals("1"))
+					{
+						prespe ="Y";
+					}
+					else if(prespe2.equals("2"))
+					{
+						prespe ="N";
+					}
+					else{
+						System.out.println("###error input\n");
+					}
+				}
+			prespe = "Y";
+			}
+			
+			else
+			{
+				System.out.print("#error input\n");
+				
+			}
+			System.out.print("> Precondition: Please select the option:\n1.Adding Prerequisite course.\n2.Adding required gpa.\n3.Adding special permission requirement.\n0.Exit\n>");
+			precondition = inScan.nextLine();
+		}
 		Connection conn = ConnectionManager.getConnectionInstance();
 		
 		try{
@@ -687,6 +755,13 @@ public class interactiveShell {
 			ps.setString(4, cLevel);
 			ps.setString(5, did);
 			ps.execute();
+			PreparedStatement ps2 = conn.prepareStatement("INSERT INTO PRECONDITION (CID, PRE_CID, GPA, SPPERM) "
+					+ "VALUES (?, ?, ?, ?) " );
+			ps2.setString(1, cid);
+			ps2.setString(2, precid);
+			ps2.setString(3, pregpa);
+			ps2.setString(4, prespe);
+			ps2.execute();
 			System.out.println("Course " + cid + " was created.");
 		} catch(SQLException e) {
 			System.out.println("Course could not be created.");
@@ -889,7 +964,8 @@ public class interactiveShell {
 		System.out.print("Please enter the course id: ");
 		cid = inscan.nextLine();
 		try {
-			PreparedStatement ps = conn.prepareStatement("SELECT * FROM COURSE ");
+			
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM COURSE WHERE cid = ?");
 			ps.setString(1, cid);
 			ResultSet rs = ps.executeQuery();
 			if( rs.next() ){
@@ -916,5 +992,9 @@ public class interactiveShell {
 	private static void newPage()
 	{
 		System.out.println("---------------------------------------\n");
+	}
+	private static void errorin()
+	{
+		System.out.println("###error input\n");
 	}
 }

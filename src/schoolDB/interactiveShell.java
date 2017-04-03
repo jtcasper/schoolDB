@@ -209,8 +209,6 @@ public class interactiveShell {
 						if(coursecmd.equals("1"))
 						{
 							viewpending2();// view special requests
-
-							
 						}
 						else if(coursecmd.equals("2"))
 						{

@@ -818,10 +818,10 @@ public class interactiveShell {
 		}
 		if(resLevel2.equals("1"))
 		{
-			resLevel = "In-State";
+			resLevel = "In State";
 		}
 		else if(resLevel2.equals("2")){
-			resLevel ="Out of State";
+			resLevel ="Out Osf State";
 		}
 		else if(resLevel2.equals("3")){
 			

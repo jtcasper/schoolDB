@@ -593,16 +593,19 @@ public class interactiveShell {
 	}
 	private static void studentProfile(Scanner inScan, String username) {
 		
+		String sid = "";
 		String fname = "";
 		String lname = "";
-		//String email ="";
+		String email ="";
 		String dob = "";
-		//String gpa = "";
+		String pwd = "";
+		String gpa = "";
 		String slevel = "";
+		String bill = "";
 		String did = "";
 		String residency = "";
-		String bill = "";
-		//int credits = 0;
+		String uname = "";
+		int credits = 0;
 		
 		Connection conn = ConnectionManager.getConnectionInstance();
 		
@@ -611,24 +614,29 @@ public class interactiveShell {
 			ps.setString(1, username);
 			ResultSet rs = ps.executeQuery();
 			if( rs.next() ){
-				fname = rs.getString("fname");
-				lname = rs.getString("lname");
+				fname = rs.getString("FNAME");
+				lname = rs.getString("LNAME");
+				email = rs.getString("EMAIL");
 				dob = rs.getString("DOB");
+				pwd = rs.getString("PWD");
+				gpa = rs.getString("GPA");
 				slevel = rs.getString("SLEVEL");
-				did = rs.getString("DID");
-		//		gpa = rs.getString("GPA");
-				residency = rs.getString("RESIDENCY");
 				bill = rs.getString("BILL");
+				did = rs.getString("DID");
+				residency = rs.getString("RESIDENCY");
+				uname = rs.getString("UNAME");
+				credits = rs.getInt("CREDITS");
 			}
+			
 		} catch (SQLException e){
 			System.out.println("Error retrieving profile details.");
 			return;
 		}
 		
 		newPage();
-		System.out.println(padRight("StudentID", 10) + "|" + padRight("Firstname", 15) + "|" + padRight("Lastname", 15) + "|" + padRight("DOB", 20) + "|" + padRight("status", 10) + "|" + padRight("Level", 12) + "|" + padRight("Department", 10) + "|" + padRight("Bill Amount", 12)+ "|"+ padRight("Fall CoursesRegistered For and Grades Received", 40)+ "|");
+		System.out.println(padRight("StudentID", 10) + "|" + padRight("Firstname", 15) + "|" + padRight("Lastname", 15) + "|" + padRight("DOB", 28) + "|" +padRight("email", 20) + "|" + padRight("status", 10) + "|" + padRight("Level", 12) + "|" + padRight("Department", 10) + "|" + padRight("Bill Amount", 12)+ "|"+ padRight("Enrolled Course & Grades", 20)+ "|");
 		System.out.println("-----------------------------------------------------------------------------------");
-		System.out.println(padRight(username, 10)+ "|" + padRight(fname, 15) + "|" + padRight(lname, 15) + "|" + padRight(dob, 20) + "|"+ padRight(residency, 10) + "|"+ padRight(slevel, 12) + "|"+ padRight(did, 10) + "|"+ padRight(bill, 12) + "|"+ padRight(null, 10) + "|");
+		System.out.println(padRight(username, 10)+ "|" + padRight(fname, 15) + "|" + padRight(lname, 15) + "|" + padRight(dob, 28)+ "|" + padRight(email, 20)+ "|"+ padRight(residency, 10) + "|"+ padRight(slevel, 12) + "|"+ padRight(did, 10) + "|"+ padRight(bill, 12) + "|"+ padRight(null, 10) + "|");
 		
 	}
 	private static void editStudent(Scanner inScan, String username) {
@@ -881,7 +889,7 @@ public class interactiveShell {
 		System.out.print("Please enter the course id: ");
 		cid = inscan.nextLine();
 		try {
-			PreparedStatement ps = conn.prepareStatement("SELECT * FROM COURSE WHERE cid = ?");
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM COURSE ");
 			ps.setString(1, cid);
 			ResultSet rs = ps.executeQuery();
 			if( rs.next() ){
@@ -890,16 +898,14 @@ public class interactiveShell {
 				credits = rs.getString("CREDITS");
 				clevel = rs.getString("CLEVEL");
 				did = rs.getString("DID");
-//				maxsize = rs.getString("MAXSIZE");
-//				wsize = rs.getString("WSIZE");
 				
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		System.out.println(padRight("courseID", 10) + "|" + padRight("Title", 40) + "|" + padRight("Credits", 10) + "|" + padRight("CourseLevel", 10) + "|" + padRight("Department", 10) + "|" + padRight("CourseSize", 10) + "|");
+		System.out.println(padRight("courseID", 10) + "|" + padRight("Title", 40) + "|" + padRight("Credits", 10) + "|" + padRight("CourseLevel", 10) + "|" + padRight("Department", 10) + "|" );
 		System.out.println("-----------------------------------------------------------------------------------");
-		System.out.println(padRight(cid, 10)+ "|" + padRight(title, 40) + "|" + padRight(credits, 10) + "|" + padRight(clevel, 10) + "|"+ padRight(did, 10) + "|"+ padRight(maxsize, 10) + "|");
+		System.out.println(padRight(cid, 10)+ "|" + padRight(title, 40) + "|" + padRight(credits, 10) + "|" + padRight(clevel, 10) + "|"+ padRight(did, 10) + "|");
 		//System.out.println(padRight(cid, 20)+ "|" + padRight(title, 20) + "|" + padRight(credits, 20) + "|" + padRight(clevel, 20) + "|");
 	}
 	

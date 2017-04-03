@@ -19,7 +19,11 @@ Admin: enforce a deadline
 approve/deny pending request
 edit/adding student profile
 student:
-enroll a course
+[enroll a course] --- check its credits range--select specific credits--(if it exceeds the maximum credits)--not allowed unless to drop course first
+--check if it satisfy all the preconditions:
+(if prespec is required)--(if the clevel is correct)--(if precid is not null, compare to takes's sid/cid with status confirmed)--(if pregpa is not null, compare to student's gpa)
+			--true--check the size of the course--check the size of waitlist--change the status to either confirmed or waitlist, updated waitlistnum
+			----false--- change the status to pending.
 drop a course
 --Backend changes
 1. Enforce billing on addition of courses and approval of special courses

@@ -5,9 +5,6 @@ import java.sql.*;
 import java.util.Date;
 import java.text.ParseException;
 import java.util.Scanner;
-
-import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
-
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.sql.CallableStatement;
@@ -170,8 +167,8 @@ public class interactiveShell {
 						addCourse(inScan);
 					}
 					if(coursecmd.equals("3"))
-					{
-						readallcourse(inScan);
+					{readallcourse(inScan);
+					
 					}
 					else{
 						invalidCommand();
@@ -212,6 +209,8 @@ public class interactiveShell {
 						if(coursecmd.equals("1"))
 						{
 							viewpending2();// view special requests
+
+							
 						}
 						else if(coursecmd.equals("2"))
 						{
@@ -299,12 +298,10 @@ public class interactiveShell {
 					else if(coursecmd.equals("2"))
 					{
 						//add a course
-						enrollCourseStudent(inScan, user.getUsername());
 					}
 					else if(coursecmd.equals("3"))
 					{
-						//drop a course
-						dropCourseStudent(inScan, user.getUsername());
+						//drop a course 
 					}
 					else if(coursecmd.equals("4"))
 					{	
@@ -363,89 +360,6 @@ public class interactiveShell {
 		}
 		
 	}
-	private static void dropCourseStudent(Scanner inScan, String username) {
-		
-		System.out.println("> Current courses.");
-		
-		Connection conn = ConnectionManager.getConnectionInstance();
-		
-		try{
-			PreparedStatement ps = conn.prepareStatement("SELECT * FROM TAKES WHERE SID = ?");
-			ps.setString(1, username);
-			ResultSet rs = ps.executeQuery();
-			System.out.println(padRight("Course ID", 20) + "|" + padRight("Grade", 5) + "|" + padRight("Credits", 10) + "|" + padRight("Status", 15) + "|" + padRight("Semester ID", 20) + "|");
-			System.out.println("----------------------------------------------------------------------");
-			while( rs.next() ){
-				String cid = rs.getString("CID");
-				String grade = rs.getString("GRADE");
-				String credits = rs.getString("CREDITS");
-				String status = rs.getString("STATUS");
-				String semID = rs.getString("SEMID");
-				System.out.println(padRight(cid, 20) + "|" + padRight(grade, 5) + "|" + padRight(credits, 10) + "|" + padRight(status, 15) + "|" + padRight(semID, 20) + "|");
-			}
-		} catch (SQLException e) {
-			System.out.println("Could not retrieve taken courses for student.");
-			e.printStackTrace();
-		}
-		
-		System.out.println("> Enter the Course ID and Semester ID of the course you would like to drop.");
-		System.out.print("> Course ID: ");
-		String cid = inScan.nextLine();
-		System.out.print("> Semester ID: ");
-		String semid = inScan.nextLine();
-		
-		try{
-			PreparedStatement ps = conn.prepareStatement("DELETE FROM TAKES WHERE CID = ? AND SEMID = ?");
-			ps.setString(1, cid);
-			ps.setString(2, semid);
-			ps.executeUpdate();
-		} catch(SQLException e) {
-			System.out.println("Could not drop requested course.");
-		}
-		
-		
-	}
-
-	private static void enrollCourseStudent(Scanner inScan, String username) {
-		
-		System.out.println("> Entering data for course registration.");
-		System.out.print("> Please enter the Course ID of the course offering: ");
-		String offerCID = inScan.nextLine();
-		System.out.print("> Please enter the Semester ID of the course offering: ");
-		String offerSemID = inScan.nextLine();
-		
-		String offerCreds = "";
-		
-		Connection conn = ConnectionManager.getConnectionInstance();
-		
-		try{
-			PreparedStatement ps = conn.prepareStatement("SELECT CREDITS FROM OFFERS WHERE CID = ? AND SID = ?");
-			ps.setString(1, offerCID);
-			ps.setString(2, offerSemID);
-			ResultSet rs = ps.executeQuery();
-			if( rs.next() ){
-				offerCreds = rs.getString("CREDITS");
-			}
-		} catch(SQLException e) {
-			System.out.println("Course offering not found.");
-			return;
-		}
-		
-		try{
-			PreparedStatement ps = conn.prepareStatement("INSERT INTO TAKES (SID, GRAD, CREDITS, STATUS, SEMID, CID) ");
-			ps.setString(1, username);
-			ps.setString(2, null);
-			ps.setString(3, offerCreds);
-			ps.setString(4, "Pending");
-			ps.setString(5, offerSemID);
-			ps.setString(6, offerCID);
-			ps.execute();
-		} catch(SQLException e){
-			System.out.println("Could not enroll in course offering.");
-		}
-		
-	}
-
 	private static void invalidCommand()
 	{
 		System.out.print("***Invalid Command\n");
@@ -565,8 +479,9 @@ public class interactiveShell {
 
 	private static void viewOfferings(Scanner inScan) {
 		
-		System.out.print("> Please enter the course ID to view offerings for: ");
+		System.out.println("> Please enter the course ID to view offerings for: ");
 		String semID = "";
+		
 		
 		String schedule = "";
 		String location = "";
@@ -600,7 +515,7 @@ public class interactiveShell {
 
 			
 		} catch(SQLException e) {
-			System.out.println("Error retrieving course offerings for course " + cid);
+			System.out.println("Error retrieving semester course offerings for semester " + semID);
 		}
 		
 		
@@ -657,7 +572,7 @@ public class interactiveShell {
 		}
 		
 		newPage();
-		System.out.println(padRight("StudentID", 20) + "|" + padRight("First name", 20) + "|" + padRight("Last name", 20) + "|" + padRight("GPA", 10));
+		System.out.println(padRight("StudentID", 20) + "|" + padRight("Firstname", 20) + "|" + padRight("Lastname", 20) + "|" + padRight("GPA", 10));
 		System.out.println("-----------------------------------------------------------------------------------");
 		System.out.println(padRight(username, 20)+ "|" + padRight(fname, 20) + "|" + padRight(lname, 20) + "|" + padRight(gpa, 10));
 			
@@ -705,9 +620,9 @@ public class interactiveShell {
 		}
 		
 		newPage();
-		System.out.println(padRight("StudentID", 10) + "|" + padRight("Firstname", 15) + "|" + padRight("Lastname", 15) + "|" + padRight("DOB", 28) + "|" +padRight("email", 20) + "|" + padRight("status", 10) + "|" + padRight("Level", 15) + "|" + padRight("Department", 10) + "|" + padRight("Bill Amount", 12)+ "|"+ padRight("Enrolled Course & Grades", 20)+ "|");
+		System.out.println(padRight("StudentID", 10) + "|" + padRight("Firstname", 15) + "|" + padRight("Lastname", 15) + "|" + padRight("DOB", 28) + "|" +padRight("email", 20) + "|" + padRight("status", 10) + "|" + padRight("Level", 12) + "|" + padRight("Department", 10) + "|" + padRight("Bill Amount", 12)+ "|"+ padRight("Enrolled Course & Grades", 20)+ "|");
 		System.out.println("-----------------------------------------------------------------------------------");
-		System.out.println(padRight(username, 10)+ "|" + padRight(fname, 15) + "|" + padRight(lname, 15) + "|" + padRight(dob, 28)+ "|" + padRight(email, 20)+ "|"+ padRight(residency, 10) + "|"+ padRight(slevel, 15) + "|"+ padRight(did, 10) + "|"+ padRight(bill, 12) + "|"+ padRight(null, 10) + "|");
+		System.out.println(padRight(username, 10)+ "|" + padRight(fname, 15) + "|" + padRight(lname, 15) + "|" + padRight(dob, 28)+ "|" + padRight(email, 20)+ "|"+ padRight(residency, 10) + "|"+ padRight(slevel, 12) + "|"+ padRight(did, 10) + "|"+ padRight(bill, 12) + "|"+ padRight(null, 10) + "|");
 		
 	}
 	private static void editStudent(Scanner inScan, String username) {
@@ -956,17 +871,11 @@ public class interactiveShell {
 			
 			resLevel ="International";
 		}
-		int amountOwed = 0;
-		System.out.print("> Amount owed (if any): ");
-		String amtOwedStr = inScan.nextLine();
-		if(Integer.parseInt(amtOwedStr) > 0){
-			amountOwed = Integer.parseInt(amtOwedStr);
-		}
 		Connection conn = ConnectionManager.getConnectionInstance();
 		
 		try {
-			PreparedStatement ps = conn.prepareStatement("INSERT INTO STUDENT (SID, FNAME, LNAME,DOB, EMAIL,PWD, SLEVEL, DID, RESIDENCY, BILL) "
-					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ");
+			PreparedStatement ps = conn.prepareStatement("INSERT INTO STUDENT (SID, FNAME, LNAME,DOB, EMAIL,PWD, SLEVEL, DID, RESIDENCY) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ");
 			//PreparedStatement ps = conn.prepareStatement("INSERT INTO STUDENT (SID, FNAME, LNAME,DOB, EMAIL,PWD, SLEVEL, DID, RESIDENCY) "
 			//		+ "VALUES ('444','123','45','12/23/1666','321321','password','UG','CSC','In-State') ");
 			 //CallableStatement ps = conn.prepareCall("{call ENROLL_STUDENT(?, ?,?,?,?,?,?,?)}");
@@ -975,16 +884,16 @@ public class interactiveShell {
 			ps.setString(1, sid);
 			ps.setString(2, fname);
 			ps.setString(3, lname);
-			ps.setDate(4, sqlDobDate);
+			ps.setDate(4, sqlDobDate);//TODO change the dob
 			ps.setString(5, email);
 			ps.setString(6, password);
 			ps.setString(7, sLevel);
 			ps.setString(8, did);
 			ps.setString(9, resLevel);
-			ps.setInt(10, amountOwed);
 			ps.execute();
 			System.out.println("Student has been sucessfully enrolled");
 		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			System.out.println("Student could not be enrolled.");
 			e.printStackTrace();
 		}
@@ -1061,9 +970,9 @@ public class interactiveShell {
 		}
 		//admin view the basic profile of student
 			newPage();
-		System.out.println(padRight("StudentID", 10) + "|" + padRight("Firstname", 15) + "|" + padRight("Lastname", 15) + "|" + padRight("DOB", 30) + "|" + padRight("eMAIL", 20) + "|" + padRight("GPA", 10) + "|" + padRight("Level", 10) + "|" + padRight("Residency", 10)+ "|" + padRight("bill", 10) + "|");
+		System.out.println(padRight("StudentID", 10) + "|" + padRight("Firstname", 15) + "|" + padRight("Lastname", 15) + "|" + padRight("DOB", 30) + "|" + padRight("eMAIL", 20) + "|" + padRight("GPA", 10) + "|" + padRight("Level", 10) + "|" + padRight("Residency", 10)+ "|");
 		System.out.println("-----------------------------------------------------------------------------------");
-		System.out.println(padRight(sid, 10)+ "|" + padRight(fname, 15) + "|" + padRight(lname, 15) + "|" + padRight(dob, 30) + "|"+ padRight(email, 20) + "|"+ padRight(gpa, 10) + "|"+ padRight(slevel, 10) + "|"+ padRight(residency, 10) + "|" + padRight("bill", 10) + "|");		
+		System.out.println(padRight(sid, 10)+ "|" + padRight(fname, 15) + "|" + padRight(lname, 15) + "|" + padRight(dob, 30) + "|"+ padRight(email, 20) + "|"+ padRight(gpa, 10) + "|"+ padRight(slevel, 10) + "|"+ padRight(residency, 10) + "|");		
 	}
 	private static void viewmypending(String sid)
 	{

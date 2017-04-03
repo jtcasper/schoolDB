@@ -269,7 +269,7 @@ public class interactiveShell {
 					}
 					else if(coursecmd.equals("2"))
 					{
-						editStudent(inScan, user.getUsername());
+						editStudent(inScan, user.getUsername());////edit student profile
 						System.out.print("# View Profile\n>Please enter a command:  ");
 						System.out.print("\n  1.View Profile\n  2.Edit Profile \n  0.Back  \n> ");
 						coursecmd = inScan.nextLine();
@@ -642,14 +642,20 @@ public class interactiveShell {
 		String email = inScan.nextLine();
 		System.out.print("> Password: ");
 		String pwd = inScan.nextLine();
-		
+		System.out.print("> Phone Number: ");
+		String phone = inScan.nextLine();
+		System.out.print("> Address: ");
+		String address = inScan.nextLine();
 		Connection conn = ConnectionManager.getConnectionInstance();
 		
 		try {
-			PreparedStatement ps = conn.prepareStatement("UPDATE STUDENT SET email = ?, PWD = ? WHERE SID = ?");
+			PreparedStatement ps = conn.prepareStatement("UPDATE STUDENT SET email = ?, PWD = ?, PHONE_NUMBER= ?, ADDRESS = ?,  WHERE SID = ?");
 			ps.setString(1, email);
 			ps.setString(2, pwd);
-			ps.setString(3, username);
+			ps.setString(3, phone);
+			ps.setString(4, address);
+			ps.setString(5, username);
+			
 			ps.executeUpdate();
 			System.out.println("Student profile updated.");
 		} catch(SQLException e) {

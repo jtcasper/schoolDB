@@ -314,7 +314,8 @@ public class interactiveShell {
 					}
 					else if(coursecmd.equals("3"))
 					{
-						//drop a course 
+						//drop a course
+						dropCourseStudent(inScan, user.getUsername());
 					}
 					else if(coursecmd.equals("4"))
 					{	
@@ -373,6 +374,50 @@ public class interactiveShell {
 		}
 		
 	}
+	private static void dropCourseStudent(Scanner inScan, String username) {
+		
+		System.out.println("> Current courses.");
+		
+		Connection conn = ConnectionManager.getConnectionInstance();
+		
+		try{
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM TAKES WHERE SID = ?");
+			ps.setString(1, username);
+			ResultSet rs = ps.executeQuery();
+			System.out.println(padRight("Course ID", 20) + "|" + padRight("Grade", 5) + "|" + padRight("Credits", 10) + "|" + padRight("Status", 15) + "|" + padRight("Semester ID", 20) + "|");
+			System.out.println("----------------------------------------------------------------------");
+			while( rs.next() ){
+				String cid = rs.getString("CID");
+				String grade = rs.getString("GRADE");
+				String credits = rs.getString("CREDITS");
+				String status = rs.getString("STATUS");
+				String semID = rs.getString("SEMID");
+				System.out.println(padRight(cid, 20) + "|" + padRight(grade, 5) + "|" + padRight(credits, 10) + "|" + padRight(status, 15) + "|" + padRight(semID, 20) + "|");
+			}
+		} catch (SQLException e) {
+			System.out.println("Could not retrieve taken courses for student.");
+			e.printStackTrace();
+		}
+		
+		System.out.println("> Enter the Course ID and Semester ID of the course you would like to drop.");
+		System.out.print("> Course ID: ");
+		String cid = inScan.nextLine();
+		System.out.print("> Semester ID: ");
+		String semid = inScan.nextLine();
+		
+		try{
+			CallableStatement cs = conn.prepareCall("{call DROP_COURSE(?, ?, ?)}");
+			cs.setString(1, cid);
+			cs.setString(2, username);
+			cs.setString(3, semid);
+			cs.execute();
+			System.out.println("Successfully dropped course " + cid + " in semester " + semid);
+		} catch(SQLException e) {
+			System.out.println("Could not drop course " + cid + " in semester " + semid);
+		}
+		
+	}
+
 	private static void approveDenyPending(String sid, String cid, String semid, String decision) {
 		
 		Connection conn = ConnectionManager.getConnectionInstance();
@@ -412,8 +457,8 @@ public class interactiveShell {
 			 cStmt.registerOutParameter(2, Types.BOOLEAN);
 			
 			 boolean hadResults = cStmt.execute();
-			while(hadResults){
-				ResultSet rs = cStmt.getResultSet();
+			 while(hadResults){
+				 ResultSet rs = cStmt.getResultSet();
 				 hadResults = cStmt.getMoreResults();
 			}
 			boolean status = cStmt.getBoolean(2);

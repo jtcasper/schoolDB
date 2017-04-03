@@ -5,6 +5,9 @@ import java.sql.*;
 import java.util.Date;
 import java.text.ParseException;
 import java.util.Scanner;
+
+import com.sun.xml.internal.bind.unmarshaller.InfosetScanner;
+
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.sql.CallableStatement;
@@ -159,16 +162,16 @@ public class interactiveShell {
 					String coursecmd = inScan.nextLine();
 					while(!coursecmd.equals("0")){
 					if(coursecmd.equals("1"))
-						{readcourse(inScan);
-						
-						}
+					{
+						readcourse(inScan);
+					}
 					else if(coursecmd.equals("2"))
 					{
 						addCourse(inScan);
 					}
-					if(coursecmd.equals("3"))
-					{readallcourse(inScan);
-					
+					else if(coursecmd.equals("3"))
+					{
+						readallcourse(inScan);
 					}
 					else{
 						invalidCommand();
@@ -215,13 +218,26 @@ public class interactiveShell {
 						else if(coursecmd.equals("2"))
 						{
 							// approve/deny special requests
-
+							System.out.println("> Entering data to approve or deny a special request. ");
+							System.out.print("> Student ID: ");
+							String sid = inScan.nextLine();
+							System.out.print("> Course ID: ");
+							String cid = inScan.nextLine();
+							System.out.print("> Semester ID: ");
+							String semID = inScan.nextLine();
+							System.out.print("> Should student request be approved? (Y/N): ");
+							String decision = inScan.nextLine();
+							while(!(decision.equalsIgnoreCase("y")) && !(decision.equalsIgnoreCase("n"))){
+								System.out.print("#### ERRONEOUS INPUT\n> Should student request be approved? (Y/N): ");
+								decision = inScan.nextLine();
+							}
+							approveDenyPending(sid, cid, semID, decision);
 						}
 						else{
 							invalidCommand();
 						}
 						System.out.print("# View/Approve Special Requests \n>Please enter a command:  ");
-						System.out.print("\n  1.View Special Requests\n  2.Approve Special Requests \n  0.Back  \n>");
+						System.out.print("\n  1. View Special Requests\n  2. Approve Special Requests \n  0. Back  \n> ");
 						coursecmd = inScan.nextLine();
 					}
 					
@@ -360,6 +376,32 @@ public class interactiveShell {
 		}
 		
 	}
+	private static void approveDenyPending(String sid, String cid, String semid, String decision) {
+		
+		Connection conn = ConnectionManager.getConnectionInstance();
+		
+		String decisionString = "";
+		
+		if(decision.equalsIgnoreCase("Y")){
+			decisionString = "Confirmed";
+		} else {
+			decisionString = "Denied";
+		}
+		
+		try{
+			PreparedStatement ps = conn.prepareStatement("UPDATE TAKES SET STATUS = ? WHERE CID = ? AND SID = ? AND SEMID = ?");
+			ps.setString(1, decisionString);
+			ps.setString(2, cid);
+			ps.setString(3, sid);
+			ps.setString(4, semid);
+			ps.executeUpdate();
+			System.out.println("Successfully updated status.");
+		} catch(SQLException e){
+			System.out.println("Could not update status for CID/SID/SEMID combination.");
+		}
+		
+	}
+
 	private static void invalidCommand()
 	{
 		System.out.print("***Invalid Command\n");
@@ -707,8 +749,9 @@ public class interactiveShell {
 		System.out.print("> Course Level:\n1.UG\n2.PG\n> ");
 		String cLevel = "";
 		String cLevel2 = inScan.nextLine();
-		while(!(cLevel2.equals("1")||cLevel2.equals("1")))
-		{System.out.println("###error input\n");
+		while(!( cLevel2.equals("1") || cLevel2.equals("2") ))
+		{
+			System.out.println("###error input\n");
 			System.out.print("> Course Level:\n1.UG\n2.PG\n> ");
 			cLevel2 = inScan.nextLine();	
 		}
@@ -722,7 +765,7 @@ public class interactiveShell {
 		}
 		System.out.print("> Department ID: ");
 		String did = inScan.nextLine();
-		System.out.print("> Precondition: Please select the option:\n1.Adding Prerequisite course.\n2.Adding required gpa.\n3.Adding special permision requirement.\n0.Exit\n>");
+		System.out.print("> Precondition: Please select the option:\n 1.Adding Prerequisite course.\n 2.Adding required gpa.\n 3.Adding special permission requirement.\n 0.Exit\n> ");
 		String precondition = inScan.nextLine();
 		String precid="";
 		String pregpa="";
@@ -774,7 +817,7 @@ public class interactiveShell {
 				System.out.print("#error input\n");
 				
 			}
-			System.out.print("> Precondition: Please select the option:\n1.Adding Prerequisite course.\n2.Adding required gpa.\n3.Adding special permission requirement.\n0.Exit\n>");
+			System.out.print("> Precondition: Please select the option:\n 1.Adding Prerequisite course.\n 2.Adding required gpa.\n 3.Adding special permission requirement.\n 0.Exit\n> ");
 			precondition = inScan.nextLine();
 		}
 		Connection conn = ConnectionManager.getConnectionInstance();
@@ -854,7 +897,7 @@ public class interactiveShell {
 		}
 		System.out.print("> Department: ");
 		String did = inScan.nextLine();
-		System.out.print("> Residency: Please select the option: \n1.In-State  \n2.Out of State\n3.International\n> ");
+		System.out.print("> Residency: Please select the option: \n 1.In-State  \n 2.Out of State\n 3.International\n> ");
 		String resLevel = "";
 		String resLevel2 = inScan.nextLine();
 		while(!(resLevel2.equals("1")||resLevel2.equals("2")||resLevel2.equals("3"))){
@@ -872,6 +915,13 @@ public class interactiveShell {
 			
 			resLevel ="International";
 		}
+		int amountOwed = 0;
+		System.out.print("> Amount owed (if any): ");
+		String amtOwedStr = inScan.nextLine();
+		if(!(amtOwedStr.equals("")) && Integer.parseInt(amtOwedStr) > 0){
+			amountOwed = Integer.parseInt(amtOwedStr);
+		}
+
 		Connection conn = ConnectionManager.getConnectionInstance();
 		
 		try {
@@ -885,16 +935,16 @@ public class interactiveShell {
 			ps.setString(1, sid);
 			ps.setString(2, fname);
 			ps.setString(3, lname);
-			ps.setDate(4, sqlDobDate);//TODO change the dob
+			ps.setDate(4, sqlDobDate);
 			ps.setString(5, email);
 			ps.setString(6, password);
 			ps.setString(7, sLevel);
 			ps.setString(8, did);
 			ps.setString(9, resLevel);
+			ps.setInt(10, amountOwed);
 			ps.execute();
 			System.out.println("Student has been sucessfully enrolled");
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			System.out.println("Student could not be enrolled.");
 			e.printStackTrace();
 		}

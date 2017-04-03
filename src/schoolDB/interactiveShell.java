@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.util.Scanner;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.sql.CallableStatement;
 public class interactiveShell {
 	
 	public static void main(String[] args){
@@ -227,8 +228,10 @@ public class interactiveShell {
 					System.out.print("\n  Type Y to confirm to enforce semester's deadline. Or return to main menu \n>");
 					String coursecmd = inScan.nextLine();
 					if(coursecmd.equals("Y"))
-					{
+					{	System.out.print("# Please enter the semester id:\n>  ");
+						String semid=inScan.nextLine();
 						//enforce a deadline
+					enforcedeadline(semid);
 					}
 					
 				}
@@ -368,6 +371,29 @@ public class interactiveShell {
 	{
 		System.out.print("***Invalid Command\n");
 
+	}
+	private static boolean enforcedeadline(String semid){
+		Connection conn = ConnectionManager.getConnectionInstance();
+		try{
+			CallableStatement cStmt = conn.prepareCall("{call ENFORCE_DEADLINE(?,?)}");
+			 cStmt.setString(1,semid);
+			 cStmt.registerOutParameter(2, Types.BOOLEAN);
+			
+			 boolean hadResults = cStmt.execute();
+			while(hadResults){
+				ResultSet rs = cStmt.getResultSet();
+				 hadResults = cStmt.getMoreResults();
+			}
+			boolean status = cStmt.getBoolean(2);
+			System.out.println("Successfully enforce the deadline in " + semid);
+			return status;
+		} catch(SQLException e){
+			System.out.println("Could not enforce deadline.");
+			e.printStackTrace();
+			return false;
+		}
+
+		
 	}
 	private static void payBill(Scanner inScan, String username) {
 		

@@ -616,7 +616,7 @@ public class interactiveShell {
 		System.out.println(padRight(username, 20)+ "|" + padRight(fname, 20) + "|" + padRight(lname, 20) + "|" + padRight(gpa, 10));
 			
 	}
-	private static void studentProfile(Scanner inScan, String username) {
+	private static void studentProfile(Scanner inScan, String username) {//student side
 		
 		String sid = "";
 		String fname = "";
@@ -629,7 +629,6 @@ public class interactiveShell {
 		String bill = "";
 		String did = "";
 		String residency = "";
-		String uname = "";
 		int credits = 0;
 		
 		Connection conn = ConnectionManager.getConnectionInstance();
@@ -649,9 +648,14 @@ public class interactiveShell {
 				bill = rs.getString("BILL");
 				did = rs.getString("DID");
 				residency = rs.getString("RESIDENCY");
-				uname = rs.getString("UNAME");
 				credits = rs.getInt("CREDITS");
 			}
+			PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM STUDENT WHERE sid = ?");
+			ps2.setString(1, sid);
+			ResultSet rs2 = ps2.executeQuery();
+			System.out.println(padRight("StudentID", 10) + "|" + padRight("Firstname", 15) + "|" + padRight("Lastname", 15) + "|" + padRight("DOB", 28) + "|" +padRight("email", 20) + "|" + padRight("status", 10) + "|" + padRight("Level", 12) + "|" + padRight("Department", 10) + "|" + padRight("Bill Amount", 12)+ "|"+ padRight("Enrolled Course & Grades", 20)+ "|");
+			System.out.println("-----------------------------------------------------------------------------------");
+			System.out.println(padRight(username, 10)+ "|" + padRight(fname, 15) + "|" + padRight(lname, 15) + "|" + padRight(dob, 28)+ "|" + padRight(email, 20)+ "|"+ padRight(residency, 10) + "|"+ padRight(slevel, 12) + "|"+ padRight(did, 10) + "|"+ padRight(bill, 12) + "|"+ padRight(null, 10) + "|");
 			
 		} catch (SQLException e){
 			System.out.println("Error retrieving profile details.");
@@ -659,9 +663,7 @@ public class interactiveShell {
 		}
 		
 		newPage();
-		System.out.println(padRight("StudentID", 10) + "|" + padRight("Firstname", 15) + "|" + padRight("Lastname", 15) + "|" + padRight("DOB", 28) + "|" +padRight("email", 20) + "|" + padRight("status", 10) + "|" + padRight("Level", 12) + "|" + padRight("Department", 10) + "|" + padRight("Bill Amount", 12)+ "|"+ padRight("Enrolled Course & Grades", 20)+ "|");
-		System.out.println("-----------------------------------------------------------------------------------");
-		System.out.println(padRight(username, 10)+ "|" + padRight(fname, 15) + "|" + padRight(lname, 15) + "|" + padRight(dob, 28)+ "|" + padRight(email, 20)+ "|"+ padRight(residency, 10) + "|"+ padRight(slevel, 12) + "|"+ padRight(did, 10) + "|"+ padRight(bill, 12) + "|"+ padRight(null, 10) + "|");
+		
 		
 	}
 	private static void editStudent(Scanner inScan, String username) {
@@ -678,7 +680,7 @@ public class interactiveShell {
 		Connection conn = ConnectionManager.getConnectionInstance();
 		
 		try {
-			PreparedStatement ps = conn.prepareStatement("UPDATE STUDENT SET email = ?, PWD = ?, PHONE_NUMBER= ?, ADDRESS = ?,  WHERE SID = ?");
+			PreparedStatement ps = conn.prepareStatement("UPDATE STUDENT SET email = ?, PWD = ?, PHONE_NUMBER= ?, ADDRESS = ?  WHERE SID = ?");
 			ps.setString(1, email);
 			ps.setString(2, pwd);
 			ps.setString(3, phone);

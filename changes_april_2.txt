@@ -41,6 +41,6 @@ drop a course
 2. Adding a course(admin) is not accepting input '2' for PG  //Fixed JC
 3. Approve special requests not working // Implemented JC
 4. Some issue with enforcing deadline, not working properly
-5. Invalid column specification in student edit profile
+5. Invalid column specification in student edit profile //SH
 6. Enroll a course not working in student
 7. View grades should have courses and the grades received in those courses, rather than final gpa

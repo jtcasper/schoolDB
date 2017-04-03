@@ -1,6 +1,6 @@
 --Interface changes
 
-1. Input and enter into precondition table
+1. Input and enter into precondition table !!!checked.
 2. Show course offerings by course Id
 3. Change Add Course Offering
 4. View Special Requests not complete
@@ -19,3 +19,4 @@
 3. When a student drops a course, the next in waitlist should get enrolled
 4. (Not sure what exact thing to do on) Enforcing MinCredits criteria for international students
 5. Minimum grade requirement for specific course pre-requisite
+6. billing negative or not

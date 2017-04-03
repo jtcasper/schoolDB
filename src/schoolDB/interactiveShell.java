@@ -159,23 +159,18 @@ public class interactiveShell {
 					while(!coursecmd.equals("0")){
 					if(coursecmd.equals("1"))
 						{readcourse(inScan);
-						System.out.print("# View/Add Course \n>Please enter a command:  ");
-						System.out.print("\n  1.View Course \n  2.Adding A New Course  \n  0.Back  \n> ");
-						coursecmd = inScan.nextLine();
+						
 						}
 					else if(coursecmd.equals("2"))
 					{
 						addCourse(inScan);
-						System.out.print("# View/Add Course \n>Please enter a command:  ");
-						System.out.print("\n  1.View Course \n  2.Adding A New Course  \n  0.Back  \n> ");
-						coursecmd = inScan.nextLine();
 					}
 					else{
 						invalidCommand();
-						System.out.print("# View/Add Course \n>Please enter a command:  ");
-						System.out.print("\n  1.View Course \n  2.Adding A New Course  \n  0.Back  \n> ");
-						coursecmd = inScan.nextLine();
 					}
+					System.out.print("# View/Add Course \n>Please enter a command:  ");
+					System.out.print("\n  1.View Course \n  2.Adding A New Course  \n  0.Back  \n> ");
+					coursecmd = inScan.nextLine();
 					}
 				}
 				else if(command.equals("5")){//View/Add Courses Offering
@@ -187,23 +182,17 @@ public class interactiveShell {
 					{if(coursecmd.equals("1"))
 					{
 						viewOfferings(inScan);
-						System.out.print("# View/Add Course Offerings \n>Please enter a command:  ");
-						System.out.print("\n  1.View Course Offering \n  2.Adding New Course Offering \n  0.Back  \n> ");
-						coursecmd = inScan.nextLine();
 					}
 					else if(coursecmd.equals("2"))
 					{
 						addOfferings(inScan);
-						System.out.print("# View/Add Course Offerings \n>Please enter a command:  ");
-						System.out.print("\n  1.View Course Offering \n  2.Adding New Course Offering \n  0.Back  \n> ");
-						coursecmd = inScan.nextLine();
 					}
 					else{
 						invalidCommand();
-						System.out.print("# View/Add Course Offerings \n>Please enter a command:  ");
-						System.out.print("\n  1.View Course Offering \n  2.Adding New Course Offering \n  0.Back  \n> ");
-						coursecmd = inScan.nextLine();
 					}
+					System.out.print("# View/Add Course Offerings \n>Please enter a command:  ");
+					System.out.print("\n  1.View Course Offering \n  2.Adding New Course Offering \n  0.Back  \n> ");
+					coursecmd = inScan.nextLine();
 					}
 				}	
 				else if(command.equals("6")){//View/Approve Special Requests
@@ -216,53 +205,32 @@ public class interactiveShell {
 						{
 							// view special requests
 
-							System.out.print("# View/Approve Special Requests \n>Please enter a command:  ");
-							System.out.print("\n  1.View Special Requests\n  2.Approve Special Requests \n  0.Back  \n>");
-							coursecmd = inScan.nextLine();
+							
 						}
 						else if(coursecmd.equals("2"))
 						{
 							// approve/deny special requests
-							System.out.print("# View/Approve Special Requests \n>Please enter a command:  ");
-							System.out.print("\n  1.View Special Requests\n  2.Approve Special Requests \n  0.Back  \n>");
-							coursecmd = inScan.nextLine();
+
 						}
 						else{
 							invalidCommand();
-							System.out.print("# View/Approve Special Requests \n>Please enter a command:  ");
-							System.out.print("\n  1.View Special Requests\n  2.Approve Special Requests \n  0.Back  \n>");
-							coursecmd = inScan.nextLine();
 						}
+						System.out.print("# View/Approve Special Requests \n>Please enter a command:  ");
+						System.out.print("\n  1.View Special Requests\n  2.Approve Special Requests \n  0.Back  \n>");
+						coursecmd = inScan.nextLine();
 					}
 					
 				}
 				else if(command.equals("7")){//Enforce Add/Drop Deadline
 					newPage();
 					System.out.print("# Enforce Add/Drop Deadline\n>Please enter a command:  ");
-					System.out.print("\n  1.Add Deadline\n  2.Drop Deadline \n  0.Back  \n>");
+					System.out.print("\n  Type Y to confirm to enforce semester's deadline. Or return to main menu \n>");
 					String coursecmd = inScan.nextLine();
-					while(!coursecmd.equals("0"))
-					{if(coursecmd.equals("1"))
+					if(coursecmd.equals("Y"))
 					{
-						//Add Deadline
-						System.out.print("# Enforce Add/Drop Deadline\n>Please enter a command:  ");
-						System.out.print("\n  1.Add Deadline\n  2.Drop Deadline \n  0.Back  \n>");
-						coursecmd = inScan.nextLine();
+						//enforce a deadline
 					}
-					else if(coursecmd.equals("2"))
-					{
-						//Drop Deadline
-						System.out.print("# Enforce Add/Drop Deadline\n>Please enter a command:  ");
-						System.out.print("\n  1.Add Deadline\n  2.Drop Deadline \n  0.Back  \n>");
-						coursecmd = inScan.nextLine();
-					}
-					else{
-						invalidCommand();
-						System.out.print("# Enforce Add/Drop Deadline\n>Please enter a command:  ");
-						System.out.print("\n  1.Add Deadline\n  2.Drop Deadline \n  0.Back  \n>");
-						coursecmd = inScan.nextLine();
-					}
-					}
+					
 				}
 				else if(command.equals("8")){//Logout
 					return;

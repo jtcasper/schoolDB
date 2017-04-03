@@ -512,7 +512,7 @@ public class interactiveShell {
 		System.out.print("***Invalid Command\n");
 
 	}
-	private static void enforcedeadline(String semid){//not finished
+	private static void enforcedeadline(String semid){
 		Connection conn = ConnectionManager.getConnectionInstance();
 		try{
 			CallableStatement cStmt = conn.prepareCall("{call ENFORCE_DEADLINE(?,?)}");
@@ -525,7 +525,7 @@ public class interactiveShell {
 				 hadResults = cStmt.getMoreResults();
 			}
 			String status = cStmt.getString(2);
-			System.out.println("Successfully enforce the deadline in " + semid);
+			System.out.println(status);
 		} catch(SQLException e){
 			System.out.println("Could not enforce deadline.");
 			e.printStackTrace();

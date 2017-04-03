@@ -8,6 +8,8 @@ import java.util.Scanner;
 
 import com.sun.xml.internal.bind.unmarshaller.InfosetScanner;
 
+import oracle.jdbc.internal.OracleTypes;
+
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.sql.CallableStatement;
@@ -76,6 +78,15 @@ public class interactiveShell {
 				ResultSet rs = ps.executeQuery();
 				if( rs.next() ) {
 					dbPW = rs.getString("password");
+				}
+				//Login by username
+				else {
+					PreparedStatement pstmt = conn.prepareStatement("SELECT PASSWORD FROM ADMIN WHERE USERNAME = ?");
+					pstmt.setString(1, username);
+					ResultSet rset = pstmt.executeQuery();
+					if( rset.next() ) {
+						dbPW = rset.getString("password");
+					}
 				}
 				if( !(dbPW.equals("")) && dbPW.toString().equals(password)){
 					retString = "> Successfully logged in as " + username;
@@ -411,7 +422,7 @@ public class interactiveShell {
 			cs.setString(1, username);
 			cs.setString(2, offerCID);
 			cs.setString(3, offerSemID);
-			cs.registerOutParameter(4, java.sql.Types.VARCHAR);
+			cs.registerOutParameter(4, OracleTypes.VARCHAR);
 			cs.setInt(5, Integer.parseInt(offerCreds));
 			cs.executeUpdate();
 			statusOut = cs.getString(4);

@@ -31,3 +31,15 @@ drop a course
 2. Enforce waitlist check on enrolling in a course
 3. When a student drops a course, the next in waitlist should get enrolled - done(next step, use the stored procedure for dropping a course)
 5. Minimum grade requirement for specific course pre-requisite
+
+
+
+
+=========================================================>
+1. There is an invalid command print coming on screen in view course(admin)
+2. Adding a course(admin) is not accepting input '2' for PG
+3. Approve special requests not working
+4. Some issue with enforcing deadline, not working properly
+5. Invalid column specification in student edit profile
+6. Enroll a course not working in student
+7. View grades should have courses and the grades received in those courses, rather than final gpa

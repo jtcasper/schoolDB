@@ -286,39 +286,32 @@ public class interactiveShell {
 				{
 					newPage();
 					System.out.print("# View Courses/Enroll/Drop Courses\n>Please enter a command:  ");
-					System.out.print("\n  1.View Courses\n  2.Enroll a course \n  3.Drop a course\n  0.Back  \n> ");
+					System.out.print("\n  1.View Courses\n  2.Enroll a course \n  3.Drop a course\n  4.Show all my courses\n  0.Back  \n> ");
 					String coursecmd = inScan.nextLine();
 					while(!coursecmd.equals("0")){
 					if(coursecmd.equals("1"))
 					{
 						//view course
 						viewOfferings(inScan);
-
-						System.out.print("# View Courses/Enroll/Drop Courses\n>Please enter a command:  ");
-						System.out.print("\n  1.View Courses\n  2.Enroll a course \n  3.Drop a course\n  0.Back  \n> ");
-						coursecmd = inScan.nextLine();
 					}
 					else if(coursecmd.equals("2"))
 					{
 						//add a course
-						System.out.print("# View Courses/Enroll/Drop Courses\n>Please enter a command:  ");
-						System.out.print("\n  1.View Courses\n  2.Enroll a course \n  3.Drop a course\n  0.Back  \n> ");
-						coursecmd = inScan.nextLine();
 					}
 					else if(coursecmd.equals("3"))
 					{
 						//drop a course 
-						System.out.print("# View Courses/Enroll/Drop Courses\n>Please enter a command:  ");
-						System.out.print("\n  1.View Courses\n  2.Enroll a course \n  3.Drop a course\n  0.Back  \n> ");
-						coursecmd = inScan.nextLine();
+					}
+					else if(coursecmd.equals("4"))
+					{	showmycourses(user.getUsername());
+						//show all my courses
 					}
 					else{
 						invalidCommand();
-						System.out.print("# View Courses/Enroll/Drop Courses\n>Please enter a command:  ");
-						System.out.print("\n  1.View Courses\n  2.Enroll a course \n  3.Drop a course\n  0.Back  \n> ");
-						coursecmd = inScan.nextLine();
-						
 					}
+					System.out.print("# View Courses/Enroll/Drop Courses\n>Please enter a command:  ");
+					System.out.print("\n  1.View Courses\n  2.Enroll a course \n  3.Drop a course\n  4.Show all my courses\n  0.Back  \n> ");
+					coursecmd = inScan.nextLine();
 					}
 				}
 				else if(command.equals("3"))//View Pending Courses
@@ -663,7 +656,46 @@ public class interactiveShell {
 			e.printStackTrace();
 		}
 	}
-
+	private static void showmycourses(String sid)
+	{
+		Connection conn = ConnectionManager.getConnectionInstance();
+		String cid = "";
+		String title = "";
+		String credits = "";
+		String clevel = "";
+		String semid = "";
+		String did = "";
+		String grade = "";
+		try {
+			
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM TAKES WHERE STATUS = ? AND SID = ?");
+			ps.setString(1, "Confirmed");
+			ps.setString(2, sid);
+			ResultSet rs = ps.executeQuery();
+			while( rs.next() ){
+				cid = rs.getString("CID");
+				sid = rs.getString("SID");
+				semid = rs.getString("SEMID");
+				grade = rs.getString("GRADE");
+				credits = rs.getString("CREDITS");
+				PreparedStatement ps1 = conn.prepareStatement("SELECT * FROM COURSE WHERE cid = ?");
+				ps1.setString(1, cid);
+				ResultSet rs1 = ps1.executeQuery();
+				if(rs1.next())
+				{title = rs1.getString("TITLE");
+				clevel = rs1.getString("CLEVEL");
+				did = rs1.getString("DID");
+				}
+				System.out.println("-----------------------------------------------------------------------------------");
+				System.out.println(padRight("sid", 10) + "|" +padRight("Grade", 10)+ "|" +padRight("courseID", 10) + "|" + padRight("Title", 40) + "|" + padRight("Credits", 10) + "|" + padRight("CourseLevel", 13) + "|" + padRight("Department", 10) + "|"  +padRight("semID", 10));
+				System.out.println("-----------------------------------------------------------------------------------");
+				System.out.println(padRight(sid, 10)+ "|"+padRight(grade, 10)+ "|"+padRight(cid, 10)+ "|" + padRight(title, 40) + "|" + padRight(credits, 10) + "|" + padRight(clevel, 13) + "|"+ padRight(did, 10) + "|"+ padRight(semid, 10) + "|");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
 	private static void addCourse(Scanner inScan) {
 		
 		System.out.println("> Please enter data to create a new course.");
@@ -990,7 +1022,7 @@ public class interactiveShell {
 					gpa= rs2.getString("GPA");
 				}
 				System.out.println("-----------------------------------------------------------------------------------");
-				System.out.println(padRight("sid", 10) + "|" +padRight("GPA", 10)+ "|" +padRight("courseID", 10) + "|" + padRight("Title", 40) + "|" + padRight("Credits", 10) + "|" + padRight("CourseLevel", 13) + "|" + padRight("Department", 10) + "|" + "|" +padRight("semID", 10));
+				System.out.println(padRight("sid", 10) + "|" +padRight("GPA", 10)+ "|" +padRight("courseID", 10) + "|" + padRight("Title", 40) + "|" + padRight("Credits", 10) + "|" + padRight("CourseLevel", 13) + "|" + padRight("Department", 10) + "|" +padRight("semID", 10));
 				System.out.println("-----------------------------------------------------------------------------------");
 				System.out.println(padRight(sid, 10)+ "|"+padRight(gpa, 10)+ "|"+padRight(cid, 10)+ "|" + padRight(title, 40) + "|" + padRight(credits, 10) + "|" + padRight(clevel, 13) + "|"+ padRight(did, 10) + "|"+ padRight(semid, 10) + "|");
 			}

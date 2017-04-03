@@ -6,7 +6,7 @@
 ------4. View Special Requests completed
 5. Approve special requests
 --6. Correct 'Enforce Add/Deadline' to 'enforcing' instead of adding 'add' and 'drop' deadline NOT FINISHED
-7. Edit student profile option
+------7. Edit student profile option
 8. Edit student courses option
 9. No option to view pending courses
 10.Show grades of all courses in view grade option

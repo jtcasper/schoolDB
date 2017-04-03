@@ -697,9 +697,10 @@ public class interactiveShell {
 				residency = rs.getString("RESIDENCY");
 				credits = rs.getInt("CREDITS");
 			}
-			PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM TAKES WHERE sid = ? AND STATUS =?");
+			PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM TAKES WHERE sid = ? AND (STATUS =? OR STATUS = ?) ");
 			ps2.setString(1, username);
 			ps2.setString(2, "Confirmed");//should be modified to Graded later
+			ps2.setString(3, "Graded");
 			ResultSet rs2 = ps2.executeQuery();
 			System.out.println(padRight("StudentID", 10) + "|" + padRight("Firstname", 15) + "|" + padRight("Lastname", 15) + "|" + padRight("DOB", 28) + "|" +padRight("email", 20) + "|" + padRight("status", 10) + "|" + padRight("Level", 12) + "|" + padRight("Department", 10) + "|" + padRight("Bill Amount", 12)+ "|" + padRight("Credits", 10)+ "|"+ padRight("Enrolled Course & Grades", 20)+ "|");
 			System.out.println("-----------------------------------------------------------------------------------");

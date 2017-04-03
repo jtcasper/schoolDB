@@ -1,8 +1,12 @@
 package schoolDB;
 
 import java.sql.*;
-import java.util.Scanner;
 
+import java.util.Date;
+import java.text.ParseException;
+import java.util.Scanner;
+import java.text.SimpleDateFormat;
+import java.util.*;
 public class interactiveShell {
 	
 	public static void main(String[] args){
@@ -11,13 +15,13 @@ public class interactiveShell {
 		SQLHandler handler = SQLHandler.getInstance();
 		Scanner inScan = new Scanner(System.in);
 		
-		try {
-			handler.executeSQLFile("scripts/dropTableProcedures.sql");
-			handler.executeSQLFile("scripts/setupdb.sql");
-			handler.executeSQLFile("scripts/createData.sql");
-		} catch(SQLException e){
-			e.printStackTrace();
-		}
+		//try {
+			//handler.executeSQLFile("scripts/dropTableProcedures.sql");
+			//handler.executeSQLFile("scripts/setupdb.sql");
+			//handler.executeSQLFile("scripts/createData.sql");
+	//} catch(SQLException e){
+		//	e.printStackTrace();
+		//}
 		
 		while(true){
 			
@@ -688,44 +692,87 @@ public class interactiveShell {
 		System.out.println("> Please enter data to create a new student record.");
 		System.out.print("> SID: ");
 		String sid = inScan.nextLine();
-		System.out.print("> Last Name: ");
-		String lname = inScan.nextLine();
 		System.out.print("> First Name: ");
 		String fname = inScan.nextLine();
+		System.out.print("> Last Name: ");
+		String lname = inScan.nextLine();
+		System.out.print("> DOB: **Please keep the format as dd/mm/yyyy:\n>");
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/mm/yyyy");
+		String dob = inScan.nextLine();
+		/*Date dob2=null;
+		try{dob2=formatter.parse(dob);}
+		catch (ParseException e){
+			e.printStackTrace();
+		}*/
 		System.out.print("> Email: ");
 		String email = inScan.nextLine();
-		System.out.print("> Password: ");
-		String password = inScan.nextLine();
-		System.out.print("> GPA: ");
-		String gpa = inScan.nextLine();
-		System.out.print("> Student Level: ");
-		String sLevel = inScan.nextLine();
+		//System.out.print("> Password: ");
+		String password = "password";
+		//System.out.print("> GPA: ");
+		//String gpa = inScan.nextLine();
+		System.out.print("> Student Level: Please select the option: \n1.Undergraduate\n 2. Graduate\n>");
+		String sLevel2 = inScan.nextLine();
+		String sLevel="";
+		while(!(sLevel2.equals("1")||sLevel2.equals("2")))
+		{
+			System.out.print("###Error input.\n Student Level: Please select the option: \n1.Undergraduate  \n2. Graduate\n>");
+			sLevel2 = inScan.nextLine();
+			
+		}
+		if(sLevel2.equals("1"))
+		{
+			sLevel = "UG";
+		}
+		else if(sLevel2.equalsIgnoreCase("2")){
+			sLevel ="PG";
+		}
 		System.out.print("> Department: ");
 		String did = inScan.nextLine();
-		System.out.print("> Residency: ");
-		String resLevel = inScan.nextLine();
-		
+		System.out.print("> Residency: Please select the option: \n1.In-State  \n2.Out of State\n3.International\n>");
+		String resLevel = "";
+		String resLevel2 = inScan.nextLine();
+		while(!(resLevel2.equals("1")||resLevel2.equals("2")||resLevel2.equals("3"))){
+			System.out.print("###Error input.\n> Residency: Please select the option: \n1.In-State  \n2.Out of State\n3.International\n>");
+			resLevel2 = inScan.nextLine();
+		}
+		if(resLevel2.equals("1"))
+		{
+			resLevel = "In-State";
+		}
+		else if(resLevel2.equals("2")){
+			resLevel ="Out of State";
+		}
+		else if(resLevel2.equals("3")){
+			
+			resLevel ="International";
+		}
 		Connection conn = ConnectionManager.getConnectionInstance();
 		
 		try {
-			PreparedStatement ps = conn.prepareStatement("INSERT INTO STUDENT (SID, LNAME, FNAME, EMAIL, PASSWORD, GPA, SLEVEL, DID, RESIDENCY) "
-					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ");
+			PreparedStatement ps = conn.prepareStatement("INSERT INTO STUDENT (SID, FNAME, LNAME,DOB, EMAIL,PWD, SLEVEL, DID, RESIDENCY) "
+					+ "VALUES (?, ?, ?, ? ?, ?, ?, ?, ?) ");
+			//PreparedStatement ps = conn.prepareStatement("INSERT INTO STUDENT (SID, FNAME, LNAME,DOB, EMAIL,PWD, SLEVEL, DID, RESIDENCY) "
+			//		+ "VALUES ('444','123','45','12/23/1666','321321','password','UG','CSC','In-State') ");
+			 //CallableStatement ps = conn.prepareCall("{call ENROLL_STUDENT(?, ?,?,?,?,?,?,?)}");
+			//PreparedStatement ps = conn.prepareStatement("INSERT INTO STUDENT (SID, LNAME, FNAME, EMAIL, GPA, SLEVEL, DID, RESIDENCY) "
+			//		+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?) ");
 			ps.setString(1, sid);
-			ps.setString(2, lname);
-			ps.setString(3, fname);
-			ps.setString(4, email);
-			ps.setString(5, password);
-			ps.setString(6, gpa);
+			ps.setString(2, fname);
+			ps.setString(3, lname);
+			ps.setDate(4, java.sql.Date.valueOf(dob));//TODO change the dob
+			ps.setString(5, email);
+			ps.setString(6, password);
 			ps.setString(7, sLevel);
 			ps.setString(8, did);
 			ps.setString(9, resLevel);
 			ps.execute();
-			System.out.println("Enrolled student.");
+			System.out.println("Student has been sucessfully enrolled");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			System.out.println("Student could not be enrolled.");
 			e.printStackTrace();
 		}
+	
 		
 	}
 

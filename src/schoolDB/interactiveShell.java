@@ -155,7 +155,7 @@ public class interactiveShell {
 				else if(command.equals("4"))//View/Add Courses
 				{	newPage();
 					System.out.print("# View/Add Course \n>Please enter a command:  ");
-					System.out.print("\n  1.View Course \n  2.Adding A New Course  \n  0.Back  \n> ");
+					System.out.print("\n  1.View A Course \n  2.Adding A New Course \n  3.View All Courses \n  0.Back  \n> ");
 					String coursecmd = inScan.nextLine();
 					while(!coursecmd.equals("0")){
 					if(coursecmd.equals("1"))
@@ -166,11 +166,15 @@ public class interactiveShell {
 					{
 						addCourse(inScan);
 					}
+					if(coursecmd.equals("3"))
+					{readallcourse(inScan);
+					
+					}
 					else{
 						invalidCommand();
 					}
 					System.out.print("# View/Add Course \n>Please enter a command:  ");
-					System.out.print("\n  1.View Course \n  2.Adding A New Course  \n  0.Back  \n> ");
+					System.out.print("\n  1.View Course \n  2.Adding A New Course  \n  3.View All Courses\n  0.Back  \n> ");
 					coursecmd = inScan.nextLine();
 					}
 				}
@@ -372,7 +376,7 @@ public class interactiveShell {
 		System.out.print("***Invalid Command\n");
 
 	}
-	private static boolean enforcedeadline(String semid){
+	private static boolean enforcedeadline(String semid){//not finished
 		Connection conn = ConnectionManager.getConnectionInstance();
 		try{
 			CallableStatement cStmt = conn.prepareCall("{call ENFORCE_DEADLINE(?,?)}");
@@ -488,13 +492,13 @@ public class interactiveShell {
 
 	private static void viewOfferings(Scanner inScan) {
 		
-		System.out.println("> Please enter the semester ID to view offerings for: ");
-		String semID = inScan.nextLine();
+		System.out.println("> Please enter the course ID to view offerings for: ");
+		String semID = "";
 		
 		String offerID = "";
 		String schedule = "";
 		String location = "";
-		String cid = "";
+		String cid = inScan.nextLine();
 		String facultyID = "";
 		String classSize = "";
 		String waitSize = "";
@@ -502,25 +506,25 @@ public class interactiveShell {
 		Connection conn = ConnectionManager.getConnectionInstance();
 		
 		try{
-			PreparedStatement ps = conn.prepareStatement("SELECT * FROM OFFERS WHERE SEMID = ?");
-			ps.setString(1, semID);
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM OFFERS WHERE CID = ?");
+			ps.setString(1, cid);
 			ResultSet rs = ps.executeQuery();
-			if( rs.next() ) {
+			while( rs.next() ) {
 				offerID = rs.getString("OFFERID");
 				schedule = rs.getString("SCHEDULE");
 				location = rs.getString("LOCATION");
-				cid = rs.getString("CID");
+				semID = rs.getString("SEMID");
 				facultyID = rs.getString("FID");
 				classSize = rs.getString("CLASSSIZE");
 				waitSize = rs.getString("WAITSIZE");
+				
+				System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+				System.out.println(padRight("Offering ID", 20) + "|" + padRight("Course ID", 20) + "|"+ padRight("Semester", 20) + "|" + padRight("Schedule", 20) + "|" + padRight("Location", 20) + "|" + padRight("Faculty ID", 20) + "|" + padRight("Class Size", 20) + "|" + padRight("Waitlist Size", 20));
+				System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+				System.out.println(padRight(offerID, 20) + "|" + padRight(cid, 20) + "|"+ padRight(semID, 20) + "|" + padRight(schedule, 20) + "|" + padRight(location, 20) + "|" + padRight(facultyID, 20) + "|" + padRight(classSize, 20) + "|" + padRight(waitSize, 20));
+				
 			}
-			System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-			System.out.println(padRight("Offering ID", 20) + "|" + padRight("Course ID", 20) + "|" + padRight("Schedule", 20) + "|" + padRight("Location", 20) + "|" + padRight("Faculty ID", 20) + "|" + padRight("Class Size", 20) + "|" + padRight("Waitlist Size", 20));
-			System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-			System.out.println(padRight(offerID, 20) + "|" + padRight(cid, 20) + "|" + padRight(schedule, 20) + "|" + padRight(location, 20) + "|" + padRight(facultyID, 20) + "|" + padRight(classSize, 20) + "|" + padRight(waitSize, 20));
-			System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-			System.out.println();
-			
+
 			
 		} catch(SQLException e) {
 			System.out.println("Error retrieving semester course offerings for semester " + semID);
@@ -953,8 +957,6 @@ public class interactiveShell {
 		String credits = "";
 		String clevel = "";
 		String did = "";
-		String maxsize = "";
-		String wsize = "";
 		System.out.print("Please enter the course id: ");
 		cid = inscan.nextLine();
 		try {
@@ -973,12 +975,42 @@ public class interactiveShell {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		System.out.println(padRight("courseID", 10) + "|" + padRight("Title", 40) + "|" + padRight("Credits", 10) + "|" + padRight("CourseLevel", 10) + "|" + padRight("Department", 10) + "|" );
+		System.out.println(padRight("courseID", 10) + "|" + padRight("Title", 40) + "|" + padRight("Credits", 10) + "|" + padRight("CourseLevel", 13) + "|" + padRight("Department", 10) + "|" );
 		System.out.println("-----------------------------------------------------------------------------------");
-		System.out.println(padRight(cid, 10)+ "|" + padRight(title, 40) + "|" + padRight(credits, 10) + "|" + padRight(clevel, 10) + "|"+ padRight(did, 10) + "|");
+		System.out.println(padRight(cid, 10)+ "|" + padRight(title, 40) + "|" + padRight(credits, 10) + "|" + padRight(clevel, 13) + "|"+ padRight(did, 10) + "|");
 		//System.out.println(padRight(cid, 20)+ "|" + padRight(title, 20) + "|" + padRight(credits, 20) + "|" + padRight(clevel, 20) + "|");
 	}
-	
+	private static void readallcourse(Scanner inscan)
+	{
+		Connection conn = ConnectionManager.getConnectionInstance();
+		String cid = "";
+		String title = "";
+		String credits = "";
+		String clevel = "";
+		String did = "";
+
+		try {
+			
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM COURSE");
+
+			ResultSet rs = ps.executeQuery();
+			while( rs.next() ){
+				cid = rs.getString("CID");
+				title = rs.getString("TITLE");
+				credits = rs.getString("CREDITS");
+				clevel = rs.getString("CLEVEL");
+				did = rs.getString("DID");
+				System.out.println("-----------------------------------------------------------------------------------");
+				System.out.println(padRight("courseID", 10) + "|" + padRight("Title", 40) + "|" + padRight("Credits", 10) + "|" + padRight("CourseLevel", 13) + "|" + padRight("Department", 10) + "|" );
+				System.out.println("-----------------------------------------------------------------------------------");
+				System.out.println(padRight(cid, 10)+ "|" + padRight(title, 40) + "|" + padRight(credits, 10) + "|" + padRight(clevel, 13) + "|"+ padRight(did, 10) + "|");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		//System.out.println(padRight(cid, 20)+ "|" + padRight(title, 20) + "|" + padRight(credits, 20) + "|" + padRight(clevel, 20) + "|");
+	}
 	
 	private static String padRight(String s, int n) {
 		return String.format("%1$-" + n + "s", s);  

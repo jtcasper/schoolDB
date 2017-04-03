@@ -674,6 +674,8 @@ public class interactiveShell {
 		String bill = "";
 		String did = "";
 		String residency = "";
+		String cid ="";
+		String grade = "";
 		int credits = 0;
 		
 		Connection conn = ConnectionManager.getConnectionInstance();
@@ -695,13 +697,20 @@ public class interactiveShell {
 				residency = rs.getString("RESIDENCY");
 				credits = rs.getInt("CREDITS");
 			}
-			PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM STUDENT WHERE sid = ?");
-			ps2.setString(1, sid);
+			PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM TAKES WHERE sid = ? AND STATUS =?");
+			ps2.setString(1, username);
+			ps2.setString(2, "Confirmed");//should be modified to Graded later
 			ResultSet rs2 = ps2.executeQuery();
-			System.out.println(padRight("StudentID", 10) + "|" + padRight("Firstname", 15) + "|" + padRight("Lastname", 15) + "|" + padRight("DOB", 28) + "|" +padRight("email", 20) + "|" + padRight("status", 10) + "|" + padRight("Level", 12) + "|" + padRight("Department", 10) + "|" + padRight("Bill Amount", 12)+ "|"+ padRight("Enrolled Course & Grades", 20)+ "|");
+			System.out.println(padRight("StudentID", 10) + "|" + padRight("Firstname", 15) + "|" + padRight("Lastname", 15) + "|" + padRight("DOB", 28) + "|" +padRight("email", 20) + "|" + padRight("status", 10) + "|" + padRight("Level", 12) + "|" + padRight("Department", 10) + "|" + padRight("Bill Amount", 12)+ "|" + padRight("Credits", 10)+ "|"+ padRight("Enrolled Course & Grades", 20)+ "|");
 			System.out.println("-----------------------------------------------------------------------------------");
-			System.out.println(padRight(username, 10)+ "|" + padRight(fname, 15) + "|" + padRight(lname, 15) + "|" + padRight(dob, 28)+ "|" + padRight(email, 20)+ "|"+ padRight(residency, 10) + "|"+ padRight(slevel, 12) + "|"+ padRight(did, 10) + "|"+ padRight(bill, 12) + "|"+ padRight(null, 10) + "|");
-			
+			System.out.print("\n"+padRight(username, 10)+ "|" + padRight(fname, 15) + "|" + padRight(lname, 15) + "|" + padRight(dob, 28)+ "|" + padRight(email, 20)+ "|"+ padRight(residency, 10) + "|"+ padRight(slevel, 12) + "|"+ padRight(did, 10) + "|"+ padRight(bill, 12) + "|"+ padRight(String.valueOf(credits), 10) +"|");
+			while(rs2.next())
+			{	
+				cid = rs2.getString("CID");
+				grade = rs2.getString("GRADE");
+				System.out.print(cid + "(" + grade + ") ");
+			}
+			System.out.println();
 		} catch (SQLException e){
 			System.out.println("Error retrieving profile details.");
 			return;

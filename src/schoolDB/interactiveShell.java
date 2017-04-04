@@ -246,6 +246,8 @@ public class interactiveShell {
 							String sid = inScan.nextLine();
 							System.out.print("> Course ID: ");
 							String cid = inScan.nextLine();
+							System.out.print("> Session ID: ");
+							String sessID = inScan.nextLine();
 							System.out.print("> Semester ID: ");
 							String semID = inScan.nextLine();
 							System.out.print("> Should student request be approved? (Approve/Deny): ");
@@ -254,7 +256,7 @@ public class interactiveShell {
 								System.out.print("#### ERRONEOUS INPUT\n> Should student request be approved? (Approve/Deny): ");
 								decision = inScan.nextLine();
 							}
-							approveDenyPending(sid, cid, semID, decision);
+							approveDenyPending(sid, cid, semID, decision, sessID);
 						}
 						else{
 							invalidCommand();
@@ -478,7 +480,7 @@ public class interactiveShell {
 			statusOut = cs.getString(4);
 		} catch(SQLException e){
 			System.out.println("Error in database call.");
-//			e.printStackTrace();
+			e.printStackTrace();
 		}
 		
 		System.out.println("> Enrollment Status: " + statusOut);
@@ -531,24 +533,58 @@ public class interactiveShell {
 		
 	}
 
-	private static void approveDenyPending(String sid, String cid, String semid, String decision) {
+	private static void approveDenyPending(String sid, String cid, String semid, String decision, String sessID) {
 		
 		Connection conn = ConnectionManager.getConnectionInstance();
 		
 		String decisionString = "";
 		
-		if(decision.equalsIgnoreCase("Y")){
+		if(decision.equalsIgnoreCase("approve")){
 			decisionString = "Confirmed";
 		} else {
 			decisionString = "Denied";
 		}
 		
 		try{
-			PreparedStatement ps = conn.prepareStatement("UPDATE TAKES SET STATUS = ? WHERE CID = ? AND SID = ? AND SEMID = ?");
+			int count = 0;
+			PreparedStatement ps = conn.prepareStatement("SELECT COUNT(*) FROM TAKES WHERE CID = ? AND SID = ? AND SEMID = ? AND SESSIONID = ?");
+			ps.setString(1, cid);
+			ps.setString(2, sid);
+			ps.setString(3, semid);
+			ps.setString(4, sessID);
+			ResultSet rs = ps.executeQuery();
+			if( rs.next() ){
+				count = rs.getInt(1);
+				try{
+					PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM OFFERS WHERE CID = ? AND SEMID = ? AND SESSIONID = ?");
+					pstmt.setString(1, cid);
+					pstmt.setString(2, semid);
+					pstmt.setString(3, sessID);
+					ResultSet rset = pstmt.executeQuery();
+					if( rset.next() ){
+						int classSize = rset.getInt("CLASSSIZE");
+						int waitSize = rset.getInt("WAITSIZE");
+						if( count > classSize )
+							decisionString = "Pending";
+						if(count > classSize + waitSize)
+							decisionString = "Denied";
+					}
+				} catch(SQLException e){
+					System.out.println("Error while checking waitlist size.");
+				}
+			}
+				
+		} catch(SQLException e){
+			System.out.println("Could not find student takes instance to approve permission");
+		}
+		
+		try{
+			PreparedStatement ps = conn.prepareStatement("UPDATE TAKES SET STATUS = ? WHERE CID = ? AND SID = ? AND SEMID = ? AND SESSIONID = ?");
 			ps.setString(1, decisionString);
 			ps.setString(2, cid);
 			ps.setString(3, sid);
 			ps.setString(4, semid);
+			ps.setString(5, sessID);
 			ps.executeUpdate();
 			System.out.println("Successfully updated status.");
 		} catch(SQLException e){

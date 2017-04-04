@@ -1,5 +1,5 @@
 --------------------------------------------------------
---  File created - Monday-April-03-2017   
+--  File created - Tuesday-April-04-2017   
 --------------------------------------------------------
 DROP TABLE "BKMUKHEJ"."ADMIN" cascade constraints;
 DROP TABLE "BKMUKHEJ"."COURSE" cascade constraints;
@@ -182,7 +182,7 @@ DROP SYNONYM "PUBLIC"."DBMS_OUTPUT";
   CREATE TABLE "BKMUKHEJ"."TAKES" 
    (	"SID" VARCHAR2(20 BYTE), 
 	"GRADE" VARCHAR2(4 BYTE) DEFAULT 'NULL', 
-	"CREDITS" NUMBER(1,0) DEFAULT 0, 
+	"CREDITS" NUMBER(1,0) DEFAULT 3, 
 	"STATUS" VARCHAR2(20 BYTE), 
 	"SEMID" VARCHAR2(20 BYTE), 
 	"CID" VARCHAR2(20 BYTE), 
@@ -475,68 +475,76 @@ is_sp_perm varchar2(1) := 'N';
 should_enroll varchar2(1) := 'Y';
 course_grade_point number;
 student_gpa float;
-
+sem_credits number;
+max_credits number;
 BEGIN
 status := 'Y';
 begin
---Check Prerequisites for student;
-select pre_cid,gpa,spperm, prereq_grade into record_pre_cid,record_gpa,record_sp_perm,record_prereq_grade from precondition where cid = cid_input;
-exception when NO_DATA_FOUND then
-  record_pre_cid:= NULL;
-  record_gpa:= NULL;
-  record_sp_perm:=NULL;
-  record_prereq_grade:=NULL;
-end;
-select gpa into student_gpa from student where sid = sid_input;
-if record_gpa is not null and record_gpa < student_gpa then
-  should_enroll := 'N';
-end if;
-if record_pre_cid is not null then
-  select 'N' into should_enroll from takes where not exists (select cid from takes where sid = sid_input and cid = record_pre_cid) and ROWNUM = 1;
-end if;
-if record_sp_perm is not null and record_sp_perm = 'Y' then
-  is_sp_perm := 'Y';
-end if;
-if record_prereq_grade is not null then
-  begin
-    select grade_point into course_grade_point from takes inner join grading on takes.GRADE = grading.GRADE where takes.sid = sid_input and takes.cid = record_pre_cid;
-    exception
-    when NO_DATA_FOUND then
-      should_enroll := 'N';
+--Check Max Credits condition
+select sum(credits) into sem_credits from takes where sid = sid_input and status in ('Confirmed','Pending','Waitlist') and semid = semid_input;
+select ccl.maxcredits into max_credits from student s inner join creditcostlimits ccl on s.slevel = ccl.clevel and s.residency = ccl.RESIDENCY where sid = sid_input;
+if sem_credits+credits <= max_credits then
+  --Check Prerequisites for student;
+  select pre_cid,gpa,spperm, prereq_grade into record_pre_cid,record_gpa,record_sp_perm,record_prereq_grade from precondition where cid = cid_input;
+  exception when NO_DATA_FOUND then
+    record_pre_cid:= NULL;
+    record_gpa:= NULL;
+    record_sp_perm:=NULL;
+    record_prereq_grade:=NULL;
   end;
-  select grade_point into record_prereq_grade_point from grading where grade = record_prereq_grade;
-  if course_grade_point <> 'NULL' and course_grade_point < (record_prereq_grade_point) then
+  select gpa into student_gpa from student where sid = sid_input;
+  if record_gpa is not null and record_gpa < student_gpa then
     should_enroll := 'N';
   end if;
-end if;
-if should_enroll = 'Y' then
-  --Check waitlist conditions
-  select classsize , waitlist_size into class_size, waitlist_size from offers where cid = cid_input and semid = semid_input and sessionid = SESSIONID_INPUT;
-  dbms_output.put_line(people_count);
-  select count(*) into people_count from takes where cid = cid_input and semid = semid_input and sessionid = sessionid_input and status in ('Confirmed','Pending','Waitlist');
-  if people_count >= class_size then
-    if people_count >= class_size + waitlist_size then
-      status := 'Waitlist full. Student Cannot be enrolled.';
-    else
-      if is_sp_perm = 'Y' then
-        insert into takes(cid,sid,semid,credits,status, sessionid) VALUES (CID_INPUT, SID_INPUT, SEMID_INPUT, CREDITS_INPUT, 'Pending',SESSIONID_INPUT);
-        status := concat('Enrollment pending Admin approval. Waitlist number ',to_char(waitlist_size+1));
+  if record_pre_cid is not null then
+    select 'N' into should_enroll from takes where not exists (select cid from takes where sid = sid_input and cid = record_pre_cid) and ROWNUM = 1;
+  end if;
+  if record_sp_perm is not null and record_sp_perm = 'Y' then
+    is_sp_perm := 'Y';
+  end if;
+  if record_prereq_grade is not null then
+    begin
+      select grade_point into course_grade_point from takes inner join grading on takes.GRADE = grading.GRADE where takes.sid = sid_input and takes.cid = record_pre_cid;
+      exception
+      when NO_DATA_FOUND then
+        should_enroll := 'N';
+    end;
+    select grade_point into record_prereq_grade_point from grading where grade = record_prereq_grade;
+    if course_grade_point <> 'NULL' and course_grade_point < (record_prereq_grade_point) then
+      should_enroll := 'N';
+    end if;
+  end if;
+  if should_enroll = 'Y' then
+    --Check waitlist conditions
+    select classsize , waitlist_size into class_size, waitlist_size from offers where cid = cid_input and semid = semid_input and sessionid = SESSIONID_INPUT;
+    dbms_output.put_line(people_count);
+    select count(*) into people_count from takes where cid = cid_input and semid = semid_input and sessionid = sessionid_input and status in ('Confirmed','Pending','Waitlist');
+    if people_count >= class_size then
+      if people_count >= class_size + waitlist_size then
+        status := 'Waitlist full. Student Cannot be enrolled.';
       else
-        insert into takes(cid,sid,semid,credits,status,sessionid) VALUES (CID_INPUT, SID_INPUT, SEMID_INPUT, CREDITS_INPUT, 'Waitlist', SESSIONID_INPUT);
-        status := concat('Enrolled into Waitlist. Waitlist number ',to_char(waitlist_size+1));
+        if is_sp_perm = 'Y' then
+          insert into takes(cid,sid,semid,credits,status, sessionid) VALUES (CID_INPUT, SID_INPUT, SEMID_INPUT, CREDITS_INPUT, 'Pending',SESSIONID_INPUT);
+          status := concat('Enrollment pending Admin approval. Waitlist number ',to_char(waitlist_size+1));
+        else
+          insert into takes(cid,sid,semid,credits,status,sessionid) VALUES (CID_INPUT, SID_INPUT, SEMID_INPUT, CREDITS_INPUT, 'Waitlist', SESSIONID_INPUT);
+          status := concat('Enrolled into Waitlist. Waitlist number ',to_char(waitlist_size+1));
+        end if;
+      end if;
+    else 
+      if is_sp_perm = 'Y' then
+          insert into takes(cid,sid,semid,credits,status, SESSIONID) VALUES (CID_INPUT, SID_INPUT, SEMID_INPUT, CREDITS_INPUT, 'Pending', sessionid_input);
+          status := 'Enrolled in course pending Admin approval.';
+        else
+          insert into takes(cid,sid,semid,credits,status, sessionid) VALUES (CID_INPUT, SID_INPUT, SEMID_INPUT, CREDITS_INPUT, 'Confirmed', sessionid_input);
+          STATUS := 'Enrollment Confirmed';
       end if;
     end if;
   else 
-    if is_sp_perm = 'Y' then
-        insert into takes(cid,sid,semid,credits,status, SESSIONID) VALUES (CID_INPUT, SID_INPUT, SEMID_INPUT, CREDITS_INPUT, 'Pending', sessionid_input);
-        status := 'Enrolled in course pending Admin approval.';
-      else
-        insert into takes(cid,sid,semid,credits,status, sessionid) VALUES (CID_INPUT, SID_INPUT, SEMID_INPUT, CREDITS_INPUT, 'Confirmed', sessionid_input);
-        STATUS := 'Enrollment Confirmed';
-    end if;
+    status := 'Pre-Requisite Condition not met.';
   end if;
-else 
-  status := 'Pre-Requisite Condition not met.';
+else
+  status := 'Student Exceeds Max Credit Limit for this semester. Enrollment Not Done';
 end if;
 dbms_output.put_line(status);
 END ENROLL_COURSE;

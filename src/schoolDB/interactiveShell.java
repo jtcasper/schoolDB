@@ -391,6 +391,8 @@ public class interactiveShell {
 		System.out.println("> Entering data for course registration.");
 		System.out.print("> Please enter the Course ID of the course offering: ");
 		String offerCID = inScan.nextLine();
+		System.out.print("> Please enter the Session ID of the course offering: ");
+		String offerSessionID = inScan.nextLine();
 		System.out.print("> Please enter the Semester ID of the course offering: ");
 		String offerSemID = inScan.nextLine();
 		
@@ -411,19 +413,15 @@ public class interactiveShell {
 			e.printStackTrace();
 			return;
 		}
-		
-		System.out.println(username);
-		System.out.println(offerCID);
-		System.out.println(offerSemID);
-		System.out.println(offerCreds);
-		
+				
 		try{
-			CallableStatement cs = conn.prepareCall("{call ENROLL_COURSE(?, ?, ?, ?, ?)}");
+			CallableStatement cs = conn.prepareCall("{call ENROLL_COURSE(?, ?, ?, ?, ?, ?)}");
 			cs.setString(1, username);
 			cs.setString(2, offerCID);
 			cs.setString(3, offerSemID);
 			cs.registerOutParameter(4, OracleTypes.VARCHAR);
 			cs.setInt(5, Integer.parseInt(offerCreds));
+			cs.setString(6, offerSessionID);
 			cs.executeUpdate();
 			statusOut = cs.getString(4);
 		} catch(SQLException e){
@@ -588,6 +586,8 @@ public class interactiveShell {
 		String semID = inScan.nextLine();
 		System.out.print("> Course ID: ");
 		String cid = inScan.nextLine();
+		System.out.print("> Session ID: ");
+		String sessionID = inScan.nextLine();
 		System.out.print("> Schedule: ");
 		String schedule = inScan.nextLine();
 		System.out.print("> Location: ");
@@ -602,8 +602,8 @@ public class interactiveShell {
 		Connection conn = ConnectionManager.getConnectionInstance();
 		
 		try{
-			PreparedStatement ps = conn.prepareStatement("INSERT INTO OFFERS (SCHEDULE, LOCATION, CID, SEMID, FID, CLASSSIZE, WAITSIZE) "
-					+ "VALUES( ?, ?, ?, ?, ?, ?, ?)");
+			PreparedStatement ps = conn.prepareStatement("INSERT INTO OFFERS (SCHEDULE, LOCATION, CID, SEMID, FID, CLASSSIZE, WAITSIZE, SESSIONID) "
+					+ "VALUES( ?, ?, ?, ?, ?, ?, ?, ?)");
 			
 			ps.setString(1, schedule);
 			ps.setString(2, location);
@@ -612,6 +612,7 @@ public class interactiveShell {
 			ps.setString(5, facultyID);
 			ps.setString(6, classSize);
 			ps.setString(7, waitSize);
+			ps.setString(8, sessionID);
 			ps.execute();
 			System.out.println("Successfully added course offering: " + cid);
 		} catch(SQLException e){
@@ -634,6 +635,7 @@ public class interactiveShell {
 		String facultyID = "";
 		String classSize = "";
 		String waitSize = "";
+		String sessionID = "";
 		
 		Connection conn = ConnectionManager.getConnectionInstance();
 		
@@ -642,7 +644,7 @@ public class interactiveShell {
 			ps.setString(1, cid);
 			ResultSet rs = ps.executeQuery();
 			System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-			System.out.println(padRight("Course ID", 20) + "|"+ padRight("Semester", 20) + "|" + padRight("Schedule", 20) + "|" + padRight("Location", 20) + "|" + padRight("Faculty ID", 20) + "|" + padRight("Class Size", 20) + "|" + padRight("Waitlist Size", 20));
+			System.out.println(padRight("Course ID", 20) + "|"+ padRight("Session ID", 20) + "|" + padRight("Semester", 20) + "|" + padRight("Schedule", 20) + "|" + padRight("Location", 20) + "|" + padRight("Faculty ID", 20) + "|" + padRight("Class Size", 20) + "|" + padRight("Waitlist Size", 20));
 			while( rs.next() ) {
 				
 				schedule = rs.getString("SCHEDULE");
@@ -651,10 +653,11 @@ public class interactiveShell {
 				facultyID = rs.getString("FID");
 				classSize = rs.getString("CLASSSIZE");
 				waitSize = rs.getString("WAITSIZE");
+				sessionID = rs.getString("SESSIONID");
 				
 				
 				System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-				System.out.println( padRight(cid, 20) + "|"+ padRight(semID, 20) + "|" + padRight(schedule, 20) + "|" + padRight(location, 20) + "|" + padRight(facultyID, 20) + "|" + padRight(classSize, 20) + "|" + padRight(waitSize, 20));
+				System.out.println( padRight(cid, 20) + "|" + padRight(sessionID, 20) + "|" +  padRight(semID, 20) + "|" + padRight(schedule, 20) + "|" + padRight(location, 20) + "|" + padRight(facultyID, 20) + "|" + padRight(classSize, 20) + "|" + padRight(waitSize, 20));
 				
 			}
 

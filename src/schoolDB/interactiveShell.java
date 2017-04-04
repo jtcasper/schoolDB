@@ -246,15 +246,17 @@ public class interactiveShell {
 							String sid = inScan.nextLine();
 							System.out.print("> Course ID: ");
 							String cid = inScan.nextLine();
+							System.out.print("> Session ID: ");
+							String sessID = inScan.nextLine();
 							System.out.print("> Semester ID: ");
 							String semID = inScan.nextLine();
-							System.out.print("> Should student request be approved? (Y/N): ");
+							System.out.print("> Should student request be approved? (Approve/Deny): ");
 							String decision = inScan.nextLine();
-							while(!(decision.equalsIgnoreCase("y")) && !(decision.equalsIgnoreCase("n"))){
-								System.out.print("#### ERRONEOUS INPUT\n> Should student request be approved? (Y/N): ");
+							while(!(decision.equalsIgnoreCase("approve")) && !(decision.equalsIgnoreCase("deny"))){
+								System.out.print("#### ERRONEOUS INPUT\n> Should student request be approved? (Approve/Deny): ");
 								decision = inScan.nextLine();
 							}
-							approveDenyPending(sid, cid, semID, decision);
+							approveDenyPending(sid, cid, semID, decision, sessID);
 						}
 						else{
 							invalidCommand();
@@ -531,24 +533,58 @@ public class interactiveShell {
 		
 	}
 
-	private static void approveDenyPending(String sid, String cid, String semid, String decision) {
+	private static void approveDenyPending(String sid, String cid, String semid, String decision, String sessID) {
 		
 		Connection conn = ConnectionManager.getConnectionInstance();
 		
 		String decisionString = "";
 		
-		if(decision.equalsIgnoreCase("Y")){
+		if(decision.equalsIgnoreCase("approve")){
 			decisionString = "Confirmed";
 		} else {
 			decisionString = "Denied";
 		}
 		
 		try{
-			PreparedStatement ps = conn.prepareStatement("UPDATE TAKES SET STATUS = ? WHERE CID = ? AND SID = ? AND SEMID = ?");
+			int count = 0;
+			PreparedStatement ps = conn.prepareStatement("SELECT COUNT(*) FROM TAKES WHERE CID = ? AND SID = ? AND SEMID = ? AND SESSIONID = ?");
+			ps.setString(1, cid);
+			ps.setString(2, sid);
+			ps.setString(3, semid);
+			ps.setString(4, sessID);
+			ResultSet rs = ps.executeQuery();
+			if( rs.next() ){
+				count = rs.getInt(1);
+				try{
+					PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM OFFERS WHERE CID = ? AND SEMID = ? AND SESSIONID = ?");
+					pstmt.setString(1, cid);
+					pstmt.setString(2, semid);
+					pstmt.setString(3, sessID);
+					ResultSet rset = pstmt.executeQuery();
+					if( rset.next() ){
+						int classSize = rset.getInt("CLASSSIZE");
+						int waitSize = rset.getInt("WAITSIZE");
+						if( count > classSize )
+							decisionString = "Pending";
+						if(count > classSize + waitSize)
+							decisionString = "Denied";
+					}
+				} catch(SQLException e){
+					System.out.println("Error while checking waitlist size.");
+				}
+			}
+				
+		} catch(SQLException e){
+			System.out.println("Could not find student takes instance to approve permission");
+		}
+		
+		try{
+			PreparedStatement ps = conn.prepareStatement("UPDATE TAKES SET STATUS = ? WHERE CID = ? AND SID = ? AND SEMID = ? AND SESSIONID = ?");
 			ps.setString(1, decisionString);
 			ps.setString(2, cid);
 			ps.setString(3, sid);
 			ps.setString(4, semid);
+			ps.setString(5, sessID);
 			ps.executeUpdate();
 			System.out.println("Successfully updated status.");
 		} catch(SQLException e){
@@ -749,6 +785,14 @@ public class interactiveShell {
 		String fname = "";
 		String lname = "";
 		String gpa = "";
+		String cid = "";
+		String sid = "";
+		String semid = "";
+		String grade = "";
+		String credits = "";
+		String title = "";
+		String clevel = "";
+		String did = "";
 		
 		Connection conn = ConnectionManager.getConnectionInstance();
 		
@@ -770,6 +814,36 @@ public class interactiveShell {
 		System.out.println(padRight("StudentID", 20) + "|" + padRight("Firstname", 20) + "|" + padRight("Lastname", 20) + "|" + padRight("GPA", 10));
 		System.out.println("-----------------------------------------------------------------------------------");
 		System.out.println(padRight(username, 20)+ "|" + padRight(fname, 20) + "|" + padRight(lname, 20) + "|" + padRight(gpa, 10));
+		
+		try{
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM TAKES WHERE SID = ? AND STATUS = ?");
+			ps.setString(1, username);
+			ps.setString(2, "Graded");
+			ResultSet rs = ps.executeQuery();
+			System.out.println("-----------------------------------------------------------------------------------");
+			System.out.println(padRight("sid", 10) + "|" +padRight("Grade", 10)+ "|" +padRight("courseID", 10) + "|" + padRight("Title", 40) + "|" + padRight("Credits", 10) + "|" + padRight("CourseLevel", 13) + "|" + padRight("Department", 10) + "|"  +padRight("semID", 10) + "|");
+			while( rs.next() ){
+				cid = rs.getString("CID");
+				sid = rs.getString("SID");
+				semid = rs.getString("SEMID");
+				grade = rs.getString("GRADE");
+				credits = rs.getString("CREDITS");
+				PreparedStatement ps1 = conn.prepareStatement("SELECT * FROM COURSE WHERE cid = ?");
+				ps1.setString(1, cid);
+				ResultSet rs1 = ps1.executeQuery();
+				if(rs1.next())
+				{
+					title = rs1.getString("TITLE");
+					clevel = rs1.getString("CLEVEL");
+					did = rs1.getString("DID");
+				}
+			
+				System.out.println("-----------------------------------------------------------------------------------");
+				System.out.println(padRight(sid, 10)+ "|"+padRight(grade, 10)+ "|"+padRight(cid, 10)+ "|" + padRight(title, 40) + "|" + padRight(credits, 10) + "|" + padRight(clevel, 13) + "|"+ padRight(did, 10) + "|"+ padRight(semid, 10) + "|");
+			}
+		} catch(SQLException e){
+			System.out.println("Could not retrieve course grades.");
+		}
 			
 	}
 	private static void studentProfile(Scanner inScan, String username) {//student side

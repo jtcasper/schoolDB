@@ -1079,24 +1079,27 @@ public class interactiveShell {
 		String fname = "";
 		String lname = "";
 		String dob = "";
+		String userN = "";
 		
 		try {
-			PreparedStatement ps = conn.prepareStatement("SELECT * FROM ADMIN WHERE eid = ?");
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM ADMIN WHERE eid = ? OR username = ?");
 			ps.setString(1, username);
+			ps.setString(2, username);
 			ResultSet rs = ps.executeQuery();
 			if( rs.next() ){
 				eid = rs.getString("EID");
 				fname = rs.getString("FNAME");
 				lname = rs.getString("LNAME");
 				dob = rs.getString("DOB");
+				userN = rs.getString("USERNAME");
 			}
 		} catch (SQLException e) {
 //			e.printStackTrace();
 		}
 		newPage();
-		System.out.println(padRight("EID", 20) + "|" + padRight("Firstname", 20) + "|" + padRight("Lastname", 20) + "|" + padRight("DOB", 20) + "|");
+		System.out.println(padRight("EID", 20) + "|" + padRight("Username", 20) + "|" + padRight("Firstname", 20) + "|" + padRight("Lastname", 20) + "|" + padRight("DOB", 20) + "|");
 		System.out.println("-----------------------------------------------------------------------------------");
-		System.out.println(padRight(eid, 20)+ "|" + padRight(fname, 20) + "|" + padRight(lname, 20) + "|" + padRight(dob, 20) + "|");
+		System.out.println(padRight(eid, 20)+ "|" + padRight(userN, 20) + "|" + padRight(fname, 20) + "|" + padRight(lname, 20) + "|" + padRight(dob, 20) + "|");
 		
 	}
 	private static void viewstudent(Scanner inscan)

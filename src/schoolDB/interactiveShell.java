@@ -754,6 +754,14 @@ public class interactiveShell {
 		String fname = "";
 		String lname = "";
 		String gpa = "";
+		String cid = "";
+		String sid = "";
+		String semid = "";
+		String grade = "";
+		String credits = "";
+		String title = "";
+		String clevel = "";
+		String did = "";
 		
 		Connection conn = ConnectionManager.getConnectionInstance();
 		
@@ -775,6 +783,36 @@ public class interactiveShell {
 		System.out.println(padRight("StudentID", 20) + "|" + padRight("Firstname", 20) + "|" + padRight("Lastname", 20) + "|" + padRight("GPA", 10));
 		System.out.println("-----------------------------------------------------------------------------------");
 		System.out.println(padRight(username, 20)+ "|" + padRight(fname, 20) + "|" + padRight(lname, 20) + "|" + padRight(gpa, 10));
+		
+		try{
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM TAKES WHERE SID = ? AND STATUS = ?");
+			ps.setString(1, username);
+			ps.setString(2, "Graded");
+			ResultSet rs = ps.executeQuery();
+			System.out.println("-----------------------------------------------------------------------------------");
+			System.out.println(padRight("sid", 10) + "|" +padRight("Grade", 10)+ "|" +padRight("courseID", 10) + "|" + padRight("Title", 40) + "|" + padRight("Credits", 10) + "|" + padRight("CourseLevel", 13) + "|" + padRight("Department", 10) + "|"  +padRight("semID", 10) + "|");
+			while( rs.next() ){
+				cid = rs.getString("CID");
+				sid = rs.getString("SID");
+				semid = rs.getString("SEMID");
+				grade = rs.getString("GRADE");
+				credits = rs.getString("CREDITS");
+				PreparedStatement ps1 = conn.prepareStatement("SELECT * FROM COURSE WHERE cid = ?");
+				ps1.setString(1, cid);
+				ResultSet rs1 = ps1.executeQuery();
+				if(rs1.next())
+				{
+					title = rs1.getString("TITLE");
+					clevel = rs1.getString("CLEVEL");
+					did = rs1.getString("DID");
+				}
+			
+				System.out.println("-----------------------------------------------------------------------------------");
+				System.out.println(padRight(sid, 10)+ "|"+padRight(grade, 10)+ "|"+padRight(cid, 10)+ "|" + padRight(title, 40) + "|" + padRight(credits, 10) + "|" + padRight(clevel, 13) + "|"+ padRight(did, 10) + "|"+ padRight(semid, 10) + "|");
+			}
+		} catch(SQLException e){
+			System.out.println("Could not retrieve course grades.");
+		}
 			
 	}
 	private static void studentProfile(Scanner inScan, String username) {//student side

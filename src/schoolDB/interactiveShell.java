@@ -426,7 +426,7 @@ public class interactiveShell {
 			statusOut = cs.getString(4);
 		} catch(SQLException e){
 			System.out.println("Error in database call.");
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 		
 		System.out.println("> Enrollment Status: " + statusOut);

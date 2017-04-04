@@ -163,7 +163,19 @@ public class interactiveShell {
 				{	
 					newPage();
 					System.out.print("# View Student's Details\n  ");
-					viewstudent(inScan);
+					System.out.print("> Please enter the student id: ");
+					String sid = inScan.nextLine();
+					viewstudent(sid);
+					System.out.print("> Press 0 to go back\n> Press 1 to View/Enter Grades\n> ");
+					String coursecmd = inScan.nextLine();
+					while(!(coursecmd.equals("0"))){
+						if(coursecmd.equals("1"))
+							viewEnterGrades(inScan, sid);
+						else 
+							System.out.println("# Incorrect input.");
+						System.out.print("> Press 0 to go back\n> Press 1 to View/Enter Grades\n> ");
+						coursecmd = inScan.nextLine();
+					}
 					
 				}
 				else if(command.equals("4"))//View/Add Courses
@@ -386,6 +398,44 @@ public class interactiveShell {
 		}
 		
 	}
+	private static void viewEnterGrades(Scanner inScan, String sid) {
+		
+		showmycourses(sid);
+		System.out.print("> Enter grades (Y/N)? ");
+		String response = inScan.nextLine();
+		if(!(response.equalsIgnoreCase("Y")))
+			return;
+		System.out.println("> Please choose the offering to enter grades for");
+		System.out.print("> Enter Course ID for grade: ");
+		String cid = inScan.nextLine();
+//		System.out.print("> Enter Session ID for grade: ");
+//		String sessID = inScan.nextLine();
+		System.out.print("> Enter Semester ID for grade: ");
+		String semID = inScan.nextLine();
+		System.out.print("> Enter Grade for course: ");
+		String grade = inScan.nextLine();
+		
+		Connection conn = ConnectionManager.getConnectionInstance();
+		
+		try{
+			PreparedStatement ps = conn.prepareStatement("UPDATE TAKES SET GRADE = ? WHERE SID = ? AND CID = ? AND SEMID = ?");
+			ps.setString(1, grade);
+			ps.setString(2, sid);
+			ps.setString(3, cid);
+			ps.setString(4, semID);
+			ps.executeUpdate();
+			System.out.println("Successfully updated grade.");
+		} catch (SQLException e) {
+			System.out.println("Failed to update grade.");
+		}
+		
+		
+		
+		
+		
+		
+	}
+
 	private static void enrollCourseStudent(Scanner inScan, String username) {
 		
 		viewOfferings(inScan);
@@ -833,7 +883,7 @@ public class interactiveShell {
 			ps.setString(3, "Graded");
 			ResultSet rs = ps.executeQuery();
 			System.out.println("-----------------------------------------------------------------------------------");
-			System.out.println(padRight("sid", 10) + "|" +padRight("Grade", 10)+ "|" +padRight("courseID", 10) + "|" + padRight("Title", 40) + "|" + padRight("Credits", 10) + "|" + padRight("CourseLevel", 13) + "|" + padRight("Department", 10) + "|"  +padRight("semID", 10));
+			System.out.println(padRight("sid", 10) + "|" +padRight("Grade", 10)+ "|" +padRight("courseID", 10) + "|" + padRight("Title", 40) + "|" + padRight("Credits", 10) + "|" + padRight("CourseLevel", 13) + "|" + padRight("Department", 10) + "|"  +padRight("semID", 10) + "|");
 			while( rs.next() ){
 				cid = rs.getString("CID");
 				sid = rs.getString("SID");
@@ -1102,10 +1152,9 @@ public class interactiveShell {
 		System.out.println(padRight(eid, 20)+ "|" + padRight(userN, 20) + "|" + padRight(fname, 20) + "|" + padRight(lname, 20) + "|" + padRight(dob, 20) + "|");
 		
 	}
-	private static void viewstudent(Scanner inscan)
+	private static void viewstudent(String sid)
 	{
 		Connection conn = ConnectionManager.getConnectionInstance();
-		String sid = "";
 		String fname = "";
 		String lname = "";
 		String email ="";
@@ -1118,8 +1167,6 @@ public class interactiveShell {
 		String residency = "";
 		String uname = "";
 		int credits = 0;
-		System.out.println("Please enter the student id: ");
-		sid = inscan.nextLine();
 		try {
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM STUDENT WHERE sid = ?");
 			ps.setString(1, sid);

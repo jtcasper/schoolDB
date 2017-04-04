@@ -248,10 +248,10 @@ public class interactiveShell {
 							String cid = inScan.nextLine();
 							System.out.print("> Semester ID: ");
 							String semID = inScan.nextLine();
-							System.out.print("> Should student request be approved? (Y/N): ");
+							System.out.print("> Should student request be approved? (Approve/Deny): ");
 							String decision = inScan.nextLine();
-							while(!(decision.equalsIgnoreCase("y")) && !(decision.equalsIgnoreCase("n"))){
-								System.out.print("#### ERRONEOUS INPUT\n> Should student request be approved? (Y/N): ");
+							while(!(decision.equalsIgnoreCase("approve")) && !(decision.equalsIgnoreCase("deny"))){
+								System.out.print("#### ERRONEOUS INPUT\n> Should student request be approved? (Approve/Deny): ");
 								decision = inScan.nextLine();
 							}
 							approveDenyPending(sid, cid, semID, decision);

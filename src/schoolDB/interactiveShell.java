@@ -388,13 +388,9 @@ public class interactiveShell {
 	}
 	private static void enrollCourseStudent(Scanner inScan, String username) {
 		
-		viewOfferings(inScan);
-		
 		System.out.println("> Entering data for course registration.");
 		System.out.print("> Please enter the Course ID of the course offering: ");
 		String offerCID = inScan.nextLine();
-		System.out.print("> Please enter the Session ID of the course offering: ");
-		String offerSessionID = inScan.nextLine();
 		System.out.print("> Please enter the Semester ID of the course offering: ");
 		String offerSemID = inScan.nextLine();
 		
@@ -415,20 +411,24 @@ public class interactiveShell {
 			e.printStackTrace();
 			return;
 		}
-				
+		
+		System.out.println(username);
+		System.out.println(offerCID);
+		System.out.println(offerSemID);
+		System.out.println(offerCreds);
+		
 		try{
-			CallableStatement cs = conn.prepareCall("{call ENROLL_COURSE(?, ?, ?, ?, ?, ?)}");
+			CallableStatement cs = conn.prepareCall("{call ENROLL_COURSE(?, ?, ?, ?, ?)}");
 			cs.setString(1, username);
 			cs.setString(2, offerCID);
 			cs.setString(3, offerSemID);
 			cs.registerOutParameter(4, OracleTypes.VARCHAR);
 			cs.setInt(5, Integer.parseInt(offerCreds));
-			cs.setString(6, offerSessionID);
 			cs.executeUpdate();
 			statusOut = cs.getString(4);
 		} catch(SQLException e){
 			System.out.println("Error in database call.");
-//			e.printStackTrace();
+			e.printStackTrace();
 		}
 		
 		System.out.println("> Enrollment Status: " + statusOut);
@@ -458,7 +458,7 @@ public class interactiveShell {
 			}
 		} catch (SQLException e) {
 			System.out.println("Could not retrieve taken courses for student.");
-//			e.printStackTrace();
+			e.printStackTrace();
 		}
 		
 		System.out.println("> Enter the Course ID and Semester ID of the course you would like to drop.");
@@ -476,7 +476,7 @@ public class interactiveShell {
 			System.out.println("Successfully dropped course " + cid + " in semester " + semid);
 		} catch(SQLException e) {
 			System.out.println("Could not drop course " + cid + " in semester " + semid);
-//			e.printStackTrace();
+			e.printStackTrace();
 		}
 		
 	}
@@ -512,7 +512,7 @@ public class interactiveShell {
 		System.out.print("***Invalid Command\n");
 
 	}
-	private static void enforcedeadline(String semid){
+	private static void enforcedeadline(String semid){//not finished
 		Connection conn = ConnectionManager.getConnectionInstance();
 		try{
 			CallableStatement cStmt = conn.prepareCall("{call ENFORCE_DEADLINE(?,?)}");
@@ -525,10 +525,10 @@ public class interactiveShell {
 				 hadResults = cStmt.getMoreResults();
 			}
 			String status = cStmt.getString(2);
-			System.out.println(status);
+			System.out.println("Successfully enforce the deadline in " + semid);
 		} catch(SQLException e){
 			System.out.println("Could not enforce deadline.");
-//			e.printStackTrace();
+			e.printStackTrace();
 		}
 
 		
@@ -588,8 +588,6 @@ public class interactiveShell {
 		String semID = inScan.nextLine();
 		System.out.print("> Course ID: ");
 		String cid = inScan.nextLine();
-		System.out.print("> Session ID: ");
-		String sessionID = inScan.nextLine();
 		System.out.print("> Schedule: ");
 		String schedule = inScan.nextLine();
 		System.out.print("> Location: ");
@@ -604,8 +602,8 @@ public class interactiveShell {
 		Connection conn = ConnectionManager.getConnectionInstance();
 		
 		try{
-			PreparedStatement ps = conn.prepareStatement("INSERT INTO OFFERS (SCHEDULE, LOCATION, CID, SEMID, FID, CLASSSIZE, WAITSIZE, SESSIONID) "
-					+ "VALUES( ?, ?, ?, ?, ?, ?, ?, ?)");
+			PreparedStatement ps = conn.prepareStatement("INSERT INTO OFFERS (SCHEDULE, LOCATION, CID, SEMID, FID, CLASSSIZE, WAITSIZE) "
+					+ "VALUES( ?, ?, ?, ?, ?, ?, ?)");
 			
 			ps.setString(1, schedule);
 			ps.setString(2, location);
@@ -614,12 +612,11 @@ public class interactiveShell {
 			ps.setString(5, facultyID);
 			ps.setString(6, classSize);
 			ps.setString(7, waitSize);
-			ps.setString(8, sessionID);
 			ps.execute();
 			System.out.println("Successfully added course offering: " + cid);
 		} catch(SQLException e){
 			System.out.println("Could not create course offering.");
-//			e.printStackTrace();
+			e.printStackTrace();
 		}
 
 		
@@ -637,7 +634,6 @@ public class interactiveShell {
 		String facultyID = "";
 		String classSize = "";
 		String waitSize = "";
-		String sessionID = "";
 		
 		Connection conn = ConnectionManager.getConnectionInstance();
 		
@@ -646,7 +642,7 @@ public class interactiveShell {
 			ps.setString(1, cid);
 			ResultSet rs = ps.executeQuery();
 			System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-			System.out.println(padRight("Course ID", 20) + "|"+ padRight("Session ID", 20) + "|" + padRight("Semester", 20) + "|" + padRight("Schedule", 20) + "|" + padRight("Location", 20) + "|" + padRight("Faculty ID", 20) + "|" + padRight("Class Size", 20) + "|" + padRight("Waitlist Size", 20));
+			System.out.println(padRight("Course ID", 20) + "|"+ padRight("Semester", 20) + "|" + padRight("Schedule", 20) + "|" + padRight("Location", 20) + "|" + padRight("Faculty ID", 20) + "|" + padRight("Class Size", 20) + "|" + padRight("Waitlist Size", 20));
 			while( rs.next() ) {
 				
 				schedule = rs.getString("SCHEDULE");
@@ -655,11 +651,10 @@ public class interactiveShell {
 				facultyID = rs.getString("FID");
 				classSize = rs.getString("CLASSSIZE");
 				waitSize = rs.getString("WAITSIZE");
-				sessionID = rs.getString("SESSIONID");
 				
 				
 				System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-				System.out.println( padRight(cid, 20) + "|" + padRight(sessionID, 20) + "|" +  padRight(semID, 20) + "|" + padRight(schedule, 20) + "|" + padRight(location, 20) + "|" + padRight(facultyID, 20) + "|" + padRight(classSize, 20) + "|" + padRight(waitSize, 20));
+				System.out.println( padRight(cid, 20) + "|"+ padRight(semID, 20) + "|" + padRight(schedule, 20) + "|" + padRight(location, 20) + "|" + padRight(facultyID, 20) + "|" + padRight(classSize, 20) + "|" + padRight(waitSize, 20));
 				
 			}
 
@@ -812,7 +807,7 @@ public class interactiveShell {
 			System.out.println("Student profile updated.");
 		} catch(SQLException e) {
 			System.out.println("Student profile could not be updated.");
-//			e.printStackTrace();
+			e.printStackTrace();
 		}
 	}
 	private static void showmycourses(String sid)
@@ -853,7 +848,7 @@ public class interactiveShell {
 				System.out.println(padRight(sid, 10)+ "|"+padRight(grade, 10)+ "|"+padRight(cid, 10)+ "|" + padRight(title, 40) + "|" + padRight(credits, 10) + "|" + padRight(clevel, 13) + "|"+ padRight(did, 10) + "|"+ padRight(semid, 10) + "|");
 			}
 		} catch (SQLException e) {
-//			e.printStackTrace();
+			e.printStackTrace();
 		}
 		
 	}
@@ -961,7 +956,7 @@ public class interactiveShell {
 			System.out.println("Course " + cid + " was created.");
 		} catch(SQLException e) {
 			System.out.println("Course could not be created.");
-//			e.printStackTrace();
+			e.printStackTrace();
 		}
 
 	}
@@ -1045,8 +1040,8 @@ public class interactiveShell {
 		Connection conn = ConnectionManager.getConnectionInstance();
 		
 		try {
-			PreparedStatement ps = conn.prepareStatement("INSERT INTO STUDENT (SID, FNAME, LNAME,DOB, EMAIL,PWD, SLEVEL, DID, RESIDENCY, BILL) "
-					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ");
+			PreparedStatement ps = conn.prepareStatement("INSERT INTO STUDENT (SID, FNAME, LNAME,DOB, EMAIL,PWD, SLEVEL, DID, RESIDENCY) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ");
 			//PreparedStatement ps = conn.prepareStatement("INSERT INTO STUDENT (SID, FNAME, LNAME,DOB, EMAIL,PWD, SLEVEL, DID, RESIDENCY) "
 			//		+ "VALUES ('444','123','45','12/23/1666','321321','password','UG','CSC','In-State') ");
 			 //CallableStatement ps = conn.prepareCall("{call ENROLL_STUDENT(?, ?,?,?,?,?,?,?)}");
@@ -1066,7 +1061,7 @@ public class interactiveShell {
 			System.out.println("Student has been sucessfully enrolled");
 		} catch (SQLException e) {
 			System.out.println("Student could not be enrolled.");
-//			e.printStackTrace();
+			e.printStackTrace();
 		}
 	
 		
@@ -1091,7 +1086,7 @@ public class interactiveShell {
 				dob = rs.getString("DOB");
 			}
 		} catch (SQLException e) {
-//			e.printStackTrace();
+			e.printStackTrace();
 		}
 		newPage();
 		System.out.println(padRight("EID", 20) + "|" + padRight("Firstname", 20) + "|" + padRight("Lastname", 20) + "|" + padRight("DOB", 20) + "|");
@@ -1137,7 +1132,7 @@ public class interactiveShell {
 				credits = rs.getInt("CREDITS");
 			}
 		} catch (SQLException e) {
-//			e.printStackTrace();
+			e.printStackTrace();
 		}
 		//admin view the basic profile of student
 			newPage();
@@ -1179,7 +1174,7 @@ public class interactiveShell {
 				System.out.println(padRight(sid, 10)+  "|"+padRight(cid, 10)+ "|" + padRight(title, 40) + "|" + padRight(credits, 10) + "|" + padRight(clevel, 13) + "|"+ padRight(did, 10) + "|"+ padRight(semid, 10) + "|");
 			}
 		} catch (SQLException e) {
-//			e.printStackTrace();
+			e.printStackTrace();
 		}
 		
 	}
@@ -1225,7 +1220,7 @@ public class interactiveShell {
 				System.out.println(padRight(sid, 10)+ "|"+padRight(gpa, 10)+ "|"+padRight(cid, 10)+ "|" + padRight(title, 40) + "|" + padRight(credits, 10) + "|" + padRight(clevel, 13) + "|"+ padRight(did, 10) + "|"+ padRight(semid, 10) + "|");
 			}
 		} catch (SQLException e) {
-//			e.printStackTrace();
+			e.printStackTrace();
 		}
 		
 	}
@@ -1253,7 +1248,7 @@ public class interactiveShell {
 				
 			}
 		} catch (SQLException e) {
-//			e.printStackTrace();
+			e.printStackTrace();
 		}
 		System.out.println(padRight("courseID", 10) + "|" + padRight("Title", 40) + "|" + padRight("Credits", 10) + "|" + padRight("CourseLevel", 13) + "|" + padRight("Department", 10) + "|" );
 		System.out.println("-----------------------------------------------------------------------------------");
@@ -1287,7 +1282,7 @@ public class interactiveShell {
 				System.out.println(padRight(cid, 10)+ "|" + padRight(title, 40) + "|" + padRight(credits, 10) + "|" + padRight(clevel, 13) + "|"+ padRight(did, 10) + "|");
 			}
 		} catch (SQLException e) {
-//			e.printStackTrace();
+			e.printStackTrace();
 		}
 		
 		//System.out.println(padRight(cid, 20)+ "|" + padRight(title, 20) + "|" + padRight(credits, 20) + "|" + padRight(clevel, 20) + "|");

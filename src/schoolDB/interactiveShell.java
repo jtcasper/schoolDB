@@ -996,7 +996,7 @@ public class interactiveShell {
 		System.out.print("> Email: ");
 		String email = inScan.nextLine();
 		//System.out.print("> Password: ");
-		String password = "password";
+		String password = sid;
 		//System.out.print("> GPA: ");
 		//String gpa = inScan.nextLine();
 		System.out.print("> Student Level: Please select the option: \n 1. Undergraduate\n 2. Graduate\n> ");

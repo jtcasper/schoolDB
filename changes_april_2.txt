@@ -56,8 +56,13 @@ b. 	but can not change that due to precondition constraint
 	student with course takes are not accurate
 c.  bug in add offering. no entering of session id. sessionid defaulted as 1
 d.  the display do not have session id too
+
+Student:
 e.  since we have the phone and address attribute for student, it should display in student's profile view by student and admin
 f.  error enroll course
 g.  error drop course
 h.  display wrong in View Grades in student
+i.  STATUS in takes do not change from Confirmed to Graded when Grade is not empty
+j.  need to take care of variable course creidts
+
 

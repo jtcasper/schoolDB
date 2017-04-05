@@ -445,7 +445,8 @@ public class interactiveShell {
 		String offerCID = inScan.nextLine();
 		System.out.print("> Please enter the Semester ID of the course offering: ");
 		String offerSemID = inScan.nextLine();
-		
+		System.out.print("> Please enter the Session ID of the course offering (defaulted:1): ");
+		String offerSessionID = inScan.nextLine();
 		String offerCreds = "";
 		String statusOut = "";
 		
@@ -468,14 +469,16 @@ public class interactiveShell {
 		System.out.println(offerCID);
 		System.out.println(offerSemID);
 		System.out.println(offerCreds);
+		System.out.println(offerSessionID);
 		
 		try{
-			CallableStatement cs = conn.prepareCall("{call ENROLL_COURSE(?, ?, ?, ?, ?)}");
+			CallableStatement cs = conn.prepareCall("{call ENROLL_COURSE(?, ?, ?, ?, ?, ?)}");
 			cs.setString(1, username);
 			cs.setString(2, offerCID);
 			cs.setString(3, offerSemID);
 			cs.registerOutParameter(4, OracleTypes.VARCHAR);
 			cs.setInt(5, Integer.parseInt(offerCreds));
+			cs.setString(6, offerSessionID);
 			cs.executeUpdate();
 			statusOut = cs.getString(4);
 		} catch(SQLException e){
@@ -1115,7 +1118,7 @@ public class interactiveShell {
 		System.out.print("> Email: ");
 		String email = inScan.nextLine();
 		//System.out.print("> Password: ");
-		String password = "password";
+		String password = sid;
 		//System.out.print("> GPA: ");
 		//String gpa = inScan.nextLine();
 		System.out.print("> Student Level: Please select the option: \n 1. Undergraduate\n 2. Graduate\n> ");

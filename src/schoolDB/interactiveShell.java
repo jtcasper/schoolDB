@@ -550,11 +550,11 @@ public class interactiveShell {
 		
 		try{
 			int count = 0;
-			PreparedStatement ps = conn.prepareStatement("SELECT COUNT(*) FROM TAKES WHERE CID = ? AND SID = ? AND SEMID = ? AND SESSIONID = ?");
+			PreparedStatement ps = conn.prepareStatement("SELECT COUNT(*) FROM TAKES WHERE CID = ?  AND SEMID = ? AND SESSIONID = ?");
 			ps.setString(1, cid);
-			ps.setString(2, sid);
-			ps.setString(3, semid);
-			ps.setString(4, sessID);
+			//ps.setString(2, sid);
+			ps.setString(2, semid);
+			ps.setString(3, sessID);
 			ResultSet rs = ps.executeQuery();
 			if( rs.next() ){
 				count = rs.getInt(1);

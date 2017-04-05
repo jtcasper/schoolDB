@@ -465,11 +465,11 @@ public class interactiveShell {
 			return;
 		}
 		
-		System.out.println(username);
+		/*System.out.println(username);
 		System.out.println(offerCID);
 		System.out.println(offerSemID);
 		System.out.println(offerCreds);
-		System.out.println(offerSessionID);
+		System.out.println(offerSessionID);*/
 		
 		try{
 			CallableStatement cs = conn.prepareCall("{call ENROLL_COURSE(?, ?, ?, ?, ?, ?)}");
@@ -677,6 +677,8 @@ public class interactiveShell {
 		String semID = inScan.nextLine();
 		System.out.print("> Course ID: ");
 		String cid = inScan.nextLine();
+		System.out.print("> Session ID(defaulted as 1): ");
+		String sessionid = inScan.nextLine();
 		System.out.print("> Schedule: ");
 		String schedule = inScan.nextLine();
 		System.out.print("> Location: ");
@@ -691,8 +693,8 @@ public class interactiveShell {
 		Connection conn = ConnectionManager.getConnectionInstance();
 		
 		try{
-			PreparedStatement ps = conn.prepareStatement("INSERT INTO OFFERS (SCHEDULE, LOCATION, CID, SEMID, FID, CLASSSIZE, WAITSIZE) "
-					+ "VALUES( ?, ?, ?, ?, ?, ?, ?)");
+			PreparedStatement ps = conn.prepareStatement("INSERT INTO OFFERS (SCHEDULE, LOCATION, CID, SEMID, FID, CLASSSIZE, WAITSIZE, SESSIONID) "
+					+ "VALUES( ?, ?, ?, ?, ?, ?, ?,?)");
 			
 			ps.setString(1, schedule);
 			ps.setString(2, location);
@@ -701,6 +703,7 @@ public class interactiveShell {
 			ps.setString(5, facultyID);
 			ps.setString(6, classSize);
 			ps.setString(7, waitSize);
+			ps.setString(8, sessionid);
 			ps.execute();
 			System.out.println("Successfully added course offering: " + cid);
 		} catch(SQLException e){
@@ -723,7 +726,7 @@ public class interactiveShell {
 		String facultyID = "";
 		String classSize = "";
 		String waitSize = "";
-		
+		String sessionid = "";
 		Connection conn = ConnectionManager.getConnectionInstance();
 		
 		try{
@@ -731,7 +734,7 @@ public class interactiveShell {
 			ps.setString(1, cid);
 			ResultSet rs = ps.executeQuery();
 			System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-			System.out.println(padRight("Course ID", 20) + "|"+ padRight("Semester", 20) + "|" + padRight("Schedule", 20) + "|" + padRight("Location", 20) + "|" + padRight("Faculty ID", 20) + "|" + padRight("Class Size", 20) + "|" + padRight("Waitlist Size", 20));
+			System.out.println(padRight("Course ID", 20) + "|"+ padRight("Semester", 20)+ "|"+ padRight("SessionID", 10) + "|" + padRight("Schedule", 20) + "|" + padRight("Location", 20) + "|" + padRight("Faculty ID", 20) + "|" + padRight("Class Size", 20) + "|" + padRight("Waitlist Size", 20));
 			while( rs.next() ) {
 				
 				schedule = rs.getString("SCHEDULE");
@@ -740,10 +743,10 @@ public class interactiveShell {
 				facultyID = rs.getString("FID");
 				classSize = rs.getString("CLASSSIZE");
 				waitSize = rs.getString("WAITSIZE");
-				
+				sessionid = rs.getString("SESSIONID");
 				
 				System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-				System.out.println( padRight(cid, 20) + "|"+ padRight(semID, 20) + "|" + padRight(schedule, 20) + "|" + padRight(location, 20) + "|" + padRight(facultyID, 20) + "|" + padRight(classSize, 20) + "|" + padRight(waitSize, 20));
+				System.out.println( padRight(cid, 20) + "|"+ padRight(semID, 20) + "|"+ padRight(sessionid, 10)+ "|" + padRight(schedule, 20) + "|" + padRight(location, 20) + "|" + padRight(facultyID, 20) + "|" + padRight(classSize, 20) + "|" + padRight(waitSize, 20));
 				
 			}
 
@@ -824,7 +827,7 @@ public class interactiveShell {
 			ps.setString(2, "Graded");
 			ResultSet rs = ps.executeQuery();
 			System.out.println("-----------------------------------------------------------------------------------");
-			System.out.println(padRight("sid", 10) + "|" +padRight("Grade", 10)+ "|" +padRight("courseID", 10) + "|" + padRight("Title", 40) + "|" + padRight("Credits", 10) + "|" + padRight("CourseLevel", 13) + "|" + padRight("Department", 10) + "|"  +padRight("semID", 10) + "|");
+			System.out.println(padRight("StudentID", 20) + "|" +padRight("Grade", 20)+ "|" +padRight("CourseID", 20) + "|" + padRight("Title", 20) + "|" + padRight("Credits", 10) + "|" + padRight("CourseLevel", 13) + "|" + padRight("Department", 10) + "|"  +padRight("semID", 10) + "|");
 			while( rs.next() ){
 				cid = rs.getString("CID");
 				sid = rs.getString("SID");
@@ -842,7 +845,7 @@ public class interactiveShell {
 				}
 			
 				System.out.println("-----------------------------------------------------------------------------------");
-				System.out.println(padRight(sid, 10)+ "|"+padRight(grade, 10)+ "|"+padRight(cid, 10)+ "|" + padRight(title, 40) + "|" + padRight(credits, 10) + "|" + padRight(clevel, 13) + "|"+ padRight(did, 10) + "|"+ padRight(semid, 10) + "|");
+				System.out.println(padRight(sid, 20)+ "|"+padRight(grade, 10)+ "|"+padRight(cid, 20)+ "|" + padRight(title, 20) + "|" + padRight(credits, 10) + "|" + padRight(clevel, 13) + "|"+ padRight(did, 10) + "|"+ padRight(semid, 10) + "|");
 			}
 		} catch(SQLException e){
 			System.out.println("Could not retrieve course grades.");
@@ -864,6 +867,8 @@ public class interactiveShell {
 		String residency = "";
 		String cid ="";
 		String grade = "";
+		String address = "";
+		String phone = "";
 		int credits = 0;
 		
 		Connection conn = ConnectionManager.getConnectionInstance();
@@ -884,15 +889,17 @@ public class interactiveShell {
 				did = rs.getString("DID");
 				residency = rs.getString("RESIDENCY");
 				credits = rs.getInt("CREDITS");
+				address = rs.getString("ADDRESS");
+				phone = rs.getString("PHONE_NUMBER");
 			}
 			PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM TAKES WHERE sid = ? AND (STATUS =? OR STATUS = ?) ");
 			ps2.setString(1, username);
 			ps2.setString(2, "Confirmed");//should be modified to Graded later
 			ps2.setString(3, "Graded");
 			ResultSet rs2 = ps2.executeQuery();
-			System.out.println(padRight("StudentID", 10) + "|" + padRight("Firstname", 15) + "|" + padRight("Lastname", 15) + "|" + padRight("DOB", 28) + "|" +padRight("email", 20) + "|" + padRight("status", 10) + "|" + padRight("Level", 12) + "|" + padRight("Department", 10) + "|" + padRight("Bill Amount", 12)+ "|" + padRight("Credits", 10)+ "|"+ padRight("Enrolled Course & Grades", 20)+ "|");
+			System.out.println(padRight("StudentID", 10) + "|" + padRight("Firstname", 15) + "|" + padRight("Lastname", 15) + "|" + padRight("DOB", 28) + "|" +padRight("email", 20) + "|" + padRight("Residency", 15) + "|" + padRight("Level", 12) + "|" + padRight("Department", 10) + "|" + padRight("Bill Amount", 12)+ "|" + padRight("Credits", 10)+ "|"+ padRight("Address", 10)+ "|"+ padRight("Phone", 10)+ "|"+ padRight("Enrolled Course & Grades", 20)+ "|");
 			System.out.println("-----------------------------------------------------------------------------------");
-			System.out.print("\n"+padRight(username, 10)+ "|" + padRight(fname, 15) + "|" + padRight(lname, 15) + "|" + padRight(dob, 28)+ "|" + padRight(email, 20)+ "|"+ padRight(residency, 10) + "|"+ padRight(slevel, 12) + "|"+ padRight(did, 10) + "|"+ padRight(bill, 12) + "|"+ padRight(String.valueOf(credits), 10) +"|");
+			System.out.print("\n"+padRight(username, 10)+ "|" + padRight(fname, 15) + "|" + padRight(lname, 15) + "|" + padRight(dob, 28)+ "|" + padRight(email, 20)+ "|"+ padRight(residency, 15) + "|"+ padRight(slevel, 12) + "|"+ padRight(did, 10) + "|"+ padRight(bill, 12) + "|"+ padRight(String.valueOf(credits), 10) + "|"+ padRight(address, 10) + "|"+ padRight(phone, 10) +"|");
 			while(rs2.next())
 			{	
 				cid = rs2.getString("CID");
@@ -1238,6 +1245,8 @@ public class interactiveShell {
 		String did = "";
 		String residency = "";
 		String uname = "";
+		String address = "";
+		String phone = "";
 		int credits = 0;
 		try {
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM STUDENT WHERE sid = ?");
@@ -1257,15 +1266,17 @@ public class interactiveShell {
 				residency = rs.getString("RESIDENCY");
 				uname = rs.getString("UNAME");
 				credits = rs.getInt("CREDITS");
+				address = rs.getString("ADDRESS");
+				phone = rs.getString("PHONE_NUMBER");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		//admin view the basic profile of student
 			newPage();
-		System.out.println(padRight("StudentID", 10) + "|" + padRight("Firstname", 15) + "|" + padRight("Lastname", 15) + "|" + padRight("DOB", 30) + "|" + padRight("eMAIL", 20) + "|" + padRight("GPA", 10) + "|" + padRight("Level", 10) + "|" + padRight("Residency", 10)+ "|");
+		System.out.println(padRight("StudentID", 10) + "|" + padRight("Firstname", 15) + "|" + padRight("Lastname", 15) + "|" + padRight("DOB", 30) + "|" + padRight("eMAIL", 20) + "|" + padRight("GPA", 10) + "|" + padRight("Level", 10) + "|" + padRight("Residency", 10)+ "|"+ padRight("Address", 10)+ "|"+ padRight("Phone", 10)+ "|");
 		System.out.println("-----------------------------------------------------------------------------------");
-		System.out.println(padRight(sid, 10)+ "|" + padRight(fname, 15) + "|" + padRight(lname, 15) + "|" + padRight(dob, 30) + "|"+ padRight(email, 20) + "|"+ padRight(gpa, 10) + "|"+ padRight(slevel, 10) + "|"+ padRight(residency, 10) + "|");		
+		System.out.println(padRight(sid, 10)+ "|" + padRight(fname, 15) + "|" + padRight(lname, 15) + "|" + padRight(dob, 30) + "|"+ padRight(email, 20) + "|"+ padRight(gpa, 10) + "|"+ padRight(slevel, 10) + "|"+ padRight(residency, 10) + "|"+ padRight(address, 10) + "|"+ padRight(phone, 10) + "|");		
 	}
 	private static void viewmypending(String sid)
 	{

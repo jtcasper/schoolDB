@@ -1115,7 +1115,7 @@ public class interactiveShell {
 		System.out.print("> Email: ");
 		String email = inScan.nextLine();
 		//System.out.print("> Password: ");
-		String password = sid;
+		String password = "password";
 		//System.out.print("> GPA: ");
 		//String gpa = inScan.nextLine();
 		System.out.print("> Student Level: Please select the option: \n 1. Undergraduate\n 2. Graduate\n> ");
@@ -1164,8 +1164,8 @@ public class interactiveShell {
 		Connection conn = ConnectionManager.getConnectionInstance();
 		
 		try {
-			PreparedStatement ps = conn.prepareStatement("INSERT INTO STUDENT (SID, FNAME, LNAME,DOB, EMAIL,PWD, SLEVEL, DID, RESIDENCY) "
-					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ");
+			PreparedStatement ps = conn.prepareStatement("INSERT INTO STUDENT (SID, FNAME, LNAME,DOB, EMAIL,PWD, SLEVEL, DID, RESIDENCY, BILL) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ");
 			//PreparedStatement ps = conn.prepareStatement("INSERT INTO STUDENT (SID, FNAME, LNAME,DOB, EMAIL,PWD, SLEVEL, DID, RESIDENCY) "
 			//		+ "VALUES ('444','123','45','12/23/1666','321321','password','UG','CSC','In-State') ");
 			 //CallableStatement ps = conn.prepareCall("{call ENROLL_STUDENT(?, ?,?,?,?,?,?,?)}");

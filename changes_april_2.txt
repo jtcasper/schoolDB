@@ -44,3 +44,20 @@ drop a course
 5. Invalid column specification in student edit profile //SH
 6. Enroll a course not working in student
 7. View grades should have courses and the grades received in those courses, rather than final gpa
+
+***********************************
+TESTING REFLECTION:
+***********************************
+Admin:
+a. 3.View student's detail.. when enter an invalid student id, the menu can still 
+	process to enter grades, and have the printout "successfully entered the grade"
+	---should test if the student exist, then proceed
+b. 	but can not change that due to precondition constraint
+	student with course takes are not accurate
+c.  bug in add offering. no entering of session id. sessionid defaulted as 1
+d.  the display do not have session id too
+e.  since we have the phone and address attribute for student, it should display in student's profile view by student and admin
+f.  error enroll course
+g.  error drop course
+h.  display wrong in View Grades in student
+

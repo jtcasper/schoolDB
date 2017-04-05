@@ -716,13 +716,14 @@ public class interactiveShell {
 
 	private static void viewOfferings(Scanner inScan) {
 		
-		System.out.print("> Please enter the course ID to view offerings for: ");
+		System.out.print("> Please enter the course ID to view offerings for (enter 'all' to see all offerings): \n>");
 		String semID = "";
 		
 		
 		String schedule = "";
 		String location = "";
 		String cid = inScan.nextLine();
+		//String cid = "";
 		String facultyID = "";
 		String classSize = "";
 		String waitSize = "";
@@ -730,25 +731,54 @@ public class interactiveShell {
 		Connection conn = ConnectionManager.getConnectionInstance();
 		
 		try{
-			PreparedStatement ps = conn.prepareStatement("SELECT * FROM OFFERS WHERE CID = ?");
-			ps.setString(1, cid);
-			ResultSet rs = ps.executeQuery();
-			System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-			System.out.println(padRight("Course ID", 20) + "|"+ padRight("Semester", 20)+ "|"+ padRight("SessionID", 10) + "|" + padRight("Schedule", 20) + "|" + padRight("Location", 20) + "|" + padRight("Faculty ID", 20) + "|" + padRight("Class Size", 20) + "|" + padRight("Waitlist Size", 20));
-			while( rs.next() ) {
-				
-				schedule = rs.getString("SCHEDULE");
-				location = rs.getString("LOCATION");
-				semID = rs.getString("SEMID");
-				facultyID = rs.getString("FID");
-				classSize = rs.getString("CLASSSIZE");
-				waitSize = rs.getString("WAITSIZE");
-				sessionid = rs.getString("SESSIONID");
-				
+			if(cid.equals("all")){
+				PreparedStatement ps = conn.prepareStatement("SELECT * FROM OFFERS");
+				ResultSet rs = ps.executeQuery();
 				System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-				System.out.println( padRight(cid, 20) + "|"+ padRight(semID, 20) + "|"+ padRight(sessionid, 10)+ "|" + padRight(schedule, 20) + "|" + padRight(location, 20) + "|" + padRight(facultyID, 20) + "|" + padRight(classSize, 20) + "|" + padRight(waitSize, 20));
-				
+				System.out.println(padRight("Course ID", 20) + "|"+ padRight("Semester", 20)+ "|"+ padRight("SessionID", 10) + "|" + padRight("Schedule", 20) + "|" + padRight("Location", 20) + "|" + padRight("Faculty ID", 20) + "|" + padRight("Class Size", 20) + "|" + padRight("Waitlist Size", 20));
+				while( rs.next() ) {
+					
+					schedule = rs.getString("SCHEDULE");
+					location = rs.getString("LOCATION");
+					semID = rs.getString("SEMID");
+					cid= rs.getString("CID");
+					facultyID = rs.getString("FID");
+					classSize = rs.getString("CLASSSIZE");
+					waitSize = rs.getString("WAITSIZE");
+					sessionid = rs.getString("SESSIONID");
+					
+					System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+					System.out.println( padRight(cid, 20) + "|"+ padRight(semID, 20) + "|"+ padRight(sessionid, 10)+ "|" + padRight(schedule, 20) + "|" + padRight(location, 20) + "|" + padRight(facultyID, 20) + "|" + padRight(classSize, 20) + "|" + padRight(waitSize, 20));
+					
+				}
 			}
+			else{
+				PreparedStatement ps = conn.prepareStatement("SELECT * FROM OFFERS WHERE CID = ?");
+				ps.setString(1, cid);
+				ResultSet rs = ps.executeQuery();
+				System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+				System.out.println(padRight("Course ID", 20) + "|"+ padRight("Semester", 20)+ "|"+ padRight("SessionID", 10) + "|" + padRight("Schedule", 20) + "|" + padRight("Location", 20) + "|" + padRight("Faculty ID", 20) + "|" + padRight("Class Size", 20) + "|" + padRight("Waitlist Size", 20));
+				while( rs.next() ) {
+					
+					schedule = rs.getString("SCHEDULE");
+					location = rs.getString("LOCATION");
+					semID = rs.getString("SEMID");
+					cid= rs.getString("CID");
+					facultyID = rs.getString("FID");
+					classSize = rs.getString("CLASSSIZE");
+					waitSize = rs.getString("WAITSIZE");
+					sessionid = rs.getString("SESSIONID");
+					
+					System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+					System.out.println( padRight(cid, 20) + "|"+ padRight(semID, 20) + "|"+ padRight(sessionid, 10)+ "|" + padRight(schedule, 20) + "|" + padRight(location, 20) + "|" + padRight(facultyID, 20) + "|" + padRight(classSize, 20) + "|" + padRight(waitSize, 20));
+					
+				}
+			}
+			//PreparedStatement ps = conn.prepareStatement("SELECT * FROM OFFERS WHERE CID = ?");
+			//PreparedStatement ps = conn.prepareStatement("SELECT * FROM OFFERS");
+			//ps.setString(1, cid);
+			//ResultSet rs = ps.executeQuery();
+			
 
 			
 		} catch(SQLException e) {

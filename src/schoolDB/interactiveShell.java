@@ -747,7 +747,7 @@ public class interactiveShell {
 				ResultSet rs = ps.executeQuery();
 			
 				System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-				System.out.println(padRight("Course ID", 20) + "|"+ padRight("Semester", 20)+ "|"+ padRight("SessionID", 10) + "|" + padRight("Schedule", 20) + "|" + padRight("Location", 20) + "|" + padRight("Faculty ID", 20) + "|" + padRight("Class Size", 20) + "|" + padRight("Waitlist Size", 20)+ "|"+ padRight("Title", 10)+ "|"+ padRight("Level", 10)+ "|"+ padRight("Department", 12)+ "|"+ padRight("Credits", 10));
+				System.out.println(padRight("Course ID", 20) + "|"+ padRight("Semester", 20)+ "|"+ padRight("SessionID", 10) + "|" + padRight("Schedule", 20) + "|" + padRight("Location", 20) + "|" + padRight("Faculty ID", 20) + "|" + padRight("Class Size", 20) + "|" + padRight("Waitlist Size", 20)+ "|"+ padRight("Title", 40)+ "|"+ padRight("Level", 10)+ "|"+ padRight("Department", 12)+ "|"+ padRight("Credits", 10));
 				while( rs.next() ) {
 					
 					schedule = rs.getString("SCHEDULE");
@@ -759,9 +759,9 @@ public class interactiveShell {
 					waitSize = rs.getString("WAITSIZE");
 					sessionid = rs.getString("SESSIONID");
 					
-					/*PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM COURSE WHERE CID =? AND SEMID =?");
+					PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM COURSE WHERE CID =?");
 					ps2.setString(1, cid);
-					ps2.setString(2, semID);
+				
 					ResultSet rs2 = ps2.executeQuery();
 					if(rs2.next()){
 						title = rs2.getString("TITLE");
@@ -769,9 +769,9 @@ public class interactiveShell {
 						credits = rs2.getString("CREDITS");
 						did= rs2.getString("DID");	
 						
-					}*/
+					}
 					System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-					System.out.println( padRight(cid, 20) + "|"+ padRight(semID, 20) + "|"+ padRight(sessionid, 10)+ "|" + padRight(schedule, 20) + "|" + padRight(location, 20) + "|" + padRight(facultyID, 20) + "|" + padRight(classSize, 20) + "|" + padRight(waitSize, 20)+ "|"+ padRight(title, 10)+ "|"+ padRight(clevel, 10)+ "|"+ padRight(did, 12)+ "|"+ padRight(credits, 10));
+					System.out.println( padRight(cid, 20) + "|"+ padRight(semID, 20) + "|"+ padRight(sessionid, 10)+ "|" + padRight(schedule, 20) + "|" + padRight(location, 20) + "|" + padRight(facultyID, 20) + "|" + padRight(classSize, 20) + "|" + padRight(waitSize, 20)+ "|"+ padRight(title, 40)+ "|"+ padRight(clevel, 10)+ "|"+ padRight(did, 12)+ "|"+ padRight(credits, 10));
 					
 				}
 			}
@@ -780,6 +780,33 @@ public class interactiveShell {
 				ps.setString(1, cid);
 				ResultSet rs = ps.executeQuery();
 				System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+				System.out.println(padRight("Course ID", 20) + "|"+ padRight("Semester", 20)+ "|"+ padRight("SessionID", 10) + "|" + padRight("Schedule", 20) + "|" + padRight("Location", 20) + "|" + padRight("Faculty ID", 20) + "|" + padRight("Class Size", 20) + "|" + padRight("Waitlist Size", 20)+ "|"+ padRight("Title", 40)+ "|"+ padRight("Level", 10)+ "|"+ padRight("Department", 12)+ "|"+ padRight("Credits", 10));
+				while( rs.next() ) {
+					
+					schedule = rs.getString("SCHEDULE");
+					location = rs.getString("LOCATION");
+					semID = rs.getString("SEMID");
+					cid= rs.getString("CID");
+					facultyID = rs.getString("FID");
+					classSize = rs.getString("CLASSSIZE");
+					waitSize = rs.getString("WAITSIZE");
+					sessionid = rs.getString("SESSIONID");
+					
+					PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM COURSE WHERE CID =?");
+					ps2.setString(1, cid);
+				
+					ResultSet rs2 = ps2.executeQuery();
+					if(rs2.next()){
+						title = rs2.getString("TITLE");
+						clevel = rs2.getString("CLEVEL");
+						credits = rs2.getString("CREDITS");
+						did= rs2.getString("DID");	
+						
+					}
+					System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+					System.out.println( padRight(cid, 20) + "|"+ padRight(semID, 20) + "|"+ padRight(sessionid, 10)+ "|" + padRight(schedule, 20) + "|" + padRight(location, 20) + "|" + padRight(facultyID, 20) + "|" + padRight(classSize, 20) + "|" + padRight(waitSize, 20)+ "|"+ padRight(title, 40)+ "|"+ padRight(clevel, 10)+ "|"+ padRight(did, 12)+ "|"+ padRight(credits, 10));
+					
+				/*System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 				System.out.println(padRight("Course ID", 20) + "|"+ padRight("Semester", 20)+ "|"+ padRight("SessionID", 10) + "|" + padRight("Schedule", 20) + "|" + padRight("Location", 20) + "|" + padRight("Faculty ID", 20) + "|" + padRight("Class Size", 20) + "|" + padRight("Waitlist Size", 20));
 				while( rs.next() ) {
 					
@@ -794,7 +821,7 @@ public class interactiveShell {
 					
 					System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 					System.out.println( padRight(cid, 20) + "|"+ padRight(semID, 20) + "|"+ padRight(sessionid, 10)+ "|" + padRight(schedule, 20) + "|" + padRight(location, 20) + "|" + padRight(facultyID, 20) + "|" + padRight(classSize, 20) + "|" + padRight(waitSize, 20));
-					
+					*/
 				}
 			}
 			//PreparedStatement ps = conn.prepareStatement("SELECT * FROM OFFERS WHERE CID = ?");

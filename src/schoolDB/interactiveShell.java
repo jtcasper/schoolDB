@@ -724,8 +724,7 @@ public class interactiveShell {
 		
 		System.out.print("> Please enter the course ID to view offerings for (enter 'all' to see all offerings): \n>");
 		String semID = "";
-		
-		
+
 		String schedule = "";
 		String location = "";
 		String cid = inScan.nextLine();
@@ -734,6 +733,12 @@ public class interactiveShell {
 		String classSize = "";
 		String waitSize = "";
 		String sessionid = "";
+	/////
+		String title = "";
+		String credits = "";
+		String clevel = "";
+		String did = "";
+
 		Connection conn = ConnectionManager.getConnectionInstance();
 		
 		try{
@@ -1323,18 +1328,22 @@ public class interactiveShell {
 		String clevel = "";
 		String semid = "";
 		String did = "";
+		String status = "";
 		try {
 			
-			PreparedStatement ps = conn.prepareStatement("SELECT * FROM TAKES WHERE STATUS = ? AND SID = ?");
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM TAKES WHERE (STATUS = ? OR STATUS = ? OR STATUS = ?) AND SID = ?");
 			ps.setString(1, "Pending");
-			ps.setString(2, sid);
+			ps.setString(2, "Denied");
+			ps.setString(3, "Waitlist");
+			ps.setString(4, sid);
 			ResultSet rs = ps.executeQuery();
 			System.out.println("-----------------------------------------------------------------------------------");
-			System.out.println(padRight("sid", 10) + "|" +padRight("courseID", 10) + "|" + padRight("Title", 40) + "|" + padRight("Credits", 10) + "|" + padRight("CourseLevel", 13) + "|" + padRight("Department", 10) + "|" +padRight("semID", 10));
+			System.out.println(padRight("sid", 10) + "|" +padRight("courseID", 10) + "|" + padRight("Title", 40) + "|" + padRight("Credits", 10) + "|" + padRight("CourseLevel", 13) + "|" + padRight("Department", 10) + "|" +padRight("semID", 10)+ "|" +padRight("status", 10));
 			while( rs.next() ){
 				cid = rs.getString("CID");
 				semid = rs.getString("SEMID");
 				credits = rs.getString("CREDITS");
+				status = rs.getString("STATUS");
 				PreparedStatement ps1 = conn.prepareStatement("SELECT * FROM COURSE WHERE cid = ?");
 				ps1.setString(1, cid);
 				ResultSet rs1 = ps1.executeQuery();
@@ -1342,10 +1351,11 @@ public class interactiveShell {
 				{title = rs1.getString("TITLE");
 				clevel = rs1.getString("CLEVEL");
 				did = rs1.getString("DID");
+				
 				}
 				
 				System.out.println("-----------------------------------------------------------------------------------");
-				System.out.println(padRight(sid, 10)+  "|"+padRight(cid, 10)+ "|" + padRight(title, 40) + "|" + padRight(credits, 10) + "|" + padRight(clevel, 13) + "|"+ padRight(did, 10) + "|"+ padRight(semid, 10) + "|");
+				System.out.println(padRight(sid, 10)+  "|"+padRight(cid, 10)+ "|" + padRight(title, 40) + "|" + padRight(credits, 10) + "|" + padRight(clevel, 13) + "|"+ padRight(did, 10) + "|"+ padRight(semid, 10) + "|"+ padRight(status, 10) + "|");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -1363,17 +1373,19 @@ public class interactiveShell {
 		String did = "";
 		String sid = "";
 		String gpa = "";
+		String sessionid = "";
 		try {
 			
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM TAKES WHERE STATUS = ?");
 			ps.setString(1, "Pending");
 			ResultSet rs = ps.executeQuery();
 			System.out.println("-----------------------------------------------------------------------------------");
-			System.out.println(padRight("sid", 10) + "|" +padRight("GPA", 10)+ "|" +padRight("courseID", 10) + "|" + padRight("Title", 40) + "|" + padRight("Credits", 10) + "|" + padRight("CourseLevel", 13) + "|" + padRight("Department", 10) + "|" +padRight("semID", 10));
+			System.out.println(padRight("sid", 10) + "|" +padRight("GPA", 10)+ "|" +padRight("courseID", 10) + "|" + padRight("Title", 40) + "|" + padRight("Credits", 10) + "|" + padRight("CourseLevel", 13) + "|" + padRight("Department", 10) + "|" +padRight("semID", 10)+ "|" +padRight("SessionID", 10));
 			while( rs.next() ){
 				cid = rs.getString("CID");
 				sid = rs.getString("SID");
 				semid = rs.getString("SEMID");
+				sessionid = rs.getString("SESSIONID");
 				credits = rs.getString("CREDITS");
 				PreparedStatement ps1 = conn.prepareStatement("SELECT * FROM COURSE WHERE cid = ?");
 				ps1.setString(1, cid);
@@ -1391,7 +1403,7 @@ public class interactiveShell {
 				}
 				
 				System.out.println("-----------------------------------------------------------------------------------");
-				System.out.println(padRight(sid, 10)+ "|"+padRight(gpa, 10)+ "|"+padRight(cid, 10)+ "|" + padRight(title, 40) + "|" + padRight(credits, 10) + "|" + padRight(clevel, 13) + "|"+ padRight(did, 10) + "|"+ padRight(semid, 10) + "|");
+				System.out.println(padRight(sid, 10)+ "|"+padRight(gpa, 10)+ "|"+padRight(cid, 10)+ "|" + padRight(title, 40) + "|" + padRight(credits, 10) + "|" + padRight(clevel, 13) + "|"+ padRight(did, 10) + "|"+ padRight(semid, 10) + "|"+ padRight(sessionid, 10) + "|");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

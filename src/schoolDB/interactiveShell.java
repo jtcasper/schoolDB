@@ -745,6 +745,7 @@ public class interactiveShell {
 			if(cid.equals("all")){
 				PreparedStatement ps = conn.prepareStatement("SELECT * FROM OFFERS");
 				ResultSet rs = ps.executeQuery();
+			
 				System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 				System.out.println(padRight("Course ID", 20) + "|"+ padRight("Semester", 20)+ "|"+ padRight("SessionID", 10) + "|" + padRight("Schedule", 20) + "|" + padRight("Location", 20) + "|" + padRight("Faculty ID", 20) + "|" + padRight("Class Size", 20) + "|" + padRight("Waitlist Size", 20));
 				while( rs.next() ) {
@@ -758,6 +759,17 @@ public class interactiveShell {
 					waitSize = rs.getString("WAITSIZE");
 					sessionid = rs.getString("SESSIONID");
 					
+				/*	PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM COURSE WHERE CID =? AND SEMID =?");
+					ps.setString(1, cid);
+					ps.setString(2, semID);
+					ResultSet rs2 = ps.executeQuery();
+					if(rs2.next()){
+						title = rs2.getString("TITLE");
+						clevel = rs2.getString("CLEVEL");
+						credits = rs2.getString("CREDITS");
+						did= rs2.getString("DID");	
+						
+					}*/
 					System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 					System.out.println( padRight(cid, 20) + "|"+ padRight(semID, 20) + "|"+ padRight(sessionid, 10)+ "|" + padRight(schedule, 20) + "|" + padRight(location, 20) + "|" + padRight(facultyID, 20) + "|" + padRight(classSize, 20) + "|" + padRight(waitSize, 20));
 					

@@ -457,7 +457,13 @@ public class interactiveShell {
 			ps.setString(1, offerCID);
 			ResultSet rs = ps.executeQuery();
 			if( rs.next() ){
+				
 				offerCreds = rs.getString("CREDITS");
+				if(offerCreds.length()==3)
+				{
+					System.out.println("This course is a special course, please enter the credit number you want to take: "+ offerCreds);
+					offerCreds = inScan.nextLine();
+				}
 			}
 		} catch(SQLException e) {
 			System.out.println("Course offering not found.");
@@ -1023,7 +1029,7 @@ public class interactiveShell {
 		String cid = inScan.nextLine();
 		System.out.print("> Course Title: ");
 		String title = inScan.nextLine();
-		System.out.print("> Credits: ");
+		System.out.print("> Credits(if it is a special course, please enter as the example: '1-3'): ");
 		String credits = inScan.nextLine();
 		System.out.print("> Course Level:\n1.UG\n2.PG\n> ");
 		String cLevel = "";
